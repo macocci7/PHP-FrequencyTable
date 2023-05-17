@@ -13,6 +13,7 @@ final class FrequencyTableTest extends TestCase
         'ClassValue',
         'ClassValue * Frequency',
     ];
+    private $defaultTableSeparator = '|';
 
     public function test_constructor_can_create_instance_without_params(): void
     {
@@ -430,5 +431,356 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
-    // Test Codes Must Follows.
+    public function test_getClassValue_can_get_class_value_correctly(): void
+    {
+        $cases = [
+            ['class' => null, 'expect' => null, ],
+            ['class' => [], 'expect' => null, ],
+            ['class' => '', 'expect' => null, ],
+            ['class' => true, 'expect' => null, ],
+            ['class' => false, 'expect' => null, ],
+            ['class' => 0, 'expect' => null, ],
+            ['class' => 'hoge', 'expect' => null, ],
+            ['class' => 12.3, 'expect' => null, ],
+            ['class' => ['hoge'], 'expect' => null, ],
+            ['class' => ['bottom','top'], 'expect' => null, ],
+            ['class' => ['bottom' => 20, ], 'expect' => null, ],
+            ['class' => ['top' => 20, ], 'expect' => null, ],
+            ['class' => ['bottom' => 40, 'top' => 30, ], 'expect' => null, ],
+            ['class' => ['bottom' => 30, 'top' => 30, ], 'expect' => null, ],
+            ['class' => ['bottom' => 20, 'top' => 30, ], 'expect' => 25, ],
+            ['class' => ['bottom' => "20", 'top' => 30, ], 'expect' => null, ],
+            ['class' => ['bottom' => 20, 'top' => "30", ], 'expect' => null, ],
+            ['class' => ['bottom' => "20", 'top' => "30", ], 'expect' => null, ],
+            ['class' => ['bottom' => 20.5, 'top' => 30.6, ], 'expect' => 25.55, ],
+            ['class' => ['bottom' => -20, 'top' => -30, ], 'expect' => null, ],
+            ['class' => ['bottom' => -20, 'top' => 30, ], 'expect' => 5, ],
+            ['class' => ['bottom' => -20.5, 'top' => -10.4, ], 'expect' => -15.45, ],
+            ['class' => ['bottom' => 20, 'top' => 30, 'middle' => 28, ], 'expect' => 25, ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $this->assertSame($case['expect'],$ft->getClassValue($case['class']));
+        }
+    }
+
+    public function test_getRelativeFrequency_can_get_relative_frequency_correctly(): void
+    {
+        $cases = [
+            ['frequencies' => null, 'frequency' => null, 'expect' => null, ],
+            ['frequencies' => [], 'frequency' => null, 'expect' => null, ],
+            ['frequencies' => [1,2,3,4,], 'frequency' => null, 'expect' => null, ],
+            ['frequencies' => [1,2,3,4,], 'frequency' => true, 'expect' => null, ],
+            ['frequencies' => [1,2,3,4,], 'frequency' => false, 'expect' => null, ],
+            ['frequencies' => [1,2,3,4,], 'frequency' => [], 'expect' => null, ],
+            ['frequencies' => [1,2,3,4,], 'frequency' => [0], 'expect' => null, ],
+            ['frequencies' => [1,2,3,4,], 'frequency' => [2], 'expect' => null, ],
+            ['frequencies' => [1,2,3,4,], 'frequency' => 0, 'expect' => 0, ],
+            ['frequencies' => [1,2,3,4,], 'frequency' => 2, 'expect' => 0.2, ],
+            ['frequencies' => [1,2,3,4,], 'frequency' => -2, 'expect' => null, ],   // Frequency must be a positive integer or zero.
+            ['frequencies' => [1,2,3,4,], 'frequency' => 0.0, 'expect' => null, ],  // Frequency must be a positive integer or zero.
+            ['frequencies' => [1,2,3,4,], 'frequency' => 2.0, 'expect' => null, ],  // Frequency must be a positive integer or zero.
+            ['frequencies' => null, 'frequency' => 0, 'expect' => null, ],
+            ['frequencies' => [], 'frequency' => 0, 'expect' => null, ],
+            ['frequencies' => [], 'frequency' => 2, 'expect' => null, ],
+            ['frequencies' => [0], 'frequency' => 0, 'expect' => null, ], // Sum of frequencies must be a positive integer.
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $ft->setSum($case['frequencies']);
+            $this->assertSame($case['expect'],$ft->getRelativeFrequency($case['frequency']));
+        }
+    }
+
+    public function test_getAverage_can_get_average_correctly(): void
+    {
+        $cases = [
+            ['classRange' => 10, 'data' => null, 'expect' => null, ],
+            ['classRange' => 10, 'data' => [], 'expect' => null, ],
+            ['classRange' => 10, 'data' => [0], 'expect' => 5, ], // Frequencies=[1], ClassValue=5, Average=5
+            ['classRange' => 10, 'data' => [10], 'expect' => 15, ], // Frequencies=[1], ClassValue=15, Average=15
+            ['classRange' => 10, 'data' => [0,5,10,15,20], 'expect' => 13, ], // Frequencies=[2,2,1], ClassValues=[5,15,25], Average=13
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $ft->setClassRange($case['classRange']);
+            $ft->setData($case['data']);
+            $this->assertSame($case['expect'],$ft->getAverage());
+        }
+    }
+
+    public function test_getMode_can_get_mode_correctly(): void
+    {
+        $cases = [
+            ['classRange' => null, 'data' => null, 'expect' => null, ],
+            ['classRange' => true, 'data' => null, 'expect' => null, ],
+            ['classRange' => false, 'data' => null, 'expect' => null, ],
+            ['classRange' => [], 'data' => null, 'expect' => null, ],
+            ['classRange' => 0, 'data' => null, 'expect' => null, ],
+            ['classRange' => 10, 'data' => null, 'expect' => null, ],
+            ['classRange' => 'hoge', 'data' => null, 'expect' => null, ],
+            ['classRange' => null, 'data' => true, 'expect' => null, ],
+            ['classRange' => null, 'data' => false, 'expect' => null, ],
+            ['classRange' => null, 'data' => [], 'expect' => null, ],
+            ['classRange' => null, 'data' => 0, 'expect' => null, ],
+            ['classRange' => null, 'data' => 10, 'expect' => null, ],
+            ['classRange' => null, 'data' => 'hoge', 'expect' => null, ],
+            ['classRange' => 10, 'data' => 0, 'expect' => null, ],
+            ['classRange' => 10, 'data' => [], 'expect' => null, ],
+            ['classRange' => 10, 'data' => 'hoge', 'expect' => null, ],
+            ['classRange' => 10, 'data' => [0], 'expect' => 5, ], // Frequencies=[1], ClassValues=[5], Mode=5
+            ['classRange' => 10, 'data' => [0,10,12,20,24,28], 'expect' => 25, ], // Frequencise=[1,2,3], ClassValues=[5,15,25], Mode=25
+            ['classRange' => -10, 'data' => [0,10,12,20,24,28], 'expect' => null, ], // ClassRange must be a positive number.
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $ft->setClassRange($case['classRange']);
+            $ft->setData($case['data']);
+            $this->assertSame($case['expect'],$ft->getMode());
+        }
+    }
+
+    public function test_getMedian_can_get_median_correctly(): void
+    {
+        $cases = [
+            ['data' => null, 'expect' => null, ],
+            ['data' => true, 'expect' => null, ],
+            ['data' => false, 'expect' => null, ],
+            ['data' => 0, 'expect' => null, ],
+            ['data' => 'hoge', 'expect' => null, ],
+            ['data' => [], 'expect' => null, ],
+            ['data' => [[0]], 'expect' => null, ],
+            ['data' => [null], 'expect' => null, ],
+            ['data' => [0], 'expect' => 0, ],
+            ['data' => [0,1], 'expect' => 0.5, ],
+            ['data' => [0,1,2], 'expect' => 1, ],
+            ['data' => [0,1,2,3], 'expect' => 1.5, ],
+            ['data' => [0,1,2,3,4], 'expect' => 2, ],
+            ['data' => [3,0,4,2,1], 'expect' => 2, ],
+            ['data' => [1,4,0,2], 'expect' => 1.5, ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $this->assertSame($case['expect'],$ft->getMedian($case['data']));
+        }
+    }
+
+    public function test_getMedianClass_can_get_median_class(): void
+    {
+        $cases = [
+            ['classRange' => null, 'data' => null, 'expect' => null, ],
+            ['classRange' => 10, 'data' => null, 'expect' => null, ],
+            ['classRange' => null, 'data' => [10,20,30], 'expect' => null, ],
+            ['classRange' => 10, 'data' => [10,20,30], 'expect' => [1 => ['bottom' => 20, 'top' => 30, ]], ],
+            ['classRange' => 10, 'data' => [10], 'expect' => [0 => ['bottom' => 10, 'top' => 20]], ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $ft->setClassRange($case['classRange']);
+            $ft->setData($case['data']);
+            $this->assertSame($case['expect'],$ft->getMedianClass());
+        }
+    }
+
+    public function test_getFirstQuartile_can_get_fist_quartile_correctly(): void
+    {
+        $cases = [
+            ['data' => null, 'expect' => null, ],
+            ['data' => true, 'expect' => null, ],
+            ['data' => false, 'expect' => null, ],
+            ['data' => 0, 'expect' => null, ],
+            ['data' => 'hoge', 'expect' => null, ],
+            ['data' => [], 'expect' => null, ],
+            ['data' => [[0]], 'expect' => null, ],
+            ['data' => ['hoge'], 'expect' => null, ],
+            ['data' => [1,2,'hoge'], 'expect' => null, ],
+            ['data' => [1,2], 'expect' => 1, ],
+            ['data' => [1,2,3], 'expect' => 1, ],
+            ['data' => [1,2,3,4], 'expect' => 1.5, ],
+            ['data' => [1,2,3,4,5], 'expect' => 1.5, ],
+            ['data' => [3,1,5,2,4], 'expect' => 1.5, ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach ($cases as $index => $case) {
+            $this->assertSame($case['expect'],$ft->getFirstQuartile($case['data']));
+        }
+    }
+
+    public function test_getThirdQuartile_can_get_fist_quartile_correctly(): void
+    {
+        $cases = [
+            ['data' => null, 'expect' => null, ],
+            ['data' => true, 'expect' => null, ],
+            ['data' => false, 'expect' => null, ],
+            ['data' => 0, 'expect' => null, ],
+            ['data' => 'hoge', 'expect' => null, ],
+            ['data' => [], 'expect' => null, ],
+            ['data' => [[0]], 'expect' => null, ],
+            ['data' => ['hoge'], 'expect' => null, ],
+            ['data' => [1,2,'hoge'], 'expect' => null, ],
+            ['data' => [1,2], 'expect' => 2, ],
+            ['data' => [1,2,3], 'expect' => 3, ],
+            ['data' => [1,2,3,4], 'expect' => 3.5, ],
+            ['data' => [1,2,3,4,5], 'expect' => 4.5, ],
+            ['data' => [3,1,5,2,4], 'expect' => 4.5, ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach ($cases as $index => $case) {
+            $this->assertSame($case['expect'],$ft->getThirdQuartile($case['data']));
+        }
+    }
+
+    public function test_setTableSeparator_and_getTableSeparator_can_work_correctly(): void
+    {
+        $defaultSeparator = $this->defaultTableSeparator;
+        $cases = [
+            ['separator' => null, 'expect' => [ 'return' => false, 'separator' => $defaultSeparator, ], ],
+            ['separator' => true, 'expect' => [ 'return' => false, 'separator' => $defaultSeparator, ], ],
+            ['separator' => false, 'expect' => [ 'return' => false, 'separator' => $defaultSeparator, ], ],
+            ['separator' => 0, 'expect' => [ 'return' => false, 'separator' => $defaultSeparator, ], ],
+            ['separator' => 1.5, 'expect' => [ 'return' => false, 'separator' => $defaultSeparator, ], ],
+            ['separator' => [], 'expect' => [ 'return' => false, 'separator' => $defaultSeparator, ], ],
+            ['separator' => '', 'expect' => [ 'return' => true, 'separator' => '', ], ],
+            ['separator' => 'hoge', 'expect' => [ 'return' => true, 'separator' => 'hoge', ], ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $ft->setTableSeparator($defaultSeparator);
+            $this->assertSame($case['expect']['return'],$ft->setTableSeparator($case['separator']));
+            $this->assertSame($case['expect']['separator'],$ft->getTableSeparator());
+        }
+    }
+
+    public function test_setDefaultTableSeparator_can_set_default_table_separator(): void
+    {
+        $ft = new FrequencyTable();
+        $ft->setTableSeparator('');
+        $ft->setDefaultTableSeparator();
+        $this->assertSame($this->defaultTableSeparator, $ft->getTableSeparator());
+    }
+
+    public function test_isSettableColumns2Show_can_judge_columns_2_show_correctly(): void
+    {
+        $cases = [
+            ['columns' => null, 'expect' => false],
+            ['columns' => true, 'expect' => false],
+            ['columns' => false, 'expect' => false],
+            ['columns' => '', 'expect' => false],
+            ['columns' => 'hoge', 'expect' => false],
+            ['columns' => 0, 'expect' => false],
+            ['columns' => 1.2, 'expect' => false],
+            ['columns' => [], 'expect' => false],
+            ['columns' => [0], 'expect' => false],
+            ['columns' => ['hoge'], 'expect' => false],
+            ['columns' => [...$this->validColumns2Show, 'hoge'], 'expect' => false],
+            ['columns' => [...$this->validColumns2Show], 'expect' => true],
+            ['columns' => ['Class'], 'expect' => true],
+            ['columns' => ['Class','Class','Class','Class','Class'], 'expect' => true],
+            ['columns' => ['Frequency'], 'expect' => true],
+            ['columns' => ['RelativeFrequency'], 'expect' => true],
+            ['columns' => ['ClassValue'], 'expect' => true],
+            ['columns' => ['ClassValue * Frequency'], 'expect' => true],
+            ['columns' => ['Class','Frequency'], 'expect' => true],
+            ['columns' => ['Class','Frequency','RelativeFrequency'], 'expect' => true],
+            ['columns' => ['Class','Frequency','RelativeFrequency','ClassValue'], 'expect' => true],
+            ['columns' => ['Class','Frequency','RelativeFrequency','ClassValue * Frequency'], 'expect' => true],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $this->assertSame($case['expect'],$ft->isSettableColumns2Show($case['columns']));
+        }
+    }
+
+    public function test_getValidColumns2Show_can_get_valid_columns_2_show(): void
+    {
+        $ft = new FrequencyTable();
+        $this->assertSame($this->validColumns2Show,$ft->getValidColumns2Show());
+    }
+
+    public function test_setColumns2Show_can_set_columns_2_show_correctly(): void
+    {
+        $cases = [
+            ['columns' => null, 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => true, 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => false, 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => '', 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => 'hoge', 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => 0, 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => 1.2, 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => [], 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => [0], 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => ['hoge'], 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => [...$this->validColumns2Show,'hoge'], 'expect' => ['return' => false, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => $this->validColumns2Show, 'expect' => ['return' => true, 'columns' => $this->validColumns2Show ], ],
+            ['columns' => ['Class'], 'expect' => ['return' => true, 'columns' => ['Class'] ], ],
+            ['columns' => ['Frequency'], 'expect' => ['return' => true, 'columns' => ['Frequency'] ], ],
+            ['columns' => ['RelativeFrequency'], 'expect' => ['return' => true, 'columns' => ['RelativeFrequency'] ], ],
+            ['columns' => ['ClassValue'], 'expect' => ['return' => true, 'columns' => ['ClassValue'] ], ],
+            ['columns' => ['ClassValue * Frequency'], 'expect' => ['return' => true, 'columns' => ['ClassValue * Frequency'] ], ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $ft->setColumns2Show($ft->getValidColumns2Show());
+            $this->assertSame($case['expect']['return'],$ft->setColumns2Show($case['columns']));
+            $this->assertSame($case['expect']['columns'],$ft->getColumns2Show());
+        }
+    }
+
+    public function test_getData2Show_cannot_get_data_2_show_with_unsettable_data(): void
+    {
+        $cases = [
+            ['classRange' => null, 'data' => null, 'expect' => [] ],
+            ['classRange' => 10, 'data' => null, 'expect' => [] ],
+            ['classRange' => 10, 'data' => true, 'expect' => [] ],
+            ['classRange' => 10, 'data' => false, 'expect' => [] ],
+            ['classRange' => 10, 'data' => 0, 'expect' => [] ],
+            ['classRange' => 10, 'data' => 1.2, 'expect' => [] ],
+            ['classRange' => 10, 'data' => 'hoge', 'expect' => [] ],
+            ['classRange' => 10, 'data' => [], 'expect' => [] ],
+            ['classRange' => 10, 'data' => [null], 'expect' => [] ],
+            ['classRange' => 10, 'data' => [true], 'expect' => [] ],
+            ['classRange' => 10, 'data' => [false], 'expect' => [] ],
+            ['classRange' => 10, 'data' => ['hoge'], 'expect' => [] ],
+            ['classRange' => 10, 'data' => [[]], 'expect' => [] ],
+            ['classRange' => 10, 'data' => [[0]], 'expect' => [] ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach ($cases as $index => $case) {
+            $ft->setClassRange($case['classRange']);
+            $ft->setData($case['data']);
+            $this->assertSame($case['expect'],$ft->getData2Show());
+        }
+    }
+
+    public function test_getData2Show_can_get_data_2_show_with_settable_data(): void
+    {
+        $ft = new FrequencyTable();
+        $classRange = 10;
+        $ft->setClassRange($classRange);
+        $data = [0];
+        $ft->setData($data);
+        $data2Show = $ft->getData2Show();
+        $this->assertIsArray($data2Show);
+        $this->assertTrue(!empty($data2Show));
+        foreach($ft->getColumns2Show as $column) {
+            $this->assertTrue(in_array($column, $data2Show));
+        }
+        /*
+        foreach($ft->getClasses() as $class) {
+            $s = sprintf("%d");
+        }
+        */
+    }
 }

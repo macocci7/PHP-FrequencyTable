@@ -5,7 +5,8 @@ class FrequencyTable {
     private $data = null;
     private $classRange = null;
     private $sum = null;
-    private $tableSeparator = '|';
+    private $defaultTableSeparator = '|';
+    private $tableSeparator = null;
     private $validColumns2Show = [
         'Class',
         'Frequency',
@@ -14,6 +15,20 @@ class FrequencyTable {
         'ClassValue * Frequency',
     ];
     private $columns2Show = [];
+    private $defaultTableHead = [
+        'Class' => 'Class',
+        'Frequency' => 'Frequency',
+        'RelativeFrequency' => 'RelativeFrequency',
+        'ClassValue' => 'ClassValue',
+        'ClassValue * Frequency' => 'ClassValue * Frequency',
+    ];
+    private $defaultTableColumnAligns = [
+        'Class' => ':---:',
+        'Frequency' => ':---:',
+        'RelativeFrequency' => ':---:',
+        'ClassValue' => ':---:',
+        'ClassValue * Frequency' => '---:',
+    ];
 
     public function __construct($param = []) {
         if (array_key_exists('data', $param)) {
@@ -29,6 +44,7 @@ class FrequencyTable {
         if (array_key_exists('columns2Show', $param)) {
             $this->setColumns2Show($param['columns2Show']);
         }
+        $this->setDefaultTableSeparator();
     }
 
     public function isSettableData($data) {
@@ -142,41 +158,46 @@ class FrequencyTable {
     }
 
     public function getClassValue($class) {
+        if (!$this->isSettableClass($class)) return;
         return ($class['bottom'] + $class['top']) / 2;
     }
 
     public function getRelativeFrequency($frequency) {
+        if (!$this->getSum() || !(is_int($frequency))) return;
+        if ($frequency < 0) return;
         return $frequency / $this->getSum();
     }
 
     public function getAverage() {
-        if (!count($this->getData()) > 0) return;
+        if (!$this->isSettableData($this->getData()) || !$this->getSum()) return;
         $fc = [];
         $classes = $this->getClasses();
         foreach ($this->getFrequencies() as $index => $frequency) {
             $fc[] = $this->getClassValue($classes[$index]) * $frequency;
         }
-        return $this->getSum() > 0 ? array_sum($fc) / $this->getSum() : 0;
+        return array_sum($fc) / $this->getSum();
     }
 
     public function getMode() {
-        $frequency = $this->getFrequencies();
-        if (!count($frequency) > 0) return;
+        $frequencies = $this->getFrequencies();
+        if (!count($frequencies) > 0) return;
         $classes = $this->getClasses();
-        $index = array_search(max($frequency), $frequency);
+        $index = array_search(max($frequencies), $frequencies);
         return $this->getClassValue($classes[$index]);
     }
 
-    public function getMedian($data) {
+    public function getMedian($param) {
+        if (!$this->isSettableData($param)) return;
+        $data = [...$param];
         $count = count($data);
-        if (!$count>0) return;
         sort($data);
         if (1 === $count % 2) return $data[(int) (($count + 1) / 2) - 1];
         return ($data[(int) ($count / 2) - 1] + $data[(int) ($count / 2)]) / 2;
     }
 
     public function getMedianClass() {
-        $median = $this->getMedian($this->getData);
+        if (!$this->isSettableData($this->getData())) return;
+        $median = $this->getMedian($this->getData());
         foreach($this->getClasses() as $index => $class) {
             if ($median >= $class['bottom'] && $median < $class['top']) {
                 return [$index => $class];
@@ -185,10 +206,10 @@ class FrequencyTable {
     }
 
     public function getFirstQuartile($data) {
+        if (!$this->isSettableData($data)) return;
         $a = [...$data];
         sort($a);
         $count = count($a);
-        if (0 === $count) return;
         if (1 === $count) return $data[0];
         $chunkLength = (0 === $count % 2) ? (int) $count / 2 : (int) (($count - 1) / 2);
         $forward = array_slice($a, 0, $chunkLength);
@@ -196,10 +217,10 @@ class FrequencyTable {
     }
 
     public function getThirdQuartile($data) {
+        if (!$this->isSettableData($data)) return;
         $a = [...$data];
         sort($a);
         $count = count($a);
-        if (0 === $count) return;
         if (1 === $count) return $data[0];
         $offset = (0 === $count % 2) ? (int) $count / 2 : (int) (($count + 1) / 2);
         $backward = array_slice($a, $offset);
@@ -207,17 +228,17 @@ class FrequencyTable {
     }
 
     public function setTableSeparator($separator) {
+        if (!is_string($separator)) return false;
         $this->tableSeparator = $separator;
+        return true;
     }
 
     public function getTableSeparator() {
         return $this->tableSeparator;
     }
 
-    public function setColumns2Show($columns) {
-        if ($this->validateColumns2Show($columns)){
-            $this->columns2Show = $columns;
-        }
+    public function setDefaultTableSeparator() {
+        return $this->setTableSeparator($this->defaultTableSeparator);
     }
 
     public function getColumns2Show() {
@@ -228,31 +249,28 @@ class FrequencyTable {
         return $this->validColumns2Show;
     }
 
-    public function validateColumns2Show($columns) {
+    public function isSettableColumns2Show($columns) {
         if (!is_array($columns)) return false;
-        if (!(count($columns)>0)) return false;
+        if (empty($columns)) return false;
         foreach($columns as $c) {
             if (!in_array($c, $this->getValidColumns2Show())) return false;
         }
         return true;
     }
 
-    public function getData2Show() {
+    public function setColumns2Show($columns) {
+        if ($this->isSettableColumns2Show($columns)){
+            $this->columns2Show = $columns;
+            return true;
+        }
+        return false;
+    }
+
+    public function getData2Show($option = ['Average' => true, 'Mode' => true, ]) {
+        if (!$this->isSettableData($this->getData())) return [];
         $data = [];
-        $data[] = [
-                    'Class' => 'Class',
-                    'Frequency' => 'Frequency',
-                    'RelativeFrequency' => 'RelativeFrequency',
-                    'ClassValue' => 'ClassValue',
-                    'ClassValue * Frequency' => 'ClassValue * Frequency',
-                  ];
-        $data[] = [
-                    'Class' => ':---:',
-                    'Frequency' => ':---:',
-                    'RelativeFrequency' => ':---:',
-                    'ClassValue' => ':---:',
-                    'ClassValue * Frequency' => '---:',
-                  ];
+        $data[] = $this->defaultTableHead;
+        $data[] = $this->defaultTableColumnAligns;
         $classes = $this->getClasses();
         $frequencies = $this->getFrequencies();
         $fc = [];
@@ -261,34 +279,38 @@ class FrequencyTable {
             $fc[] = $frequency * $this->getClassValue($classes[$index]);
             $rf[] = $this->getRelativeFrequency($frequency);
             $data[] = [
-                    'Class' => number_format($classes[$index]['bottom']) . '-' . number_format($classes[$index]['top']),
-                    'Frequency' => $frequency,
-                    'RelativeFrequency' => number_format($rf[$index],2,'.',','),
-                    'ClassValue' => number_format($this->getClassValue($classes[$index]),1,'.',','),
-                    'ClassValue * Frequency' => number_format($fc[$index],1,'.',','),
+                'Class' => number_format($classes[$index]['bottom']) . '-' . number_format($classes[$index]['top']),
+                'Frequency' => $frequency,
+                'RelativeFrequency' => number_format($rf[$index],2,'.',','),
+                'ClassValue' => number_format($this->getClassValue($classes[$index]),1,'.',','),
+                'ClassValue * Frequency' => number_format($fc[$index],1,'.',','),
             ];
         }
         $data[] = [
-                    'Class' => 'Total',
-                    'Frequency' => $this->getSum(),
-                    'RelativeFrequency' => number_format(array_sum($rf),2,'.',','),
-                    'ClassValue' => '---',
-                    'ClassValue * Frequency' => number_format(array_sum($fc),1,'.',','),
-                  ];
-        $data[] = [
-                    'Class' => 'Average',
-                    'Frequency' => '---',
-                    'RelativeFrequency' => '---',
-                    'ClassValue' => '---',
-                    'ClassValue * Frequency' => number_format($this->getAverage(),1,'.',','),
-                  ];
-        $data[] = [
-                    'Class' => 'Mode',
-                    'Frequency' => '---',
-                    'RelativeFrequency' => '---',
-                    'ClassValue' => number_format($this->getMode(),1,'.',','),
-                    'ClassValue * Frequency' => '---',
-                  ];
+            'Class' => 'Total',
+            'Frequency' => $this->getSum(),
+            'RelativeFrequency' => number_format(array_sum($rf),2,'.',','),
+            'ClassValue' => '---',
+            'ClassValue * Frequency' => number_format(array_sum($fc),1,'.',','),
+        ];
+        if ($option['Average']) {
+            $data[] = [
+                'Class' => 'Average',
+                'Frequency' => '---',
+                'RelativeFrequency' => '---',
+                'ClassValue' => '---',
+                'ClassValue * Frequency' => number_format($this->getAverage(),1,'.',','),
+            ];
+        }
+        if ($option['Mode']) {
+            $data[] = [
+                'Class' => 'Mode',
+                'Frequency' => '---',
+                'RelativeFrequency' => '---',
+                'ClassValue' => number_format($this->getMode(),1,'.',','),
+                'ClassValue * Frequency' => '---',
+            ];
+        }
         return $data;
     }
 
@@ -304,14 +326,13 @@ class FrequencyTable {
         return $filtered;
     }
 
-    public function show() {
-        if (!(count($this->data)>0)) {
+    public function show($option = ['Average' => true, 'Mode' => true, ]) {
+        if (!$this->isSettableData($this->data)) {
             echo "no data to show\n";
             return;
         }
-        $data = $this->getData2Show();
         $separator = $this->getTableSeparator();
-        foreach($this->filterData2Show($data) as $row) {
+        foreach($this->filterData2Show($this->getData2Show($option)) as $row) {
             echo $separator . implode($separator, $row) . $separator . "\n";
         }
     }
