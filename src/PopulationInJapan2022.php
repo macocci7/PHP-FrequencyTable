@@ -57,7 +57,7 @@ $classRange = 1000000;  // 1 million
 $frequencyTable = new FrequencyTable([
     'data' => $population,
     'classRange' => $classRange,
-    'columns2Show' => [
+    'columns2Show' => [ // Only specified columns will be shown.
         'Class',
         'Frequency',
         'RelativeFrequency',
@@ -69,7 +69,7 @@ $frequencyTable = new FrequencyTable([
 echo "# Population in Japan, in 2022\n";
 echo "<details><summary>使用データ(INPUT DATA)：総務省(Ministry of Internal Affairs and Communications)</summary>\n\n<br />\n\n";
 echo "**Population In Japan, in 2022**\n<br />\n\n";
-echo "|都道府県|人口|\n";
+echo "|Prefecture|Population|\n";
 echo "|:---:|---:|\n";
 foreach($population as $key => $value) {
     echo sprintf("|%s|%s|\n",$key,number_format($value));

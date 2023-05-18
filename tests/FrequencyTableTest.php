@@ -14,6 +14,29 @@ final class FrequencyTableTest extends TestCase
         'ClassValue * Frequency',
     ];
     private $defaultTableSeparator = '|';
+    private $classSeparator = ' ~ ';
+
+    private function getAllCombinations($paramItems) {
+        if (!is_array($paramItems)) return;
+        if (empty($paramItems)) return;
+        $items = array_values($paramItems);  // To avoid troubles caused by hash, and not to make any change to referrer array.
+        $count = count($items);
+        $numberOfAllPatterns = 2 ** $count;
+        $bitPatterns = [];
+        $format = '%0' . $count . 'b';
+        for ($i = 0; $i < $numberOfAllPatterns; $i++) {
+            $bitPatterns[] = sprintf($format, $i);
+        }
+        $combinations = [];
+        foreach($bitPatterns as $bits) {
+            $combination = [];
+            foreach(str_split($bits) as $index => $bit) {
+                if ((bool) $bit) $combination[] = $items[$index];
+            }
+            $combinations[] = $combination;
+        }
+        return $combinations;
+    }
 
     public function test_constructor_can_create_instance_without_params(): void
     {
@@ -127,6 +150,36 @@ final class FrequencyTableTest extends TestCase
         }
         $this->assertNull($ft->getData(''));
         $this->assertNull($ft->getData('keyWhichDoesNotExist'));    // This key does not exist in the array.
+    }
+
+    public function test_getDataRange_can_get_data_range_correctly(): void
+    {
+        $cases = [
+            ['data' => null, 'expect' => null, ],
+            ['data' => true, 'expect' => null, ],
+            ['data' => false, 'expect' => null, ],
+            ['data' => 0, 'expect' => null, ],
+            ['data' => 1.2, 'expect' => null, ],
+            ['data' => 'hoge', 'expect' => null, ],
+            ['data' => [], 'expect' => null, ],
+            ['data' => [null], 'expect' => null, ],
+            ['data' => [true], 'expect' => null, ],
+            ['data' => [false], 'expect' => null, ],
+            ['data' => ['hoge'], 'expect' => null, ],
+            ['data' => [[]], 'expect' => null, ],
+            ['data' => [[5]], 'expect' => null, ],
+            ['data' => [5], 'expect' => 0, ],
+            ['data' => [0,5], 'expect' => 5, ],
+            ['data' => [0,5,9], 'expect' => 9, ],
+            ['data' => [-5,-2,0,3], 'expect' => 8, ],
+            ['data' => [1.5,10.5,90], 'expect' => 88.5, ],
+            ['data' => [-9.5,-1.2,0.8], 'expect' => 10.3, ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $this->assertSame($case['expect'],$ft->getDataRange($case['data']));
+        }
     }
 
     public function test_isSettableClassRange_can_judge_correctly(): void
@@ -638,6 +691,34 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
+    public function test_getInterQuartileRange_can_get_inter_quartile_range_correctly(): void
+    {
+        $cases = [
+            ['data' => null, 'expect' => null, ],
+            ['data' => true, 'expect' => null, ],
+            ['data' => false, 'expect' => null, ],
+            ['data' => 0, 'expect' => null, ],
+            ['data' => 1.2, 'expect' => null, ],
+            ['data' => 'hoge', 'expect' => null, ],
+            ['data' => [], 'expect' => null, ],
+            ['data' => [null], 'expect' => null, ],
+            ['data' => [true], 'expect' => null, ],
+            ['data' => [false], 'expect' => null, ],
+            ['data' => ['hoge'], 'expect' => null, ],
+            ['data' => [[]], 'expect' => null, ],
+            ['data' => [[0,5,10]], 'expect' => null, ],
+            ['data' => [0], 'expect' => 0, ],
+            ['data' => [0,1], 'expect' => 1, ],
+            ['data' => [1,3,5], 'expect' => 4, ],
+            ['data' => [0.5, 2.5, 3.5, 4.5], 'expect' => 2.5, ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $this->assertSame($case['expect'],$ft->getInterQuartileRange($case['data']));
+        }
+    }
+
     public function test_setTableSeparator_and_getTableSeparator_can_work_correctly(): void
     {
         $defaultSeparator = $this->defaultTableSeparator;
@@ -769,18 +850,74 @@ final class FrequencyTableTest extends TestCase
         $ft = new FrequencyTable();
         $classRange = 10;
         $ft->setClassRange($classRange);
-        $data = [0];
+        $data = [0,5,10,15,20];
         $ft->setData($data);
         $data2Show = $ft->getData2Show();
         $this->assertIsArray($data2Show);
         $this->assertTrue(!empty($data2Show));
-        foreach($ft->getColumns2Show as $column) {
-            $this->assertTrue(in_array($column, $data2Show));
+        foreach($ft->getColumns2Show() as $column) {
+            $this->assertTrue(in_array($column, $data2Show[0]));
         }
-        /*
-        foreach($ft->getClasses() as $class) {
-            $s = sprintf("%d");
+        $classes = $ft->getClasses();
+        $this->assertFalse(empty($classes));
+        foreach($classes as $index => $class) {
+            $s = number_format($class['bottom']) . $this->classSeparator . number_format($class['top']);
+            $this->assertTrue(in_array($s,array_column($data2Show,'Class')));
         }
-        */
+        $this->assertContains('Total',array_column($data2Show,'Class'));
+        $this->assertContains('Average',array_column($data2Show,'Class'));
+    }
+
+    public function test_getData2Show_can_switch_visibility_of_average(): void
+    {
+        $ft = new FrequencyTable();
+        $classRange = 10;
+        $ft->setClassRange($classRange);
+        $data = [0,5,10,15,20];
+        $ft->setData($data);
+        $data2Show = $ft->getData2Show(['Average' => true, ]);
+        $this->assertContains('Average',array_column($data2Show,'Class'));
+        $data2Show = $ft->getData2Show(['Average' => false, ]);
+        $this->assertFalse(in_array('Average',array_column($data2Show,'Class')));
+    }
+
+    public function test_filterData2Show_can_filter_data_2_show_correctly(): void
+    {
+        $ft = new FrequencyTable();
+        $classRange = 10;
+        $ft->setClassRange($classRange);
+        $data = [0,5,10,15,20];
+        $ft->setData($data);
+        $combinations = $this->getAllCombinations($this->validColumns2Show);
+        foreach($combinations as $index => $combination) {
+            if (empty($combination)) continue;
+            $ft->setColumns2Show($combination);
+            $filtered = $ft->filterData2Show($ft->getData2Show());
+            foreach($this->validColumns2Show as $key) {
+                if (in_array($key,$combination)) {
+                    $this->assertTrue(array_key_exists($key,$filtered[0]));
+                } else {
+                    $this->assertFalse(array_key_exists($key,$filtered[0]));
+                }
+            }
+        }
+    }
+
+    public function test_show_can_work_correctly(): void
+    {
+        $ft = new FrequencyTable();
+        $classRange = 10;
+        $ft->setClassRange($classRange);
+        $data = [];
+        $ft->setData($data);
+        $output = $ft->show();
+        $this->assertStringContainsString("no data to show",$output);
+        $data = [0,5,10,15,20];
+        $ft->setData($data);
+        $output = $ft->show();
+        foreach ($this->validColumns2Show as $column) {
+            $string = $this->defaultTableSeparator . $column . $this->defaultTableSeparator;
+            $this->assertStringContainsString($string,$output);
+        }
     }
 }

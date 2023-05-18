@@ -10,20 +10,20 @@ $data = [
     [100, 10, 65, 40, 55, 90, 72, 84],   // 8 elements
     // HASH ARRAY
     [
-        'Maria' => 168,
-        'John' => 198,
-        'Ashley' => 204,
-        'Bob' => 172,
-        'Kate' => 154,
-        'Jake' => 138,
-        'Susan' => 184,
-        'Alex' => 124,
-        'Ichiro' => 183,
-        'Fei' => 164,
-        'Elen' => 148,
-        'Hoi' => 175,
-        'Juan' => 179,
-        'Mario' => 183,
+        'Maria' => 168.2,
+        'John' => 198.4,
+        'Ashley' => 204.3,
+        'Bob' => 172.5,
+        'Kate' => 154.8,
+        'Jake' => 138.1,
+        'Susan' => 184.0,
+        'Alex' => 124.9,
+        'Ichiro' => 183.3,
+        'Fei' => 164.7,
+        'Elen' => 148.6,
+        'Hoi' => 175.1,
+        'Juan' => 179.6,
+        'Mario' => 183.2,
     ],
 ];
 
@@ -32,7 +32,7 @@ $ft = new FrequencyTable([
     'data' => [],
     'classRange' => $classRange,
 ]);
-echo "# Test Results: FrequencyTableTest\n\n";
+echo "# Results: Using FrequencyTable\n\n";
 foreach($data as $index => $d) {
     $ft->setData($d);
     asort($d);
@@ -41,11 +41,13 @@ foreach($data as $index => $d) {
     echo "- ClassRange: " . $ft->getClassRange() . "\n";
     echo "- Max: " . $ft->getMax($d) . "\n";
     echo "- Min: " . $ft->getMin($d) . "\n";
+    echo "- DataRange: " . $ft->getDataRange($d) . "\n";
     echo "- Mode: " . $ft->getMode() . "\n";
     echo "- Average: " . $ft->getAverage() . "\n";
     echo "- Median: " . $ft->getMedian($d) . "\n";
     echo "- FirstQuartile: " . $ft->getFirstQuartile($d) . "\n";
     echo "- ThirdQuartile: " . $ft->getThirdQuartile($d) . "\n";
+    echo "- InterQuartileRange: " . $ft->getInterQuartileRange($d) . "\n";
     echo "\n";
     $ft->show();
     echo "\n";
