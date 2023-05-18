@@ -59,7 +59,7 @@ Locate `FrequencyTable.php` wherever you like.
 
 ## Usage
 
-### The Mode Simple Usage
+### The Most Simple Usage
 
 You can use FrequencyTable class as follows.
 
