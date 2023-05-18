@@ -2,13 +2,13 @@
 
 *Document written: 2023/05/18*
 
-## Over view
+## Overview
 
 `FrequencyTable.php` is single object class file written in PHP in order to operate frequency table easily.
 
-ChatGTP and Google Bard cannot take statistics correctly at present, so I made this to teach them how to make frequency table.
+ChatGTP and Google Bard cannot take statistics correctly at present, so I made this to teach them how to make a frequency table.
 
-There seems to be some tools to make Frequency Table in the world.
+There seems to be some tools to make a Frequency Table in the world.
 
 However, this FrequencyTable class is the most easiest tool to use, I think. (just I think so)
 
@@ -100,7 +100,7 @@ The name of new PHP file is `Example.php`.
 
 1. Require `FrequencyTable.php`
 
-    Require `FrequencyTable.php` as below in your PHP code.
+    Require `FrequencyTable.php` as follows in your PHP code (Example.php).
 
     ```
     <?php
