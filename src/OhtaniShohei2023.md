@@ -6,7 +6,7 @@
 
 *(Image Source: MLB)*
 
-## Source Data
+## Data Source
 
 [savant](https://baseballsavant.mlb.com/)
 
@@ -24,6 +24,22 @@
 
 ## 2023-03-30
 
+<details><summary>Properties</summary>
+
+|Property|Value|
+|:---|---:|
+|ClassRange|10|
+|Max|100|
+|Min|76|
+|DataRange|24|
+|Mode|85|
+|Average|88.7|
+|Median|86|
+|FirstQuartile|83.5|
+|ThirdQuartile|96.5|
+|InterQuartileRange|13|
+</details>
+
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |70 ~ 80|2|0.02|75.0|150.0|
@@ -33,7 +49,24 @@
 |Total|93|1.00|---|8,245.0|
 |Average|---|---|---|88.7|
 
+
 ## 2023-04-05
+
+<details><summary>Properties</summary>
+
+|Property|Value|
+|:---|---:|
+|ClassRange|10|
+|Max|98|
+|Min|74|
+|DataRange|24|
+|Mode|85|
+|Average|88.3|
+|Median|86|
+|FirstQuartile|83|
+|ThirdQuartile|94|
+|InterQuartileRange|11|
+</details>
 
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
@@ -43,7 +76,24 @@
 |Total|111|1.00|---|9,805.0|
 |Average|---|---|---|88.3|
 
+
 ## 2023-04-11
+
+<details><summary>Properties</summary>
+
+|Property|Value|
+|:---|---:|
+|ClassRange|10|
+|Max|98|
+|Min|73|
+|DataRange|25|
+|Mode|85|
+|Average|87.9|
+|Median|83|
+|FirstQuartile|82|
+|ThirdQuartile|93|
+|InterQuartileRange|11|
+</details>
 
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
@@ -53,7 +103,24 @@
 |Total|92|1.00|---|8,090.0|
 |Average|---|---|---|87.9|
 
+
 ## 2023-04-17
+
+<details><summary>Properties</summary>
+
+|Property|Value|
+|:---|---:|
+|ClassRange|10|
+|Max|98|
+|Min|78|
+|DataRange|20|
+|Mode|85|
+|Average|88.2|
+|Median|85|
+|FirstQuartile|82|
+|ThirdQuartile|91|
+|InterQuartileRange|9|
+</details>
 
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
@@ -63,7 +130,24 @@
 |Total|31|1.00|---|2,735.0|
 |Average|---|---|---|88.2|
 
+
 ## 2023-04-21
+
+<details><summary>Properties</summary>
+
+|Property|Value|
+|:---|---:|
+|ClassRange|10|
+|Max|100|
+|Min|68|
+|DataRange|32|
+|Mode|85|
+|Average|87.5|
+|Median|86.5|
+|FirstQuartile|83|
+|ThirdQuartile|91|
+|InterQuartileRange|8|
+</details>
 
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
@@ -75,7 +159,24 @@
 |Total|102|1.00|---|8,920.0|
 |Average|---|---|---|87.5|
 
+
 ## 2023-04-27
+
+<details><summary>Properties</summary>
+
+|Property|Value|
+|:---|---:|
+|ClassRange|10|
+|Max|101|
+|Min|70|
+|DataRange|31|
+|Mode|85|
+|Average|88.1|
+|Median|87|
+|FirstQuartile|82|
+|ThirdQuartile|95|
+|InterQuartileRange|13|
+</details>
 
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
@@ -86,7 +187,24 @@
 |Total|93|1.00|---|8,195.0|
 |Average|---|---|---|88.1|
 
+
 ## 2023-05-03
+
+<details><summary>Properties</summary>
+
+|Property|Value|
+|:---|---:|
+|ClassRange|10|
+|Max|100|
+|Min|75|
+|DataRange|25|
+|Mode|85|
+|Average|89.1|
+|Median|86|
+|FirstQuartile|84|
+|ThirdQuartile|97|
+|InterQuartileRange|13|
+</details>
 
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
@@ -97,7 +215,24 @@
 |Total|97|1.00|---|8,645.0|
 |Average|---|---|---|89.1|
 
+
 ## 2023-05-09
+
+<details><summary>Properties</summary>
+
+|Property|Value|
+|:---|---:|
+|ClassRange|10|
+|Max|100|
+|Min|76|
+|DataRange|24|
+|Mode|95|
+|Average|90.8|
+|Median|93|
+|FirstQuartile|85|
+|ThirdQuartile|95|
+|InterQuartileRange|10|
+</details>
 
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
@@ -108,7 +243,24 @@
 |Total|103|1.00|---|9,355.0|
 |Average|---|---|---|90.8|
 
+
 ## 2023-05-15
+
+<details><summary>Properties</summary>
+
+|Property|Value|
+|:---|---:|
+|ClassRange|10|
+|Max|99|
+|Min|77|
+|DataRange|22|
+|Mode|85|
+|Average|89.6|
+|Median|89|
+|FirstQuartile|86|
+|ThirdQuartile|95|
+|InterQuartileRange|9|
+</details>
 
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
@@ -117,3 +269,4 @@
 |90 ~ 100|47|0.48|95.0|4,465.0|
 |Total|98|1.00|---|8,780.0|
 |Average|---|---|---|89.6|
+
