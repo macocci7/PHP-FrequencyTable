@@ -40,9 +40,11 @@ Let's create an instance of FrequencyTable and operate it!
     - Class Range
     - Class Value
     - Frequency
+    - Cumulative Frequency
     - Relative Frequency
+    - Cumulative Relative Frequency
     - Total
-    - Average
+    - Mean
     - Max(imum)
     - Min(imum)
     - Data Range
@@ -51,6 +53,7 @@ Let's create an instance of FrequencyTable and operate it!
     - First Quartile
     - Third Quartile
     - Inter Quartile Range
+    - Quartile Deviation
     </details>
 
 ## Installation
@@ -83,24 +86,24 @@ php -f Example.php
 **Standard Output**
 
 ```
-|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
-|:---:|:---:|:---:|:---:|---:|
-|0 ~ 10|2|0.40|5.0|10.0|
-|10 ~ 20|2|0.40|15.0|30.0|
-|20 ~ 30|1|0.20|25.0|25.0|
-|Total|5|1.00|---|65.0|
-|Average|---|---|---|13.0|
+|Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|
+|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+|0 ~ 10|2|2|0.40|0.40|5.0|10.0|
+|10 ~ 20|2|4|0.40|0.80|15.0|30.0|
+|20 ~ 30|1|5|0.20|1.00|25.0|25.0|
+|Total|5|5|1.00|1.00|---|65.0|
+|Mean|---|---|---|---|---|13.0|
 ```
 
 **Output Preview On VSCode**
 
-|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
-|:---:|:---:|:---:|:---:|---:|
-|0 ~ 10|2|0.40|5.0|10.0|
-|10 ~ 20|2|0.40|15.0|30.0|
-|20 ~ 30|1|0.20|25.0|25.0|
-|Total|5|1.00|---|65.0|
-|Average|---|---|---|13.0|
+|Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|
+|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+|0 ~ 10|2|2|0.40|0.40|5.0|10.0|
+|10 ~ 20|2|4|0.40|0.80|15.0|30.0|
+|20 ~ 30|1|5|0.20|1.00|25.0|25.0|
+|Total|5|5|1.00|1.00|---|65.0|
+|Mean|---|---|---|---|---|13.0|
 
 ### Other Usage
 
@@ -203,13 +206,13 @@ The name of new PHP file is `Example.php`.
 
     ```
     $ php -f Example.php
-    |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
-    |:---:|:---:|:---:|:---:|---:|
-    |0 ~ 10|2|0.40|5.0|10.0|
-    |10 ~ 20|2|0.40|15.0|30.0|
-    |20 ~ 30|1|0.20|25.0|25.0|
-    |Total|5|1.00|---|65.0|
-    |Average|---|---|---|13.0|
+    |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|:---:|:---:|---:|
+    |0 ~ 10|2|2|0.40|0.40|5.0|10.0|
+    |10 ~ 20|2|4|0.40|0.80|15.0|30.0|
+    |20 ~ 30|1|5|0.20|1.00|25.0|25.0|
+    |Total|5|5|1.00|1.00|---|65.0|
+    |Mean|---|---|---|---|---|13.0|
     ```
     You can make the output file as follows.
 
@@ -223,13 +226,13 @@ The name of new PHP file is `Example.php`.
 
     the frequency table will be shown as follows.
 
-    |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
-    |:---:|:---:|:---:|:---:|---:|
-    |0 ~ 10|2|0.40|5.0|10.0|
-    |10 ~ 20|2|0.40|15.0|30.0|
-    |20 ~ 30|1|0.20|25.0|25.0|
-    |Total|5|1.00|---|65.0|
-    |Average|---|---|---|13.0|
+    |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|:---:|:---:|---:|
+    |0 ~ 10|2|2|0.40|0.40|5.0|10.0|
+    |10 ~ 20|2|4|0.40|0.80|15.0|30.0|
+    |20 ~ 30|1|5|0.20|1.00|25.0|25.0|
+    |Total|5|5|1.00|1.00|---|65.0|
+    |Mean|---|---|---|---|---|13.0|
 
 ## Examples
 
@@ -248,24 +251,24 @@ Type the command at the project top folder.
 ./tools/phpunit.phar ./tests/FrequencyTableTest.php --color auto --testdox
 ```
 
-The result of this command:
+<details><summary>The result of this command:</summary>
 
 ```
 PHPUnit 10.1.3 by Sebastian Bergmann and contributors.
 
 Runtime:       PHP 8.1.2-1ubuntu2.11
 
-.....................................no data to show
-|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
-|:---:|:---:|:---:|:---:|---:|
-|0 ~ 10|2|0.40|5.0|10.0|
-|10 ~ 20|2|0.40|15.0|30.0|
-|20 ~ 30|1|0.20|25.0|25.0|
-|Total|5|1.00|---|65.0|
-|Average|---|---|---|13.0|
-.                            38 / 38 (100%)
+........................................no data to show
+|Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|
+|:---:|:---:|:---:|:---:|:---:|:---:|---:|
+|0 ~ 10|2|2|0.40|0.40|5.0|10.0|
+|10 ~ 20|2|4|0.40|0.80|15.0|30.0|
+|20 ~ 30|1|5|0.20|1.00|25.0|25.0|
+|Total|5|5|1.00|1.00|---|65.0|
+|Mean|---|---|---|---|---|13.0|
+.                         41 / 41 (100%)
 
-Time: 00:00.064, Memory: 24.40 MB
+Time: 00:00.057, Memory: 24.40 MB
 
 Frequency Table
  ✔ Constructor can create instance without params
@@ -284,18 +287,21 @@ Frequency Table
  ✔ GetClasses can get classes correctly
  ✔ IsSettableClass can judge correctly
  ✔ GetFrequency can get frequency correctly
+ ✔ GetCumulativeFrequency can get cumulative frequency correctly
  ✔ GetMin can get correctly
  ✔ GetMax can get correctly
  ✔ SetSum and getSum can work correctly
  ✔ GetClassValue can get class value correctly
  ✔ GetRelativeFrequency can get relative frequency correctly
- ✔ GetAverage can get average correctly
+ ✔ GetCumulativeRelativeFrequency can get cumulative relative frequency correctly
+ ✔ GetMean can get mean correctly
  ✔ GetMode can get mode correctly
  ✔ GetMedian can get median correctly
  ✔ GetMedianClass can get median class
  ✔ GetFirstQuartile can get fist quartile correctly
  ✔ GetThirdQuartile can get fist quartile correctly
  ✔ GetInterQuartileRange can get inter quartile range correctly
+ ✔ GetQuartileDeviation can get quartile deviation correctly
  ✔ SetTableSeparator and getTableSeparator can work correctly
  ✔ SetDefaultTableSeparator can set default table separator
  ✔ IsSettableColumns2Show can judge columns 2 show correctly
@@ -303,12 +309,15 @@ Frequency Table
  ✔ SetColumns2Show can set columns 2 show correctly
  ✔ GetData2Show cannot get data 2 show with unsettable data
  ✔ GetData2Show can get data 2 show with settable data
- ✔ GetData2Show can switch visibility of average
+ ✔ GetData2Show can switch visibility of mean
  ✔ FilterData2Show can filter data 2 show correctly
  ✔ Show can work correctly
 
-OK (38 tests, 622 assertions)
+OK (41 tests, 1455 assertions)
 ```
+</details>
+
+[TestResult.txt](TestResult.txt)
 
 ## LICENSE
 
@@ -316,15 +325,43 @@ OK (38 tests, 622 assertions)
 
 ## Appendix
 
-You can also get all data to draw a boxplot by using this FrequencyTable class.
+You can also get all data to draw a boxplot by using this FrequencyTable class.(without outlier detection)
 - Max Value
 - Min Value
 - First Quartile
 - Third Quartile
 - Median
-- Average 
+- Mean 
 - Data Range
 - Inter Quartile Range
+
+Outlier Detection is not the job of FrequencyTable.
+
+But, if you want to detect outliers, you can detect them by using IQR (Inter Quartile Range) Method.
+
+### IQR Method
+
+1. Set the UCL
+
+    Mathmatical Formula (not PHP) is:
+    ```
+    UCL = Q3 + 1.5IQR
+    ```
+    UCL: Upper Control Limit / Q3: Third Quartile / IQR: Inter Quartile Range
+
+2. Set the LCL(Lower Control Limit)
+
+    ```
+    LCL = Q1 - 1.5IQR
+    ```
+    LCL: Lower Control Limit / Q1: First Quartile / IQR: Inter Quartile Range
+
+3. Detect Outliers
+
+    If the VALUE meets the following condition, it's the Outlier.
+    ```
+    VALUE < LCL or UCL < VALUE
+    ```
 
 Thanks for reading.
 

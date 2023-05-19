@@ -9,7 +9,9 @@ final class FrequencyTableTest extends TestCase
     private $validColumns2Show = [
         'Class',
         'Frequency',
+        'CumulativeFrequency',
         'RelativeFrequency',
+        'CumulativeRelativeFrequency',
         'ClassValue',
         'ClassValue * Frequency',
     ];
@@ -449,6 +451,52 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
+    public function test_getCumulativeFrequency_can_get_cumulative_frequency_correctly(): void
+    {
+        $cases = [
+            ['frequencies' => null, 'index' => null, 'expect' => null, ],
+            ['frequencies' => true, 'index' => null, 'expect' => null, ],
+            ['frequencies' => false, 'index' => null, 'expect' => null, ],
+            ['frequencies' => 0, 'index' => null, 'expect' => null, ],
+            ['frequencies' => 1.2, 'index' => null, 'expect' => null, ],
+            ['frequencies' => "0", 'index' => null, 'expect' => null, ],
+            ['frequencies' => "1.2", 'index' => null, 'expect' => null, ],
+            ['frequencies' => [], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [null], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [true], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [false], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [0], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [1.2], 'index' => null, 'expect' => null, ],
+            ['frequencies' => ["0"], 'index' => null, 'expect' => null, ],
+            ['frequencies' => ["1.2"], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [[]], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => true, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => false, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 1.0, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => "1", 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => [], 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => [1], 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => -1, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 5, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 0, 'expect' => 0, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 1, 'expect' => 1, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 2, 'expect' => 3, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 3, 'expect' => 6, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 4, 'expect' => 10, ],
+            ['frequencies' => [0 => 0, 1 => 1, 3 => 3, 4 => 4, ], 'index' => 0, 'expect' => 0, ],
+            ['frequencies' => [0 => 0, 1 => 1, 3 => 3, 4 => 4, ], 'index' => 1, 'expect' => 1, ],
+            ['frequencies' => [0 => 0, 1 => 1, 3 => 3, 4 => 4, ], 'index' => 2, 'expect' => 4, ],
+            ['frequencies' => [0 => 0, 1 => 1, 3 => 3, 4 => 4, ], 'index' => 3, 'expect' => 8, ], // array index is renumbered, [0=>0,1=>1,2=>3,3=>4]
+            ['frequencies' => [0 => 0, 1 => 1, 3 => 3, 4 => 4, ], 'index' => 4, 'expect' => null, ], // array index is renumbered. [0=>0,1=>1,2=>3,3=>4], index of 4 does not exist.
+        ];
+        $ft = new FrequencyTable();
+
+        foreach ($cases as $index => $case) {
+            $this->assertSame($case['expect'],$ft->getCumulativeFrequency($case['frequencies'],$case['index']));
+        }
+    }
+
     public function test_getMin_can_get_correctly(): void
     {
         $cases = [
@@ -571,21 +619,71 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
-    public function test_getAverage_can_get_average_correctly(): void
+    public function test_getCumulativeRelativeFrequency_can_get_cumulative_relative_frequency_correctly(): void
+    {
+        $cases = [
+            ['frequencies' => null, 'index' => null, 'expect' => null, ],
+            ['frequencies' => true, 'index' => null, 'expect' => null, ],
+            ['frequencies' => false, 'index' => null, 'expect' => null, ],
+            ['frequencies' => 0, 'index' => null, 'expect' => null, ],
+            ['frequencies' => 1.2, 'index' => null, 'expect' => null, ],
+            ['frequencies' => "0", 'index' => null, 'expect' => null, ],
+            ['frequencies' => "1.2", 'index' => null, 'expect' => null, ],
+            ['frequencies' => [], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [null], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [true], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [false], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [0], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [1.2], 'index' => null, 'expect' => null, ],
+            ['frequencies' => ["0"], 'index' => null, 'expect' => null, ],
+            ['frequencies' => ["1.2"], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [[]], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [[0]], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => null, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => true, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => false, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 1.2, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => "0", 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => "1.2", 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => [], 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => [0], 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => [1.2], 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 0, 'expect' => 0/10, ], // sum=10, rf=[0,0.1,0.2,0.3,0.4]
+            ['frequencies' => [0,1,2,3,4], 'index' => 1, 'expect' => 0/10 + 1/10, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 2, 'expect' => 0/10 + 1/10 + 2/10, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 3, 'expect' => 0/10 + 1/10 + 2/10 + 3/10, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 4, 'expect' => 0/10 + 1/10 + 2/10 + 3/10 + 4/10, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => -1, 'expect' => null, ],
+            ['frequencies' => [0,1,2,3,4], 'index' => 5, 'expect' => null, ],
+            ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 0, 'expect' => 0/8, ], // array index is renumbered. [0=>0,1=>1,2=>3,3=>4]
+            ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 1, 'expect' => 0/8 + 1/8, ], // sum=8, rf=[0,0.125,0.375,0.5]
+            ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 2, 'expect' => 0/8 + 1/8 + 3/8, ],
+            ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 3, 'expect' => 0/8 + 1/8 + 3/8 + 4/8, ],
+            ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 4, 'expect' => null, ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $ft->setSum($case['frequencies']);
+            $this->assertSame($case['expect'],$ft->getCumulativeRelativeFrequency($case['frequencies'],$case['index']));
+        }
+    }
+
+    public function test_getMean_can_get_mean_correctly(): void
     {
         $cases = [
             ['classRange' => 10, 'data' => null, 'expect' => null, ],
             ['classRange' => 10, 'data' => [], 'expect' => null, ],
-            ['classRange' => 10, 'data' => [0], 'expect' => 5, ], // Frequencies=[1], ClassValue=5, Average=5
-            ['classRange' => 10, 'data' => [10], 'expect' => 15, ], // Frequencies=[1], ClassValue=15, Average=15
-            ['classRange' => 10, 'data' => [0,5,10,15,20], 'expect' => 13, ], // Frequencies=[2,2,1], ClassValues=[5,15,25], Average=13
+            ['classRange' => 10, 'data' => [0], 'expect' => 5, ], // Frequencies=[1], ClassValue=5, Mean=5
+            ['classRange' => 10, 'data' => [10], 'expect' => 15, ], // Frequencies=[1], ClassValue=15, Mean=15
+            ['classRange' => 10, 'data' => [0,5,10,15,20], 'expect' => 13, ], // Frequencies=[2,2,1], ClassValues=[5,15,25], Mean=13
         ];
         $ft = new FrequencyTable();
 
         foreach($cases as $index => $case) {
             $ft->setClassRange($case['classRange']);
             $ft->setData($case['data']);
-            $this->assertSame($case['expect'],$ft->getAverage());
+            $this->assertSame($case['expect'],$ft->getMean());
         }
     }
 
@@ -743,6 +841,39 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
+    public function test_getQuartileDeviation_can_get_quartile_deviation_correctly(): void
+    {
+        $cases = [
+            ['data' => null, 'expect' => null],
+            ['data' => true, 'expect' => null],
+            ['data' => false, 'expect' => null],
+            ['data' => 0, 'expect' => null],
+            ['data' => 1.2, 'expect' => null],
+            ['data' => '0', 'expect' => null],
+            ['data' => [], 'expect' => null],
+            ['data' => [null], 'expect' => null],
+            ['data' => [true], 'expect' => null],
+            ['data' => [false], 'expect' => null],
+            ['data' => ['0'], 'expect' => null],
+            ['data' => ['1.2'], 'expect' => null],
+            ['data' => [[]], 'expect' => null],
+            ['data' => [[0]], 'expect' => null],
+            ['data' => [[0,1]], 'expect' => null],
+            ['data' => [0], 'expect' => 0],
+            ['data' => [1], 'expect' => 0],
+            ['data' => [0,10], 'expect' => 5],
+            ['data' => [0,10,30], 'expect' => 15],
+            ['data' => [0.5,10.2,30.5], 'expect' => 15.0],
+            ['data' => [0,10,20,30], 'expect' => 10],
+            ['data' => [0.5,10.5,20.5,30.5], 'expect' => 10.0], // Q1=5.5, Q3=25.5, IQR=20.0, QD=10.0
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $this->assertSame($case['expect'],$ft->getQuartileDeviation($case['data']));
+        }
+    }
+
     public function test_setTableSeparator_and_getTableSeparator_can_work_correctly(): void
     {
         $defaultSeparator = $this->defaultTableSeparator;
@@ -889,20 +1020,20 @@ final class FrequencyTableTest extends TestCase
             $this->assertTrue(in_array($s,array_column($data2Show,'Class')));
         }
         $this->assertContains('Total',array_column($data2Show,'Class'));
-        $this->assertContains('Average',array_column($data2Show,'Class'));
+        $this->assertContains('Mean',array_column($data2Show,'Class'));
     }
 
-    public function test_getData2Show_can_switch_visibility_of_average(): void
+    public function test_getData2Show_can_switch_visibility_of_mean(): void
     {
         $ft = new FrequencyTable();
         $classRange = 10;
         $ft->setClassRange($classRange);
         $data = [0,5,10,15,20];
         $ft->setData($data);
-        $data2Show = $ft->getData2Show(['Average' => true, ]);
-        $this->assertContains('Average',array_column($data2Show,'Class'));
-        $data2Show = $ft->getData2Show(['Average' => false, ]);
-        $this->assertFalse(in_array('Average',array_column($data2Show,'Class')));
+        $data2Show = $ft->getData2Show(['Mean' => true, ]);
+        $this->assertContains('Mean',array_column($data2Show,'Class'));
+        $data2Show = $ft->getData2Show(['Mean' => false, ]);
+        $this->assertFalse(in_array('Mean',array_column($data2Show,'Class')));
     }
 
     public function test_filterData2Show_can_filter_data_2_show_correctly(): void

@@ -60,7 +60,9 @@ $frequencyTable = new FrequencyTable([
     'columns2Show' => [ // Only specified columns will be shown.
         'Class',
         'Frequency',
+        'CumulativeFrequency',
         'RelativeFrequency',
+        'CumulativeRelativeFrequency',
         'ClassValue',
         'ClassValue * Frequency',
     ],
