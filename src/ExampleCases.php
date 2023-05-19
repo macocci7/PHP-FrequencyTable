@@ -45,6 +45,14 @@ foreach($data as $index => $d) {
     echo "- Mode: " . $ft->getMode() . "\n";
     echo "- Mean: " . $ft->getMean() . "\n";
     echo "- Median: " . $ft->getMedian($d) . "\n";
+    $class = $ft->getMedianClass();
+    $classText = "";
+    if ($class) {
+        $n = $class['index'] + 1;
+        $classText = $n . (1===$n?'st':(2===$n?'nd':(3===$n?'rd':'th'))) . " class ["
+                   . $class['bottom'] . " ~ " . $class['top'] . "]";
+    }
+    echo "- The Class Median Belogns is " . $classText . "\n";
     echo "- FirstQuartile: " . $ft->getFirstQuartile($d) . "\n";
     echo "- ThirdQuartile: " . $ft->getThirdQuartile($d) . "\n";
     echo "- InterQuartileRange: " . $ft->getInterQuartileRange($d) . "\n";

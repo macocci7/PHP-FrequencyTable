@@ -15,6 +15,13 @@ final class FrequencyTableTest extends TestCase
         'ClassValue',
         'ClassValue * Frequency',
     ];
+    private $defaultColumns2Show = [
+        'Class',
+        'Frequency',
+        'RelativeFrequency',
+        'ClassValue',
+        'ClassValue * Frequency',
+    ];
     private $defaultTableSeparator = '|';
     private $classSeparator = ' ~ ';
 
@@ -46,7 +53,7 @@ final class FrequencyTableTest extends TestCase
         $this->assertNull($ft->getData());
         $this->assertNull($ft->getClassRange());
         $this->assertNull($ft->getSum());
-        $this->assertSame($this->validColumns2Show,$ft->getColumns2Show());
+        $this->assertSame($this->defaultColumns2Show,$ft->getColumns2Show());
     }
 
     public function test_constructor_can_set_only_data(): void
@@ -56,7 +63,7 @@ final class FrequencyTableTest extends TestCase
         $this->assertSame($data, $ft->getData());
         $this->assertNull($ft->getClassRange());
         $this->assertEquals(0,$ft->getSum());
-        $this->assertSame($this->validColumns2Show,$ft->getColumns2Show());
+        $this->assertSame($this->defaultColumns2Show,$ft->getColumns2Show());
     }
 
     public function test_constructor_can_set_data(): void
@@ -68,7 +75,7 @@ final class FrequencyTableTest extends TestCase
         $this->assertSame($data, $ft->getData());
         $this->assertSame($classRange, $ft->getClassRange());
         $this->assertIsNumeric($ft->getSum());
-        $this->assertSame($this->validColumns2Show,$ft->getColumns2Show());
+        $this->assertSame($this->defaultColumns2Show,$ft->getColumns2Show());
     }
 
     public function test_constructor_can_set_columns2Show(): void
@@ -751,8 +758,8 @@ final class FrequencyTableTest extends TestCase
             ['classRange' => null, 'data' => null, 'expect' => null, ],
             ['classRange' => 10, 'data' => null, 'expect' => null, ],
             ['classRange' => null, 'data' => [10,20,30], 'expect' => null, ],
-            ['classRange' => 10, 'data' => [10,20,30], 'expect' => [1 => ['bottom' => 20, 'top' => 30, ]], ],
-            ['classRange' => 10, 'data' => [10], 'expect' => [0 => ['bottom' => 10, 'top' => 20]], ],
+            ['classRange' => 10, 'data' => [10,20,30], 'expect' => ['index' => 1, 'bottom' => 20, 'top' => 30, ], ],
+            ['classRange' => 10, 'data' => [10], 'expect' => ['index' => 0, 'bottom' => 10, 'top' => 20], ],
         ];
         $ft = new FrequencyTable();
 
@@ -1070,7 +1077,7 @@ final class FrequencyTableTest extends TestCase
         $data = [0,5,10,15,20];
         $ft->setData($data);
         $output = $ft->show();
-        foreach ($this->validColumns2Show as $column) {
+        foreach ($this->defaultColumns2Show as $column) {
             $string = $this->defaultTableSeparator . $column . $this->defaultTableSeparator;
             $this->assertStringContainsString($string,$output);
         }
