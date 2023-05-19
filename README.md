@@ -1,7 +1,6 @@
 # FrequencyTable.php
 
-*Document written: 2023/05/18*
-
+## Contents
 - [Overview](#overview)
 - [Prerequisite](#prerequisite)
 - [Installation](#installation)
@@ -236,6 +235,7 @@ The name of new PHP file is `Example.php`.
 
 - [ExampleCases.php](src/ExampleCases.php) >> results in [ExampleCases.md](src/ExampleCases.md)
 - [PopulationInJapan2022.php](src/PopulationInJapan2022.php) >> results in [PopulationInJapan2022.md](src/PopulationInJapan2022.md)
+- [OhtaniShohei2023.php](src/OhtaniShohei2023.php) >> results in [OhtaniShohei2023.md](src/OhtaniShohei2023.md)
 - [FrequencyTableTest.php](tests/FrequencyTableTest.php) : all usage is written in this code.
 
 ## Testing
@@ -329,5 +329,10 @@ You can also get all data to draw a boxplot by using this FrequencyTable class.
 Thanks for reading.
 
 Have a happy coding!
+
+
+*Document written: 2023/05/18*
+
+*Last updated: 2023/05/19*
 
 Copyright (c) 2023 macocci7
