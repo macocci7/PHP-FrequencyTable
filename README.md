@@ -8,6 +8,7 @@
 - [Usage](#usage)
 - [Examples](#examples)
 - [Testing](#testing)
+- [LICENSE](#license)
 - [Appendix](#appendix)
 
 ## Overview
@@ -309,6 +310,10 @@ Frequency Table
 OK (38 tests, 622 assertions)
 ```
 
+## LICENSE
+
+[MIT](LICENSE)
+
 ## Appendix
 
 You can also get all data to draw a boxplot by using this FrequencyTable class.
@@ -324,3 +329,5 @@ You can also get all data to draw a boxplot by using this FrequencyTable class.
 Thanks for reading.
 
 Have a happy coding!
+
+Copyright (c) 2023 macocci7
