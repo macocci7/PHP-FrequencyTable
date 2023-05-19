@@ -21,6 +21,13 @@ class FrequencyTable {
         'ClassValue',
         'ClassValue * Frequency',
     ];
+    private $defaultColumns2Show = [
+        'Class',
+        'Frequency',
+        'RelativeFrequency',
+        'ClassValue',
+        'ClassValue * Frequency',
+    ];
     private $columns2Show = [];
     private $defaultTableHead = [
         'Class' => 'Class',
@@ -51,7 +58,7 @@ class FrequencyTable {
         if (array_key_exists('data', $param) && array_key_exists('classRange', $param)) {
             $this->setSum($this->getFrequencies());
         }
-        $this->setColumns2Show($this->getValidColumns2Show());
+        $this->setColumns2Show($this->defaultColumns2Show);
         if (array_key_exists('columns2Show', $param)) {
             $this->setColumns2Show($param['columns2Show']);
         }
@@ -232,7 +239,7 @@ class FrequencyTable {
         $median = $this->getMedian($this->getData());
         foreach($this->getClasses() as $index => $class) {
             if ($median >= $class['bottom'] && $median < $class['top']) {
-                return [$index => $class];
+                return ['index' => $index, ...$class];
             }
         }
     }
