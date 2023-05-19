@@ -4,7 +4,6 @@
  * Date: 2023/05/18
  */
 
-
 class FrequencyTable {
 
     private $data = null;
@@ -16,7 +15,9 @@ class FrequencyTable {
     private $validColumns2Show = [
         'Class',
         'Frequency',
+        'CumulativeFrequency',
         'RelativeFrequency',
+        'CumulativeRelativeFrequency',
         'ClassValue',
         'ClassValue * Frequency',
     ];
@@ -24,14 +25,18 @@ class FrequencyTable {
     private $defaultTableHead = [
         'Class' => 'Class',
         'Frequency' => 'Frequency',
+        'CumulativeFrequency' => 'CumulativeFrequency',
         'RelativeFrequency' => 'RelativeFrequency',
+        'CumulativeRelativeFrequency' => 'CumulativeRelativeFrequency',
         'ClassValue' => 'ClassValue',
         'ClassValue * Frequency' => 'ClassValue * Frequency',
     ];
     private $defaultTableColumnAligns = [
         'Class' => ':---:',
         'Frequency' => ':---:',
+        'CumulativeFrequency' => ':---:',
         'RelativeFrequency' => ':---:',
+        'CumulativeRelativeFrequency' => ':---:',
         'ClassValue' => ':---:',
         'ClassValue * Frequency' => '---:',
     ];
@@ -145,6 +150,12 @@ class FrequencyTable {
         return $count;
     }
 
+    public function getCumulativeFrequency($frequencies, $index) {
+        if (!$this->isSettableData($frequencies) || !is_int($index)) return;
+        if (!($index >= 0) || $index >= count($frequencies)) return;
+        return array_sum(array_slice($frequencies,0,$index + 1));
+    }
+
     public function getMin($data) {
         return is_array($data) ? (empty($data) ? null : min($data)) : null;
     }
@@ -179,7 +190,17 @@ class FrequencyTable {
         return $frequency / $this->getSum();
     }
 
-    public function getAverage() {
+    public function getCumulativeRelativeFrequency($frequencies, $index) {
+        if (!$this->isSettableData($frequencies) || !is_int($index)) return;
+        if (!($index >= 0) || $index >= count($frequencies)) return;
+        $rf = [];
+        foreach(array_slice($frequencies,0,$index + 1) as $frequency) {
+            $rf[] = $this->getRelativeFrequency($frequency);
+        }
+        return array_sum($rf);
+    }
+
+    public function getMean() {
         if (!$this->isSettableData($this->getData()) || !$this->getSum()) return;
         $fc = [];
         $classes = $this->getClasses();
@@ -243,6 +264,11 @@ class FrequencyTable {
         return $this->getThirdQuartile($data) - $this->getFirstQuartile($data);
     }
 
+    public function getQuartileDeviation($data) {
+        if (!$this->isSettableData($data)) return;
+        return $this->getInterQuartileRange($data) / 2;
+    }
+
     public function setTableSeparator($separator) {
         if (!is_string($separator)) return false;
         $this->tableSeparator = $separator;
@@ -282,7 +308,7 @@ class FrequencyTable {
         return false;
     }
 
-    public function getData2Show($option = ['Average' => true, ]) {
+    public function getData2Show($option = ['Mean' => true, ]) {
         if (!$this->isSettableData($this->getData())) return [];
         if (!is_array($option)) return [];
         $data = [];
@@ -292,13 +318,16 @@ class FrequencyTable {
         $frequencies = $this->getFrequencies();
         $fc = [];
         $rf = [];
+        $rowOffset = 1;
         foreach($frequencies as $index => $frequency) {
             $fc[] = $frequency * $this->getClassValue($classes[$index]);
             $rf[] = $this->getRelativeFrequency($frequency);
             $data[] = [
                 'Class' => number_format($classes[$index]['bottom']) . $this->classSeparator . number_format($classes[$index]['top']),
                 'Frequency' => $frequency,
+                'CumulativeFrequency' => $this->getCumulativeFrequency($frequencies, $index),
                 'RelativeFrequency' => number_format($rf[$index],2,'.',','),
+                'CumulativeRelativeFrequency' => number_format($this->getCumulativeRelativeFrequency($frequencies, $index),2,'.',','),
                 'ClassValue' => number_format($this->getClassValue($classes[$index]),1,'.',','),
                 'ClassValue * Frequency' => number_format($fc[$index],1,'.',','),
             ];
@@ -306,17 +335,21 @@ class FrequencyTable {
         $data[] = [
             'Class' => 'Total',
             'Frequency' => $this->getSum(),
+            'CumulativeFrequency' => $this->getSum(),
             'RelativeFrequency' => number_format(array_sum($rf),2,'.',','),
+            'CumulativeRelativeFrequency' => number_format(array_sum($rf),2,'.',','),
             'ClassValue' => '---',
             'ClassValue * Frequency' => number_format(array_sum($fc),1,'.',','),
         ];
-        if ($option['Average']) {
+        if ($option['Mean']) {
             $data[] = [
-                'Class' => 'Average',
+                'Class' => 'Mean',
                 'Frequency' => '---',
+                'CumulativeFrequency' => '---',
                 'RelativeFrequency' => '---',
+                'CumulativeRelativeFrequency' => '---',
                 'ClassValue' => '---',
-                'ClassValue * Frequency' => number_format($this->getAverage(),1,'.',','),
+                'ClassValue * Frequency' => number_format($this->getMean(),1,'.',','),
             ];
         }
         return $data;
@@ -334,7 +367,7 @@ class FrequencyTable {
         return $filtered;
     }
 
-    public function show($option = ['Average' => true, ]) {
+    public function show($option = ['Mean' => true, ]) {
         $buffer = null;
         if (!$this->isSettableData($this->data)) {
             $buffer .= "no data to show\n";

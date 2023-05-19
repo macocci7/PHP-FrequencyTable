@@ -57,11 +57,12 @@ foreach ($groupBy as $key => $data) {
     echo "|Min|" . $ft->getMin($d) . "|\n";
     echo "|DataRange|" . $ft->getDataRange($d) . "|\n";
     echo "|Mode|" . $ft->getMode() . "|\n";
-    echo "|Average|" . number_format($ft->getAverage(),1,'.',',') . "|\n";
+    echo "|Mean|" . number_format($ft->getMean(),1,'.',',') . "|\n";
     echo "|Median|" . $ft->getMedian($d) . "|\n";
     echo "|FirstQuartile|" . $ft->getFirstQuartile($d) . "|\n";
     echo "|ThirdQuartile|" . $ft->getThirdQuartile($d) . "|\n";
     echo "|InterQuartileRange|" . $ft->getInterQuartileRange($d) . "|\n";
+    echo "|QuartileDeviation|" . $ft->getQuartileDeviation($d) . "|\n";
     echo "</details>\n";
     echo "\n";
     $ft->show();

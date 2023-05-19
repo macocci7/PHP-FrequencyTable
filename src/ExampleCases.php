@@ -43,11 +43,12 @@ foreach($data as $index => $d) {
     echo "- Min: " . $ft->getMin($d) . "\n";
     echo "- DataRange: " . $ft->getDataRange($d) . "\n";
     echo "- Mode: " . $ft->getMode() . "\n";
-    echo "- Average: " . $ft->getAverage() . "\n";
+    echo "- Mean: " . $ft->getMean() . "\n";
     echo "- Median: " . $ft->getMedian($d) . "\n";
     echo "- FirstQuartile: " . $ft->getFirstQuartile($d) . "\n";
     echo "- ThirdQuartile: " . $ft->getThirdQuartile($d) . "\n";
     echo "- InterQuartileRange: " . $ft->getInterQuartileRange($d) . "\n";
+    echo "- QuartileDeviation: " . $ft->getQuartileDeviation($d) . "\n";
     echo "\n";
     $ft->show();
     echo "\n";
