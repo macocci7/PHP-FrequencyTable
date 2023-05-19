@@ -68,7 +68,7 @@ You can use FrequencyTable class as follows.
 
 **PHP Code: [Example.php](src/Example.php)**
 
-```
+```php
 <?php
 require('./class/FrequencyTable.php');
 
@@ -78,14 +78,14 @@ $ft->show();
 
 **Command to Excute**
 
-```
+```bash
 cd src
 php -f Example.php
 ```
 
 **Standard Output**
 
-```
+```bash
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |0 ~ 10|2|0.40|5.0|10.0|
@@ -115,7 +115,7 @@ The name of new PHP file is `Example.php`.
 
     Require `FrequencyTable.php` as follows in your PHP code (Example.php).
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
     ```
@@ -126,7 +126,7 @@ The name of new PHP file is `Example.php`.
 
     Then create an instance of FrequencyTable in your PHP code as follows.
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
 
@@ -137,7 +137,7 @@ The name of new PHP file is `Example.php`.
 
     Then set the class range you as follows.
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
 
@@ -149,7 +149,7 @@ The name of new PHP file is `Example.php`.
 
     Then set the data to collect statistics as follows.
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
 
@@ -164,7 +164,7 @@ The name of new PHP file is `Example.php`.
 
     Now you can show the Frequency Table of the data you gave before as follows.
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
 
@@ -179,7 +179,7 @@ The name of new PHP file is `Example.php`.
 
     Or you can set both the class range and the data when you create an instance of FrequencyTable as follows.
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
 
@@ -198,13 +198,13 @@ The name of new PHP file is `Example.php`.
 
     Excecute the PHP code in you console as follows.
 
-    ```
+    ```bash
     php -f Example.php
     ```
 
     Standard Output
 
-    ```
+    ```bash
     $ php -f Example.php
     |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
     |:---:|:---:|:---:|:---:|---:|
@@ -216,7 +216,7 @@ The name of new PHP file is `Example.php`.
     ```
     You can make the output file as follows.
 
-    ```
+    ```bash
     php -f Example.php > Example.md
     ```
 
@@ -247,13 +247,13 @@ You can test FrequencyTable.php using PHPUnit (phpunit.phar).
 
 Type the command at the project top folder.
 
-```
+```bash
 ./tools/phpunit.phar ./tests/FrequencyTableTest.php --color auto --testdox
 ```
 
 <details><summary>The result of this command:</summary>
 
-```
+```bash
 PHPUnit 10.1.3 by Sebastian Bergmann and contributors.
 
 Runtime:       PHP 8.1.2-1ubuntu2.11

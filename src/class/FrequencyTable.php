@@ -49,14 +49,11 @@ class FrequencyTable {
     ];
 
     public function __construct($param = []) {
-        if (array_key_exists('data', $param)) {
-            $this->data = $param['data'];
-        }
         if (array_key_exists('classRange', $param)) {
-            $this->classRange = $param['classRange'];
+            $this->setClassRange($param['classRange']);
         }
-        if (array_key_exists('data', $param) && array_key_exists('classRange', $param)) {
-            $this->setSum($this->getFrequencies());
+        if (array_key_exists('data', $param)) {
+            $this->setData($param['data']);
         }
         $this->setColumns2Show($this->defaultColumns2Show);
         if (array_key_exists('columns2Show', $param)) {
