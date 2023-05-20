@@ -2,7 +2,7 @@ PHPUnit 10.1.3 by Sebastian Bergmann and contributors.
 
 Runtime:       PHP 8.1.2-1ubuntu2.11
 
-........................................no data to show
+.......................................no data to show
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |0 ~ 10|2|0.40|5.0|10.0|
@@ -10,9 +10,9 @@ Runtime:       PHP 8.1.2-1ubuntu2.11
 |20 ~ 30|1|0.20|25.0|25.0|
 |Total|5|1.00|---|65.0|
 |Mean|---|---|---|13.0|
-.                         41 / 41 (100%)
+.                          40 / 40 (100%)
 
-Time: 00:00.059, Memory: 24.40 MB
+Time: 00:00.071, Memory: 24.40 MB
 
 Frequency Table
  ✔ Constructor can create instance without params
@@ -20,9 +20,8 @@ Frequency Table
  ✔ Constructor can set data
  ✔ Constructor can set columns2Show
  ✔ IsSettableData can judge correctly
- ✔ SetData can set null
- ✔ SetData can set empty data
  ✔ SetData can set correct data
+ ✔ SetData can set null by invalid data
  ✔ GetData can get correct data
  ✔ GetDataRange can get data range correctly
  ✔ IsSettableClassRange can judge correctly
@@ -57,4 +56,4 @@ Frequency Table
  ✔ FilterData2Show can filter data 2 show correctly
  ✔ Show can work correctly
 
-OK (41 tests, 1451 assertions)
+OK (40 tests, 1564 assertions)

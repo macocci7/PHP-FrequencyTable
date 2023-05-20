@@ -75,10 +75,11 @@ class FrequencyTable {
         if ($this->isSettableData($data)) {
             $this->data = $data;
             $this->setSum($this->getFrequencies());
-        } else {
-            $this->data = null;
-            $this->sum = null;
+            return true;
         }
+        $this->data = null;
+        $this->sum = null;
+        return false;
     }
 
     public function getData($key = null) {
@@ -99,9 +100,10 @@ class FrequencyTable {
     public function setClassRange($classRange = null) {
         if ($this->isSettableClassRange($classRange)) {
             $this->classRange = $classRange;
-        } else {
-            $this->classRange = null;
+            return true;
         }
+        $this->classRange = null;
+        return false;
     }
 
     public function getClassRange() {
@@ -161,19 +163,20 @@ class FrequencyTable {
     }
 
     public function getMin($data) {
-        return is_array($data) ? (empty($data) ? null : min($data)) : null;
+        return $this->isSettableData($data) ? min($data) : null;
     }
 
     public function getMax($data) {
-        return is_array($data) ? (empty($data) ? null : max($data)) : null;
+        return $this->isSettableData($data) ? max($data) : null;
     }
 
     public function setSum($data) {
         if (!$this->isSettableData($data)) {
             $this->sum = null;
-            return;
+            return false;
         }
         $this->sum = array_sum($data);
+        return true;
     }
 
     public function getSum() {
@@ -190,7 +193,7 @@ class FrequencyTable {
 
     public function getRelativeFrequency($frequency) {
         if (!$this->getSum() || !(is_int($frequency))) return;
-        if ($frequency < 0) return;
+        if ($frequency < 0 || $frequency > $this->getSum()) return;
         return $frequency / $this->getSum();
     }
 

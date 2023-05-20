@@ -128,28 +128,56 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
-    public function test_setData_can_set_null(): void
-    {
-        $ft = new FrequencyTable();
-        $ft->setData(null);
-        $this->assertNull($ft->getData());
-        $this->assertNull($ft->getSum());
-    }
-
-    public function test_setData_can_set_empty_data(): void
-    {
-        $ft = new FrequencyTable();
-        $ft->setData([]);
-        $this->assertEmpty($ft->getData());
-        $this->assertNull($ft->getSum());
-    }
-
     public function test_setData_can_set_correct_data(): void
     {
-        $data = [10,20,30,40,50];
+        $cases = [
+            ['data' => [0],],
+            ['data' => [1.2],],
+            ['data' => [-1],],
+            ['data' => [-1.5],],
+            ['data' => [0,1,2],],
+            ['data' => [0,1.5,2],],
+            ['data' => [-1,-1.5,-1,-2],],
+            ['data' => [-1.9,-1.5,-1.2,-2.5],],
+            ['data' => ['Donald'=>1],],
+            ['data' => ['Donald'=>1,'Joe'=>2],],
+            ['data' => ['Donald'=>1.5],],
+            ['data' => ['Donald'=>1.5,'Joe'=>2.5],],
+        ];
         $ft = new FrequencyTable();
-        $ft->setData($data);
-        $this->assertSame($data, $ft->getData());
+
+        foreach ($cases as $index => $case) {
+            $this->assertTrue($ft->setData($case['data']));
+            $this->assertSame($case['data'], $ft->getData());
+        }
+    }
+
+    public function test_setData_can_set_null_by_invalid_data(): void
+    {
+        $cases = [
+            ['data' => null, ],
+            ['data' => true, ],
+            ['data' => false, ],
+            ['data' => 'hoge', ],
+            ['data' => 0, ],
+            ['data' => 1.2, ],
+            ['data' => [], ],
+            ['data' => [null], ],
+            ['data' => [true], ],
+            ['data' => [false], ],
+            ['data' => ['hoge'], ],
+            ['data' => [[]], ],
+            ['data' => [0,1,2,'hoge'], ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $this->assertTrue($ft->setData([0,1,2]));
+            $this->assertFalse(null===$ft->getData());
+            $this->assertFalse($ft->setData($case['data']));
+            $this->assertNull($ft->getData());
+            $this->assertNull($ft->getSum());
+        }
     }
 
     public function test_getData_can_get_correct_data(): void
@@ -250,32 +278,32 @@ final class FrequencyTableTest extends TestCase
         // Only positive integer or positive float can be excepted.
         // Null is set when parameter in other types is specified.
         $cases = [
-            [ 'classRange' => null, 'expect' => null, ],
-            [ 'classRange' => -1, 'expect' => null, ],
-            [ 'classRange' => 0, 'expect' => null, ],
-            [ 'classRange' => 0.1, 'expect' => 0.1, ],
-            [ 'classRange' => 1, 'expect' => 1, ],
-            [ 'classRange' => 0x539, 'expect' => 1337, ],
-            [ 'classRange' => 0b10100111001, 'expect' => 1337, ],
-            [ 'classRange' => 1337e0, 'expect' => 1337, ],
-            [ 'classRange' => '0.1', 'expect' => null, ],
-            [ 'classRange' => '1', 'expect' => null, ],
-            [ 'classRange' => '0x539', 'expect' => null, ],
-            [ 'classRange' => '0b10100111001', 'expect' => null, ],
-            [ 'classRange' => '1337e0', 'expect' => null, ],
-            [ 'classRange' => 'hoge', 'expect' => null, ],
-            [ 'classRange' => [], 'expect' => null, ],
-            [ 'classRange' => [1], 'expect' => null, ],
-            ['classRange' => PHP_INT_MAX, 'expect' => PHP_INT_MAX, ],
-            ['classRange' => PHP_FLOAT_MAX, 'expect' => PHP_FLOAT_MAX, ],
-            ['classRange' => PHP_INT_MAX + 1, 'expect' => PHP_INT_MAX + 1, ],
-            ['classRange' => PHP_FLOAT_MAX + 1, 'expect' => PHP_FLOAT_MAX + 1, ],
+            [ 'classRange' => null, 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => -1, 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => 0, 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => 0.1, 'expect' => ['return' => true, 'get' => 0.1, ], ],
+            [ 'classRange' => 1, 'expect' => ['return' => true, 'get' => 1, ], ],
+            [ 'classRange' => 0x539, 'expect' => ['return' => true, 'get' => 1337, ], ],
+            [ 'classRange' => 0b10100111001, 'expect' => ['return' => true, 'get' => 1337, ], ],
+            [ 'classRange' => 1337e0, 'expect' => ['return' => true, 'get' => 1337.0, ], ],
+            [ 'classRange' => '0.1', 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => '1', 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => '0x539', 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => '0b10100111001', 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => '1337e0', 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => 'hoge', 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => [], 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => [1], 'expect' => ['return' => false, 'get' => null, ], ],
+            [ 'classRange' => PHP_INT_MAX, 'expect' => ['return' => true, 'get' => PHP_INT_MAX, ], ],
+            [ 'classRange' => PHP_FLOAT_MAX, 'expect' => ['return' => true, 'get' => PHP_FLOAT_MAX, ], ],
+            [ 'classRange' => PHP_INT_MAX + 1, 'expect' => ['return' => true, 'get' => PHP_INT_MAX + 1, ], ],
+            [ 'classRange' => PHP_FLOAT_MAX + 1, 'expect' => ['return' => true, 'get' => PHP_FLOAT_MAX + 1, ], ],
         ];
         $ft = new FrequencyTable();
 
         foreach($cases as $index => $case) {
-            $ft->setClassRange($case['classRange']);
-            $this->assertEquals($case['expect'], $ft->getClassRange());
+            $this->assertSame($case['expect']['return'],$ft->setClassRange($case['classRange']));
+            $this->assertSame($case['expect']['get'], $ft->getClassRange());
         }
     }
 
@@ -511,7 +539,7 @@ final class FrequencyTableTest extends TestCase
             ['data' => 'hoge', 'expect' => null, ],
             ['data' => 10, 'expect' => null, ],
             ['data' => [], 'expect' => null, ],
-            ['data' => ['hoge','huga'], 'expect' => 'hoge', ],
+            ['data' => ['hoge','huga'], 'expect' => null, ],
             ['data' => [10], 'expect' => 10, ],
             ['data' => [-10], 'expect' => -10, ],
             ['data' => [-10,0,5], 'expect' => -10, ],
@@ -530,7 +558,7 @@ final class FrequencyTableTest extends TestCase
             ['data' => 'hoge', 'expect' => null, ],
             ['data' => 10, 'expect' => null, ],
             ['data' => [], 'expect' => null, ],
-            ['data' => ['hoge','huga'], 'expect' => 'huga', ],
+            ['data' => ['hoge','huga'], 'expect' => null, ],
             ['data' => [10], 'expect' => 10, ],
             ['data' => [-10], 'expect' => -10, ],
             ['data' => [-10,0,5], 'expect' => 5, ],
@@ -545,21 +573,21 @@ final class FrequencyTableTest extends TestCase
     public function test_setSum_and_getSum_can_work_correctly(): void
     {
         $cases = [
-            ['classRange' => 2, 'data' => null, 'setSumParam' => null, 'expect' => null, ],
-            ['classRange' => 2, 'data' => null, 'setSumParam' => [], 'expect' => null, ],
-            ['classRange' => 2, 'data' => null, 'setSumParam' => 0, 'expect' => null, ],
-            ['classRange' => 2, 'data' => null, 'setSumParam' => true, 'expect' => null, ],
-            ['classRange' => 2, 'data' => null, 'setSumParam' => false, 'expect' => null, ],
-            ['classRange' => 2, 'data' => null, 'setSumParam' => [0,1,2,3,4,], 'expect' => 10, ],   // This returns the sum of values in array.
-            ['classRange' => 2, 'data' => [0,1,2,3,4,], 'setSumParam' => null, 'expect' => 5, ],    // This returns the sum of Frequencies, ie the number of elements.
+            ['classRange' => 2, 'data' => null, 'setSum' => null, 'expect' => ['setSum' => false, 'getSum' => null, ], ],
+            ['classRange' => 2, 'data' => null, 'setSum' => [], 'expect' => ['setSum' => false, 'getSum' => null, ], ],
+            ['classRange' => 2, 'data' => null, 'setSum' => 0, 'expect' => ['setSum' => false, 'getSum' => null, ], ],
+            ['classRange' => 2, 'data' => null, 'setSum' => true, 'expect' => ['setSum' => false, 'getSum' => null, ], ],
+            ['classRange' => 2, 'data' => null, 'setSum' => false, 'expect' => ['setSum' => false, 'getSum' => null, ], ],
+            ['classRange' => 2, 'data' => null, 'setSum' => [0,1,2,3,4,], 'expect' => ['setSum' => true, 'getSum' => 10, ], ], // This returns the sum of array values.
+            ['classRange' => 2, 'data' => [0,1,2,3,4,], 'setSum' => null, 'expect' => ['setSum' => false, 'getSum' => 5, ], ], // This returns the sum of Frequencies, ie the number of elements.
         ];
         $ft = new FrequencyTable();
         
         foreach($cases as $index => $case) {
             $ft->setClassRange($case['classRange']);
             $ft->setData($case['data']);
-            $ft->setSum($case['setSumParam']);
-            $this->assertSame($case['expect'],$ft->getSum());
+            $this->assertSame($case['expect']['setSum'],$ft->setSum($case['setSum']));
+            $this->assertSame($case['expect']['getSum'],$ft->getSum());
         }
     }
 
@@ -613,6 +641,8 @@ final class FrequencyTableTest extends TestCase
             ['frequencies' => [1,2,3,4,], 'frequency' => -2, 'expect' => null, ],   // Frequency must be a positive integer or zero.
             ['frequencies' => [1,2,3,4,], 'frequency' => 0.0, 'expect' => null, ],  // Frequency must be a positive integer or zero.
             ['frequencies' => [1,2,3,4,], 'frequency' => 2.0, 'expect' => null, ],  // Frequency must be a positive integer or zero.
+            ['frequencies' => [1,2,3,4,], 'frequency' => 10, 'expect' => 1, ],
+            ['frequencies' => [1,2,3,4,], 'frequency' => 11, 'expect' => null, ],   // Frequency must be less than or equal to sum.
             ['frequencies' => null, 'frequency' => 0, 'expect' => null, ],
             ['frequencies' => [], 'frequency' => 0, 'expect' => null, ],
             ['frequencies' => [], 'frequency' => 2, 'expect' => null, ],
