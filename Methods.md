@@ -1,8 +1,8 @@
 # Class: FrequencyTable
 
-## Methods
+[README](README.md)
 
-Some methods which is not necessary to use in your codes are not listed.
+## Methods
 
 - [__construct()](#__construct)
 - [isSettableData()](#issettabledata)
@@ -19,8 +19,8 @@ Some methods which is not necessary to use in your codes are not listed.
 - [getCumulativeFrequency()](#getcumulativefrequency)
 - [getMin()](#getmin)
 - [getMax()](#getmax)
-- [setSum()](#setsum)
-- [getSum()](#getsum)
+- [setTotal()](#settotal)
+- [getTotal()](#gettotal)
 - [getClassValue()](#getclassvalue)
 - [getRelativeFrequency()](#getrelativefrequency)
 - [getCumulativeRelativeFrequency()](#getcumulativerelativefrequency)
@@ -792,17 +792,17 @@ Returns the Max(imum) Value of the data set `$data`.
 
 ***
 
-### setSum
+### setTotal
 
 ```php
-setSum($data)
+setTotal($data)
 ```
 
-Sets the Sum of `$data`.
+Sets the Total of `$data`.
 
-The Value of Sum FrequencyTable holds is overwritten when setData() is called,
+The Value of Total FrequencyTable holds is overwritten when setData() is called,
 
-or if the Value of Sum is `null` when getSum() is called.
+or if the Value of Total is `null` when getTotal() is called.
 
 #### Parameter
 
@@ -815,7 +815,7 @@ or if the Value of Sum is `null` when getSum() is called.
 - Type: Integer or Float or `null`
 - Value:
     - `null`: `$data` is invalid.
-    - Integer or Float: Sum of `$data`.
+    - Integer or Float: Total of `$data`.
 
 #### Example
 
@@ -828,16 +828,16 @@ or if the Value of Sum is `null` when getSum() is called.
     $ft->setClassRange(2);
 
     $data = [1,"2",3,4];
-    var_dump($ft->setSum($data)); // false
-    var_dump($ft->getSum());     // null
+    var_dump($ft->setTotal($data)); // false
+    var_dump($ft->getTotal());     // null
 
     $data = [1,3,4,2];
-    var_dump($ft->setSum($data)); // true
-    var_dump($ft->getSum());      // 10
+    var_dump($ft->setTotal($data)); // true
+    var_dump($ft->getTotal());      // 10
 
     $data = [1.5,3.5,4.5,2.0];
-    var_dump($ft->setSum($data)); // true
-    var_dump($ft->getSum());      // 11.5
+    var_dump($ft->setTotal($data)); // true
+    var_dump($ft->getTotal());      // 11.5
     ```
 
 - Result
@@ -852,24 +852,24 @@ or if the Value of Sum is `null` when getSum() is called.
 
 ***
 
-### getSum
+### getTotal
 
 ```php
-getSum()
+getTotal()
 ```
 
-Returns the Value of Sum FrequencyTable holds.
+Returns the Value of Total FrequencyTable holds.
 
-The Value of Sum is reculculated with the data set FrequencyTable holds,
+The Value of Total is reculculated with the data set FrequencyTable holds,
 
-if the Value of Sum is `null` when getSum() is called.
+if the Value of Total is `null` when getTotal() is called.
 
 #### Return
 
 - Type: Integer or Float or `null`
 - Value:
     - `null`: the data set FrequencyTable holds is `null`.
-    - Integer or Float: Sum of data set FrequencyTable holds.
+    - Integer or Float: Total of data set FrequencyTable holds.
 
 #### Example
 
@@ -883,15 +883,15 @@ if the Value of Sum is `null` when getSum() is called.
 
     $data = [1,"2",3,4];
     var_dump($ft->setData($data)); // false
-    var_dump($ft->getSum());     // null
+    var_dump($ft->getTotal());     // null
 
     $data = [1,3,4,2];
     var_dump($ft->setData($data)); // true
-    var_dump($ft->getSum());      // 4 : The sum of Frequencies, i.e., the number of elements.
+    var_dump($ft->getTotal());      // 4 : The total of Frequencies, i.e., the number of elements.
 
     $data = [1.5,3.5,4.5,2.0];
     var_dump($ft->setData($data)); // true
-    var_dump($ft->getSum());      // 4 : The sum of Frequencies, i.e., the number of elements.
+    var_dump($ft->getTotal());      // 4 : The total of Frequencies, i.e., the number of elements.
     ```
 
 - Result
@@ -972,7 +972,7 @@ getRelativeFrequency($frequency)
 
 Returns Relative Frequency of `$frequency`.
 
-Before using this method, you should set Sum by calling setData() or setSum().
+Before using this method, you should set Total by calling setData() or setTotal().
 
 #### Parameter
 
@@ -980,13 +980,13 @@ Before using this method, you should set Sum by calling setData() or setSum().
 - Type: Integer
 - Value:
     - must be a Positive Integer or Zero.
-    - must be Less than or Equal to Sum.
+    - must be Less than or Equal to Total.
 
 #### Return
 
 - Type: Integer or Float or `null`
 - Value:
-    - `null`: Sum or `$frequency` is invalid.
+    - `null`: Total or `$frequency` is invalid.
     - Integer or Float: Relative Frequency
 
 #### Example
@@ -1029,7 +1029,7 @@ getCumulativeRelativeFrequency($frequencies, $index)
 
 Returns the Cumulative Relative Frequency of  the Class specified by Array `$index` of Array `$frequencies`.
 
-Before using this method, you should set Sum using setSum() or setData().
+Before using this method, you should set Total using setTotal() or setData().
 
 #### Parameters
 
@@ -1060,7 +1060,7 @@ Before using this method, you should set Sum using setSum() or setData().
 
     $frequencies = [0,1,2,3,4,];
 
-    $ft->setSum($frequencies);
+    $ft->setTotal($frequencies);
     var_dump($ft->getCumulativeRelativeFrequency($frequencies, -1));
     var_dump($ft->getCumulativeRelativeFrequency($frequencies, 0));
     var_dump($ft->getCumulativeRelativeFrequency($frequencies, 1));
@@ -1097,7 +1097,7 @@ Before using this method, you should set Class Range and data.
 
 - Type: Integer or Float or `null`
 - Value:
-    - `null`: the data set FrequencyTable holds or Sum is invalid.
+    - `null`: the data set FrequencyTable holds or Total is invalid.
     - Integer or Float: Mean Value
 
 #### Example
@@ -1588,9 +1588,47 @@ Returns Columns to show in the Frequency Table.
 getValidColumns2Show()
 ```
 
-#### Parameter
+Returns Settable Columns to show in Frequency Table.
+
+You can check Column Names to set by using this method.
+
+#### Return
+
+- Type: 1 Dimensional Array
+- Values: Strings
 
 #### Example
+
+- PHP
+    ```php
+    <?php
+    require('./class/FrequencyTable.php');
+    $ft = new FrequencyTable();
+
+    var_dump($ft->getValidColumns2Show());
+    ```
+
+- Result
+    ```bash
+    array(7) {
+    [0]=>
+    string(5) "Class"
+    [1]=>
+    string(9) "Frequency"
+    [2]=>
+    string(19) "CumulativeFrequency"
+    [3]=>
+    string(17) "RelativeFrequency"
+    [4]=>
+    string(27) "CumulativeRelativeFrequency"
+    [5]=>
+    string(10) "ClassValue"
+    [6]=>
+    string(22) "ClassValue * Frequency"
+    }
+    ```
+
+***
 
 ### isSettableColumns2Show
 
@@ -1598,9 +1636,43 @@ getValidColumns2Show()
 isSettableColumns2Show($columns)
 ```
 
+Judges whether `$columns` is valid or not for setColumns2Show().
+
 #### Parameter
 
+> $columns
+- Type: 1 Dimensional (Hash) Array
+- Values: Any
+
+#### Return
+
+- Type: bool
+- Value:
+    - `true`: `$columns` is valid.
+    - `false`: `$columns` is invalid.
+
 #### Example
+
+- PHP
+    ```php
+    <?php
+    require('./class/FrequencyTable.php');
+    $ft = new FrequencyTable();
+
+    $columns = ['Class','Frequency','Hoge'];
+    var_dump($ft->isSettableColumns2Show($columns));
+
+    $columns = ['Class','Frequency','RelativeFrequency'];
+    var_dump($ft->isSettableColumns2Show($columns));
+    ```
+
+- Result
+    ```bash
+    bool(false)
+    bool(true)
+    ```
+
+***
 
 ### setColumns2Show
 
@@ -1608,17 +1680,148 @@ isSettableColumns2Show($columns)
 setColumns2Show($columns)
 ```
 
+Sets Columns to show in Frequency Table.
+
 #### Parameter
 
+> $columns
+- Type: 1 Dimensional (Hash) Array
+- Values: must be members of elements getValidColumns2Show() returns.
+
+#### Return
+
+- Type: bool
+- Value:
+    - `true`: `$columns` is valid and set.
+    - `false`: `$columns` is invalid and not set.
+
 #### Example
+
+- PHP
+    ```php
+    <?php
+    require('./class/FrequencyTable.php');
+    $ft = new FrequencyTable();
+
+    var_dump($ft->getColumns2Show());
+
+    $columns = ['Class','Frequency'];
+    var_dump($ft->setColumns2Show($columns));
+    var_dump($ft->getColumns2Show());
+
+    $columns = ['Class','Hoge'];
+    var_dump($ft->setColumns2Show($columns));
+    var_dump($ft->getColumns2Show());
+    ```
+
+- Result
+    ```bash
+    array(5) {
+    [0]=>
+    string(5) "Class"
+    [1]=>
+    string(9) "Frequency"
+    [2]=>
+    string(17) "RelativeFrequency"
+    [3]=>
+    string(10) "ClassValue"
+    [4]=>
+    string(22) "ClassValue * Frequency"
+    }
+    bool(true)
+    array(2) {
+    [0]=>
+    string(5) "Class"
+    [1]=>
+    string(9) "Frequency"
+    }
+    bool(false)
+    array(2) {
+    [0]=>
+    string(5) "Class"
+    [1]=>
+    string(9) "Frequency"
+    }
+    ```
+
+***
 
 ### show
 
 ```php
-show($option = ['Mean' => true, ])
+show($option = ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true])
 ```
+
+Prints the Frequency Table in markdown format to standard output.
 
 #### Parameter
 
+> $option
+- Default: `['Mean' => true, ]`
+- Type: 1 Dimensional Hash Array
+- Structure:
+    ```php
+    $option = [
+        'Mean' => true,
+        'STDOUT' => true,
+        'ReturnValue' => true,
+    ];
+    ```
+- Values:
+    - `Mean`: bool
+        - `true`: Mean is shown at the bottom line of the Frequency Table.
+        - `false`: Mean is not shown at the bottom line of the Frequency Table.
+    - `STDOUT`: bool
+        - `true`: Frequency Table is printed to standard output.
+        - `false`: no output to standard output.
+    - `ReturnValue`: bool
+        - `true`: Frequency Table in markdown format is returned as a return value.
+        - `false`: no return value
+
+#### Return
+
+- Type: string
+- Value: Same strings as standard output.
+
 #### Example
 
+- PHP
+    ```php
+    <?php
+    require('./class/FrequencyTable.php');
+    $ft = new FrequencyTable(['classRange'=>10,'data'=>[0,5,10,15,20]]);
+
+    echo "CASE1: STDOUT: ON / RETURN VALUE: OFF\n";
+    $option = ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => false];
+    var_dump($ft->show($option));
+
+    echo "CASE2: STDOUT: Off / RETURN VALUE: On\n";
+    $option = ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => true];
+    var_dump($ft->show($option));
+
+    echo "CASE3: STDOUT: OFF / RETURN VALUE: OFF\n";
+    $option = ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => false];
+    var_dump($ft->show($option));
+    ```
+
+- Result
+    ```bash
+    CASE1: STDOUT: ON / RETURN VALUE: OFF
+    |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|---:|
+    |0 ~ 10|2|0.40|5.0|10.0|
+    |10 ~ 20|2|0.40|15.0|30.0|
+    |20 ~ 30|1|0.20|25.0|25.0|
+    |Total|5|1.00|---|65.0|
+    NULL
+    CASE2: STDOUT: Off / RETURN VALUE: On
+    string(204) "|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|---:|
+    |0 ~ 10|2|0.40|5.0|10.0|
+    |10 ~ 20|2|0.40|15.0|30.0|
+    |20 ~ 30|1|0.20|25.0|25.0|
+    |Total|5|1.00|---|65.0|
+    "
+    CASE3: STDOUT: OFF / RETURN VALUE: OFF
+    NULL
+    ```

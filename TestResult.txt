@@ -2,7 +2,7 @@ PHPUnit 10.1.3 by Sebastian Bergmann and contributors.
 
 Runtime:       PHP 8.1.2-1ubuntu2.11
 
-.......................................no data to show
+........................................no data to show
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |0 ~ 10|2|0.40|5.0|10.0|
@@ -10,9 +10,43 @@ Runtime:       PHP 8.1.2-1ubuntu2.11
 |20 ~ 30|1|0.20|25.0|25.0|
 |Total|5|1.00|---|65.0|
 |Mean|---|---|---|13.0|
-.                          40 / 40 (100%)
+.|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+|:---:|:---:|:---:|:---:|---:|
+|0 ~ 10|2|0.40|5.0|10.0|
+|10 ~ 20|2|0.40|15.0|30.0|
+|20 ~ 30|1|0.20|25.0|25.0|
+|Total|5|1.00|---|65.0|
+|Mean|---|---|---|13.0|
+|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+|:---:|:---:|:---:|:---:|---:|
+|0 ~ 10|2|0.40|5.0|10.0|
+|10 ~ 20|2|0.40|15.0|30.0|
+|20 ~ 30|1|0.20|25.0|25.0|
+|Total|5|1.00|---|65.0|
+.|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+|:---:|:---:|:---:|:---:|---:|
+|0 ~ 10|2|0.40|5.0|10.0|
+|10 ~ 20|2|0.40|15.0|30.0|
+|20 ~ 30|1|0.20|25.0|25.0|
+|Total|5|1.00|---|65.0|
+|Mean|---|---|---|13.0|
+|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+|:---:|:---:|:---:|:---:|---:|
+|0 ~ 10|2|0.40|5.0|10.0|
+|10 ~ 20|2|0.40|15.0|30.0|
+|20 ~ 30|1|0.20|25.0|25.0|
+|Total|5|1.00|---|65.0|
+|Mean|---|---|---|13.0|
+|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+|:---:|:---:|:---:|:---:|---:|
+|0 ~ 10|2|0.40|5.0|10.0|
+|10 ~ 20|2|0.40|15.0|30.0|
+|20 ~ 30|1|0.20|25.0|25.0|
+|Total|5|1.00|---|65.0|
+|Mean|---|---|---|13.0|
+.                       43 / 43 (100%)
 
-Time: 00:00.071, Memory: 24.40 MB
+Time: 00:00.066, Memory: 24.40 MB
 
 Frequency Table
  ✔ Constructor can create instance without params
@@ -33,7 +67,7 @@ Frequency Table
  ✔ GetCumulativeFrequency can get cumulative frequency correctly
  ✔ GetMin can get correctly
  ✔ GetMax can get correctly
- ✔ SetSum and getSum can work correctly
+ ✔ SetTotal and getTotal can work correctly
  ✔ GetClassValue can get class value correctly
  ✔ GetRelativeFrequency can get relative frequency correctly
  ✔ GetCumulativeRelativeFrequency can get cumulative relative frequency correctly
@@ -54,6 +88,9 @@ Frequency Table
  ✔ GetData2Show can get data 2 show with settable data
  ✔ GetData2Show can switch visibility of mean
  ✔ FilterData2Show can filter data 2 show correctly
+ ✔ ValidateShowOption can validate
  ✔ Show can work correctly
+ ✔ Show can switch visibility of Mean
+ ✔ Show can switch return value
 
-OK (40 tests, 1564 assertions)
+OK (43 tests, 1618 assertions)

@@ -52,7 +52,7 @@ final class FrequencyTableTest extends TestCase
         $ft = new FrequencyTable();
         $this->assertNull($ft->getData());
         $this->assertNull($ft->getClassRange());
-        $this->assertNull($ft->getSum());
+        $this->assertNull($ft->getTotal());
         $this->assertSame($this->defaultColumns2Show,$ft->getColumns2Show());
     }
 
@@ -62,7 +62,7 @@ final class FrequencyTableTest extends TestCase
         $ft = new FrequencyTable(['data' => $data]);
         $this->assertSame($data, $ft->getData());
         $this->assertNull($ft->getClassRange());
-        $this->assertEquals(0,$ft->getSum());
+        $this->assertEquals(0,$ft->getTotal());
         $this->assertSame($this->defaultColumns2Show,$ft->getColumns2Show());
     }
 
@@ -74,7 +74,7 @@ final class FrequencyTableTest extends TestCase
 
         $this->assertSame($data, $ft->getData());
         $this->assertSame($classRange, $ft->getClassRange());
-        $this->assertIsNumeric($ft->getSum());
+        $this->assertIsNumeric($ft->getTotal());
         $this->assertSame($this->defaultColumns2Show,$ft->getColumns2Show());
     }
 
@@ -176,7 +176,7 @@ final class FrequencyTableTest extends TestCase
             $this->assertFalse(null===$ft->getData());
             $this->assertFalse($ft->setData($case['data']));
             $this->assertNull($ft->getData());
-            $this->assertNull($ft->getSum());
+            $this->assertNull($ft->getTotal());
         }
     }
 
@@ -570,24 +570,24 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
-    public function test_setSum_and_getSum_can_work_correctly(): void
+    public function test_setTotal_and_getTotal_can_work_correctly(): void
     {
         $cases = [
-            ['classRange' => 2, 'data' => null, 'setSum' => null, 'expect' => ['setSum' => false, 'getSum' => null, ], ],
-            ['classRange' => 2, 'data' => null, 'setSum' => [], 'expect' => ['setSum' => false, 'getSum' => null, ], ],
-            ['classRange' => 2, 'data' => null, 'setSum' => 0, 'expect' => ['setSum' => false, 'getSum' => null, ], ],
-            ['classRange' => 2, 'data' => null, 'setSum' => true, 'expect' => ['setSum' => false, 'getSum' => null, ], ],
-            ['classRange' => 2, 'data' => null, 'setSum' => false, 'expect' => ['setSum' => false, 'getSum' => null, ], ],
-            ['classRange' => 2, 'data' => null, 'setSum' => [0,1,2,3,4,], 'expect' => ['setSum' => true, 'getSum' => 10, ], ], // This returns the sum of array values.
-            ['classRange' => 2, 'data' => [0,1,2,3,4,], 'setSum' => null, 'expect' => ['setSum' => false, 'getSum' => 5, ], ], // This returns the sum of Frequencies, ie the number of elements.
+            ['classRange' => 2, 'data' => null, 'setTotal' => null, 'expect' => ['setTotal' => false, 'getTotal' => null, ], ],
+            ['classRange' => 2, 'data' => null, 'setTotal' => [], 'expect' => ['setTotal' => false, 'getTotal' => null, ], ],
+            ['classRange' => 2, 'data' => null, 'setTotal' => 0, 'expect' => ['setTotal' => false, 'getTotal' => null, ], ],
+            ['classRange' => 2, 'data' => null, 'setTotal' => true, 'expect' => ['setTotal' => false, 'getTotal' => null, ], ],
+            ['classRange' => 2, 'data' => null, 'setTotal' => false, 'expect' => ['setTotal' => false, 'getTotal' => null, ], ],
+            ['classRange' => 2, 'data' => null, 'setTotal' => [0,1,2,3,4,], 'expect' => ['setTotal' => true, 'getTotal' => 10, ], ], // This returns the total of array values.
+            ['classRange' => 2, 'data' => [0,1,2,3,4,], 'setTotal' => null, 'expect' => ['setTotal' => false, 'getTotal' => 5, ], ], // This returns the total of Frequencies, ie the number of elements.
         ];
         $ft = new FrequencyTable();
         
         foreach($cases as $index => $case) {
             $ft->setClassRange($case['classRange']);
             $ft->setData($case['data']);
-            $this->assertSame($case['expect']['setSum'],$ft->setSum($case['setSum']));
-            $this->assertSame($case['expect']['getSum'],$ft->getSum());
+            $this->assertSame($case['expect']['setTotal'],$ft->setTotal($case['setTotal']));
+            $this->assertSame($case['expect']['getTotal'],$ft->getTotal());
         }
     }
 
@@ -642,16 +642,16 @@ final class FrequencyTableTest extends TestCase
             ['frequencies' => [1,2,3,4,], 'frequency' => 0.0, 'expect' => null, ],  // Frequency must be a positive integer or zero.
             ['frequencies' => [1,2,3,4,], 'frequency' => 2.0, 'expect' => null, ],  // Frequency must be a positive integer or zero.
             ['frequencies' => [1,2,3,4,], 'frequency' => 10, 'expect' => 1, ],
-            ['frequencies' => [1,2,3,4,], 'frequency' => 11, 'expect' => null, ],   // Frequency must be less than or equal to sum.
+            ['frequencies' => [1,2,3,4,], 'frequency' => 11, 'expect' => null, ],   // Frequency must be less than or equal to total.
             ['frequencies' => null, 'frequency' => 0, 'expect' => null, ],
             ['frequencies' => [], 'frequency' => 0, 'expect' => null, ],
             ['frequencies' => [], 'frequency' => 2, 'expect' => null, ],
-            ['frequencies' => [0], 'frequency' => 0, 'expect' => null, ], // Sum of frequencies must be a positive integer.
+            ['frequencies' => [0], 'frequency' => 0, 'expect' => null, ], // Total of frequencies must be a positive integer.
         ];
         $ft = new FrequencyTable();
 
         foreach($cases as $index => $case) {
-            $ft->setSum($case['frequencies']);
+            $ft->setTotal($case['frequencies']);
             $this->assertSame($case['expect'],$ft->getRelativeFrequency($case['frequency']));
         }
     }
@@ -685,7 +685,7 @@ final class FrequencyTableTest extends TestCase
             ['frequencies' => [0,1,2,3,4], 'index' => [], 'expect' => null, ],
             ['frequencies' => [0,1,2,3,4], 'index' => [0], 'expect' => null, ],
             ['frequencies' => [0,1,2,3,4], 'index' => [1.2], 'expect' => null, ],
-            ['frequencies' => [0,1,2,3,4], 'index' => 0, 'expect' => 0/10, ], // sum=10, rf=[0,0.1,0.2,0.3,0.4]
+            ['frequencies' => [0,1,2,3,4], 'index' => 0, 'expect' => 0/10, ], // total=10, rf=[0,0.1,0.2,0.3,0.4]
             ['frequencies' => [0,1,2,3,4], 'index' => 1, 'expect' => 0/10 + 1/10, ],
             ['frequencies' => [0,1,2,3,4], 'index' => 2, 'expect' => 0/10 + 1/10 + 2/10, ],
             ['frequencies' => [0,1,2,3,4], 'index' => 3, 'expect' => 0/10 + 1/10 + 2/10 + 3/10, ],
@@ -693,7 +693,7 @@ final class FrequencyTableTest extends TestCase
             ['frequencies' => [0,1,2,3,4], 'index' => -1, 'expect' => null, ],
             ['frequencies' => [0,1,2,3,4], 'index' => 5, 'expect' => null, ],
             ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 0, 'expect' => 0/8, ], // array index is renumbered. [0=>0,1=>1,2=>3,3=>4]
-            ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 1, 'expect' => 0/8 + 1/8, ], // sum=8, rf=[0,0.125,0.375,0.5]
+            ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 1, 'expect' => 0/8 + 1/8, ], // total=8, rf=[0,0.125,0.375,0.5]
             ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 2, 'expect' => 0/8 + 1/8 + 3/8, ],
             ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 3, 'expect' => 0/8 + 1/8 + 3/8 + 4/8, ],
             ['frequencies' => [0=>0,1=>1,3=>3,4=>4], 'index' => 4, 'expect' => null, ],
@@ -701,7 +701,7 @@ final class FrequencyTableTest extends TestCase
         $ft = new FrequencyTable();
 
         foreach($cases as $index => $case) {
-            $ft->setSum($case['frequencies']);
+            $ft->setTotal($case['frequencies']);
             $this->assertSame($case['expect'],$ft->getCumulativeRelativeFrequency($case['frequencies'],$case['index']));
         }
     }
@@ -1095,6 +1095,66 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
+    public function test_validateShowOption_can_validate(): void
+    {
+        $cases = [
+            ['option' => null, 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => true, 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => false, 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => 0, 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => 1.2, 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => "0", 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => "1.2", 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => [], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => [null], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => [true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => [false], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => [0], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => [1.2], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ["0"], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => false], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => false, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => false], 'expect' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => false, ], ],
+            ['option' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => false], 'expect' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => false, ], ],
+            ['option' => ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => true], 'expect' => ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => false], 'expect' => ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => false, ], ],
+            ['option' => ['Hoge' => true, 'Mean' => true, 'STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true,], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['STDOUT' => true,], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => true,], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => false,], 'expect' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['STDOUT' => false,], 'expect' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => true, ], ],
+            ['option' => ['ReturnValue' => false], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => false, ], ],
+            ['option' => ['Mean' => false, 'STDOUT' => false,], 'expect' => ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => false, 'ReturnValue' => false], 'expect' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => false, ], ],
+            ['option' => ['STDOUT' => false, 'ReturnValue' => false], 'expect' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => false, ], ],
+            ['option' => ['Mean' => null, 'STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => null, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => null], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => null, 'STDOUT' => null, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => null, 'STDOUT' => true, 'ReturnValue' => null], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => null, 'STDOUT' => null, 'ReturnValue' => null], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => null, 'ReturnValue' => null], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => 0, 'STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => 0, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => 0], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => 0, 'STDOUT' => 0, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => 0, 'STDOUT' => true, 'ReturnValue' => 0], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => 0, 'STDOUT' => 0, 'ReturnValue' => 0], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+            ['option' => ['Mean' => true, 'STDOUT' => 0, 'ReturnValue' => 0], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach($cases as $index => $case) {
+            $this->assertSame($case['expect'],$ft->validateShowOption($case['option']));
+        }
+    }
+
     public function test_show_can_work_correctly(): void
     {
         $ft = new FrequencyTable();
@@ -1111,5 +1171,35 @@ final class FrequencyTableTest extends TestCase
             $string = $this->defaultTableSeparator . $column . $this->defaultTableSeparator;
             $this->assertStringContainsString($string,$output);
         }
+    }
+
+    public function test_show_can_switch_visibility_of_Mean(): void
+    {
+        $ft = new FrequencyTable();
+        $ft->setclassRange(10);
+        $ft->setData([0,5,10,15,20]);
+        $needle = $ft->getTableSeparator() . 'Mean' . $ft->getTableSeparator();
+
+        $returnValue = $ft->show(['Mean'=>true]);
+        $this->assertTrue(str_contains($returnValue, $needle));
+
+        $returnValue = $ft->show(['Mean'=>false]);
+        $this->assertFalse(str_contains($returnValue, $needle));
+    }
+
+    public function test_show_can_switch_return_value(): void
+    {
+        $ft = new FrequencyTable();
+        $ft->setclassRange(10);
+        $ft->setData([0,5,10,15,20]);
+
+        $returnValue = $ft->show();
+        $this->assertIsString($returnValue);
+
+        $returnValue = $ft->show(['ReturnValue' => true]);
+        $this->assertIsString($returnValue);
+        
+        $returnValue = $ft->show(['ReturnValue' => false]);
+        $this->assertNull($returnValue);
     }
 }

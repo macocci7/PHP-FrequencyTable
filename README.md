@@ -5,6 +5,7 @@
 - [Prerequisite](#prerequisite)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Methods](#methods)
 - [Examples](#examples)
 - [Testing](#testing)
 - [LICENSE](#license)
@@ -233,6 +234,10 @@ The name of new PHP file is `Example.php`.
     |20 ~ 30|1|0.20|25.0|25.0|
     |Total|5|1.00|---|65.0|
     |Mean|---|---|---|13.0|
+
+## Methods
+
+Learn more: [Methods](Methods.md)
 
 ## Examples
 

@@ -8,7 +8,7 @@ class FrequencyTable {
 
     private $data = null;
     private $classRange = null;
-    private $sum = null;
+    private $total = null;
     private $defaultTableSeparator = '|';
     private $classSeparator = ' ~ ';
     private $tableSeparator = null;
@@ -74,11 +74,11 @@ class FrequencyTable {
     public function setData($data = null) {
         if ($this->isSettableData($data)) {
             $this->data = $data;
-            $this->setSum($this->getFrequencies());
+            $this->setTotal($this->getFrequencies());
             return true;
         }
         $this->data = null;
-        $this->sum = null;
+        $this->total = null;
         return false;
     }
 
@@ -170,20 +170,20 @@ class FrequencyTable {
         return $this->isSettableData($data) ? max($data) : null;
     }
 
-    public function setSum($data) {
+    public function setTotal($data) {
         if (!$this->isSettableData($data)) {
-            $this->sum = null;
+            $this->total = null;
             return false;
         }
-        $this->sum = array_sum($data);
+        $this->total = array_sum($data);
         return true;
     }
 
-    public function getSum() {
-        if (null == $this->sum && null != $this->getData()) {
-            $this->setSum($this->getFrequencies());
+    public function getTotal() {
+        if (null == $this->total && null != $this->getData()) {
+            $this->setTotal($this->getFrequencies());
         }
-        return $this->sum;
+        return $this->total;
     }
 
     public function getClassValue($class) {
@@ -192,9 +192,9 @@ class FrequencyTable {
     }
 
     public function getRelativeFrequency($frequency) {
-        if (!$this->getSum() || !(is_int($frequency))) return;
-        if ($frequency < 0 || $frequency > $this->getSum()) return;
-        return $frequency / $this->getSum();
+        if (!$this->getTotal() || !(is_int($frequency))) return;
+        if ($frequency < 0 || $frequency > $this->getTotal()) return;
+        return $frequency / $this->getTotal();
     }
 
     public function getCumulativeRelativeFrequency($frequencies, $index) {
@@ -208,13 +208,13 @@ class FrequencyTable {
     }
 
     public function getMean() {
-        if (!$this->isSettableData($this->getData()) || !$this->getSum()) return;
+        if (!$this->isSettableData($this->getData()) || !$this->getTotal()) return;
         $fc = [];
         $classes = $this->getClasses();
         foreach ($this->getFrequencies() as $index => $frequency) {
             $fc[] = $this->getClassValue($classes[$index]) * $frequency;
         }
-        return array_sum($fc) / $this->getSum();
+        return array_sum($fc) / $this->getTotal();
     }
 
     public function getMode() {
@@ -341,8 +341,8 @@ class FrequencyTable {
         }
         $data[] = [
             'Class' => 'Total',
-            'Frequency' => $this->getSum(),
-            'CumulativeFrequency' => $this->getSum(),
+            'Frequency' => $this->getTotal(),
+            'CumulativeFrequency' => $this->getTotal(),
             'RelativeFrequency' => number_format(array_sum($rf),2,'.',','),
             'CumulativeRelativeFrequency' => number_format(array_sum($rf),2,'.',','),
             'ClassValue' => '---',
@@ -374,18 +374,31 @@ class FrequencyTable {
         return $filtered;
     }
 
-    public function show($option = ['Mean' => true, ]) {
+    public function validateShowOption($optionParam) {
+        $option = ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ];
+        if (!is_array($optionParam)) return $option;
+        if (empty($optionParam)) return $option;
+        foreach($optionParam as $key => $value) {
+            if (array_key_exists($key,$option) && is_bool($value)) {
+                $option[$key] = $value;
+            }
+        }
+        return $option;
+    }
+
+    public function show($optionParam = ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ]) {
+        $option = $this->validateShowOption($optionParam);
         $buffer = null;
         if (!$this->isSettableData($this->data)) {
             $buffer .= "no data to show\n";
-            echo $buffer;
-            return $buffer;
+            if ($option['STDOUT']) echo $buffer;
+            return $option['ReturnValue'] ? $buffer : null;
         }
         $separator = $this->getTableSeparator();
         foreach($this->filterData2Show($this->getData2Show($option)) as $row) {
             $buffer .= $separator . implode($separator, $row) . $separator . "\n";
         }
-        echo $buffer;
-        return $buffer;
+        if ($option['STDOUT']) echo $buffer;
+        return $option['ReturnValue'] ? $buffer : null;
     }
 }
