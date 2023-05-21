@@ -46,7 +46,7 @@ Runtime:       PHP 8.1.2-1ubuntu2.11
 |Mean|---|---|---|13.0|
 ...                     45 / 45 (100%)
 
-Time: 00:00.076, Memory: 24.40 MB
+Time: 00:00.069, Memory: 24.40 MB
 
 Frequency Table
  ✔ Constructor can create instance without params
