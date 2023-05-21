@@ -244,6 +244,7 @@ Learn more: [Methods](Methods.md)
 - [ExampleCases.php](src/ExampleCases.php) >> results in [ExampleCases.md](src/ExampleCases.md)
 - [PopulationInJapan2022.php](src/PopulationInJapan2022.php) >> results in [PopulationInJapan2022.md](src/PopulationInJapan2022.md)
 - [OhtaniShohei2023.php](src/OhtaniShohei2023.php) >> results in [OhtaniShohei2023.md](src/OhtaniShohei2023.md)
+- [OutlierDetection.php](src/OutlierDetection.php) >> results in [OutlierDetection.md](src/OutlierDetection.md)
 - [FrequencyTableTest.php](tests/FrequencyTableTest.php) : all usage is written in this code.
 
 ## Testing
@@ -278,6 +279,8 @@ Outlier Detection is not the job of FrequencyTable.
 
 But, if you want to detect outliers, you can detect them by using IQR (Inter Quartile Range) Method.
 
+Sample code is here: [OutlierDetection.php](src/OutlierDetection.php) >> results in [OutlierDetection.md](src/OutlierDetection.md)
+
 ### IQR Method
 
 1. Set the UCL
@@ -309,6 +312,6 @@ Have a happy coding!
 
 *Document written: 2023/05/18*
 
-*Last updated: 2023/05/19*
+*Last updated: 2023/05/21*
 
 Copyright (c) 2023 macocci7

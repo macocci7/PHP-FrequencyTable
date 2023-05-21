@@ -38,7 +38,7 @@ $ft->setClassRange(10);
 $groupBy = groupBy($csv, "game_date", "release_speed");
 echo "# Pitching speed (MPH)\n\n";
 echo "## Pitcher:\n\n";
-echo "[Ohtani Shohei](#https://www.mlb.com/player/shohei-ohtani-660271)\n\n";
+echo "[Ohtani Shohei](https://www.mlb.com/player/shohei-ohtani-660271)\n\n";
 echo "## Data Source\n\n[savant](https://baseballsavant.mlb.com/)\n\n";
 echo "## Dates\n\n";
 foreach(array_keys($groupBy) as $key) {

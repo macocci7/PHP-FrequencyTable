@@ -36,6 +36,7 @@
 - [getValidColumns2Show()](#getvalidcolumns2show)
 - [setColumns2Show()](#setcolumns2show)
 - [show()](#show)
+- [parse()](#parse)
 
 ***
 
@@ -1825,3 +1826,143 @@ Prints the Frequency Table in markdown format to standard output.
     CASE3: STDOUT: OFF / RETURN VALUE: OFF
     NULL
     ```
+
+***
+
+### parse
+
+```php
+parse()
+```
+
+Parses the data set and returns parsed data.
+
+Before using this method, you should set Class Range and data.
+
+#### Return
+
+- Type: 2 Dimensional Hash Array
+- Structure: is like as follows.
+    ```php
+    [
+        'classRange' => 10,
+        'data' => [0,5,10,15,20],
+        'Max' => 20,
+        'Min' => 0,
+        'DataRange' => 20,
+        'Mode' => 15,
+        'Mean' => 13,
+        'Median' => 10,
+        'MedianClass' => ['index' => 1, 'bottom' => 10, 'top' => 20 ],
+        'FirstQuartile' => 2.5,
+        'ThirdQuartile' => 17.5,
+        'InterQuartileRange' => 15,
+        'QuartileDeviation' => 7.5,
+        'Classes' => [
+            0 => ['bottom' => 0, 'top' => 10],
+            1 => ['bottom' => 10, 'top' => 20],
+            2 => ['bottom' => 20, 'top' => 30],
+        ],
+        'Frequencies' => [2,2,1],
+        'FrequencyTable' => "...(strings)...",
+    ]
+    ```
+
+#### Example
+
+- PHP
+    ```php
+    <?php
+    require('./class/FrequencyTable.php');
+
+    $ft = new FrequencyTable();
+
+    $ft->setClassRange(10);
+    $ft->setData([0,5,10]);
+
+    var_dump($ft->parse());
+    ```
+
+- Result
+    ```bash
+    array(16) {
+        ["classRange"]=>
+        int(10)
+        ["data"]=>
+        array(3) {
+            [0]=>
+            int(0)
+            [1]=>
+            int(5)
+            [2]=>
+            int(10)
+        }
+        ["Max"]=>
+        int(10)
+        ["Min"]=>
+        int(0)
+        ["DataRange"]=>
+        int(10)
+        ["Mode"]=>
+        int(5)
+        ["Mean"]=>
+        float(8.333333333333334)
+        ["Median"]=>
+        int(5)
+        ["MedianClass"]=>
+        array(3) {
+            ["index"]=>
+            int(0)
+            ["bottom"]=>
+            int(0)
+            ["top"]=>
+            int(10)
+        }
+        ["FirstQuartile"]=>
+        int(0)
+        ["ThirdQuartile"]=>
+        int(10)
+        ["InterQuartileRange"]=>
+        int(10)
+        ["QuartileDeviation"]=>
+        int(5)
+        ["Classes"]=>
+        array(2) {
+            [0]=>
+            array(2) {
+            ["bottom"]=>
+            int(0)
+            ["top"]=>
+            int(10)
+            }
+            [1]=>
+            array(2) {
+            ["bottom"]=>
+            int(10)
+            ["top"]=>
+            int(20)
+            }
+        }
+        ["Frequencies"]=>
+        array(2) {
+            [0]=>
+            int(2)
+            [1]=>
+            int(1)
+        }
+        ["FrequencyTable"]=>
+        string(200) "|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|---:|
+    |0 ~ 10|2|0.67|5.0|10.0|
+    |10 ~ 20|1|0.33|15.0|15.0|
+    |Total|3|1.00|---|25.0|
+    |Mean|---|---|---|8.3|
+    "
+    }
+    ```
+
+***
+
+*Document written: 2023/05/20*
+
+*Last Updated: 2023/05/21*
