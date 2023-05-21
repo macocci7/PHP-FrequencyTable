@@ -44,9 +44,9 @@ Runtime:       PHP 8.1.2-1ubuntu2.11
 |20 ~ 30|1|0.20|25.0|25.0|
 |Total|5|1.00|---|65.0|
 |Mean|---|---|---|13.0|
-.                       43 / 43 (100%)
+...                     45 / 45 (100%)
 
-Time: 00:00.066, Memory: 24.40 MB
+Time: 00:00.076, Memory: 24.40 MB
 
 Frequency Table
  ✔ Constructor can create instance without params
@@ -92,5 +92,7 @@ Frequency Table
  ✔ Show can work correctly
  ✔ Show can switch visibility of Mean
  ✔ Show can switch return value
+ ✔ Parse return null under invalid condition
+ ✔ Parse can return valid data
 
-OK (43 tests, 1618 assertions)
+OK (45 tests, 1642 assertions)

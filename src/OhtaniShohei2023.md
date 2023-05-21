@@ -2,7 +2,7 @@
 
 ## Pitcher:
 
-[Ohtani Shohei](#https://www.mlb.com/player/shohei-ohtani-660271)
+[Ohtani Shohei](https://www.mlb.com/player/shohei-ohtani-660271)
 
 ## Data Source
 

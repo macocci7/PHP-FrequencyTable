@@ -562,6 +562,7 @@ final class FrequencyTableTest extends TestCase
             ['data' => [10], 'expect' => 10, ],
             ['data' => [-10], 'expect' => -10, ],
             ['data' => [-10,0,5], 'expect' => 5, ],
+            ['data' => [100,-15,30,-21,148,45], 'expect' => 148, ],
         ];
         $ft = new FrequencyTable();
 
@@ -1201,5 +1202,68 @@ final class FrequencyTableTest extends TestCase
         
         $returnValue = $ft->show(['ReturnValue' => false]);
         $this->assertNull($returnValue);
+    }
+
+    public function test_parse_return_null_under_invalid_condition(): void
+    {
+        $cases = [
+            ['classRange' => null, 'data' => null, ],
+            ['classRange' => true, 'data' => null, ],
+            ['classRange' => false, 'data' => null, ],
+            ['classRange' => 0, 'data' => null, ],
+            ['classRange' => 1.2, 'data' => null, ],
+            ['classRange' => -1, 'data' => null, ],
+            ['classRange' => "10", 'data' => null, ],
+            ['classRange' => 10, 'data' => null, ],
+            ['classRange' => [], 'data' => null, ],
+            ['classRange' => 10, 'data' => true, ],
+            ['classRange' => 10, 'data' => false, ],
+            ['classRange' => 10, 'data' => 0, ],
+            ['classRange' => 10, 'data' => 1.2, ],
+            ['classRange' => 10, 'data' => "10", ],
+            ['classRange' => 10, 'data' => [], ],
+            ['classRange' => 10, 'data' => [[10]], ],
+            ['classRange' => 10, 'data' => [null], ],
+            ['classRange' => 10, 'data' => [true], ],
+            ['classRange' => 10, 'data' => [false], ],
+            ['classRange' => 10, 'data' => ["10"], ],
+            ['classRange' => 10, 'data' => [10,20,"30"], ],
+            ['classRange' => 10, 'data' => [1.2,3.4,"4.6"], ],
+        ];
+
+        foreach($cases as $index => $case) {
+            $ft = new FrequencyTable();
+            $ft->setClassRange($case['classRange']);
+            $ft->setData($case['data']);
+            $this->assertNull($ft->parse());
+            unset($ft);
+        }
+    }
+
+    public function test_parse_can_return_valid_data(): void
+    {
+        $ft = new FrequencyTable();
+        $ft->setClassRange(10);
+        $data = [0,5,10,15,20];
+        $ft->setData($data);
+        $expect = [
+            'classRange' => 10,
+            'data' => $data,
+            'Max' => 20,
+            'Min' => 0,
+            'DataRange' => 20,
+            'Mode' => 5,
+            'Mean' => 13,
+            'Median' => 10,
+            'MedianClass' => ['index'=>1,'bottom'=>10,'top'=>20],
+            'FirstQuartile' => 2.5,
+            'ThirdQuartile' => 17.5,
+            'InterQuartileRange' => 15.0,
+            'QuartileDeviation' => 7.5,
+            'Classes' => [['bottom'=>0,'top'=>10],['bottom'=>10,'top'=>20],['bottom'=>20,'top'=>30]],
+            'Frequencies' => [2,2,1],
+            'FrequencyTable' => $ft->show(['Mean'=>true,'STDOUT'=>false,'ReturnValue'=>true]),
+        ];
+        $this->assertSame($expect,$ft->parse());
     }
 }

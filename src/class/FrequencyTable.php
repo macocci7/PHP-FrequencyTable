@@ -401,4 +401,27 @@ class FrequencyTable {
         if ($option['STDOUT']) echo $buffer;
         return $option['ReturnValue'] ? $buffer : null;
     }
+
+    public function parse() {
+        if (!$this->isSettableClassRange($this->getClassRange())) return;
+        if (!$this->isSettableData($this->getData())) return;
+        return [
+            'classRange' => $this->getClassRange(),
+            'data' => $this->getData(),
+            'Max' => $this->getMax($this->getData()),
+            'Min' => $this->getMin($this->getData()),
+            'DataRange' => $this->getDataRange($this->getData()),
+            'Mode' => $this->getMode(),
+            'Mean' => $this->getMean(),
+            'Median' => $this->getMedian($this->getData()),
+            'MedianClass' => $this->getMedianClass(),
+            'FirstQuartile' => $this->getFirstQuartile($this->getData()),
+            'ThirdQuartile' => $this->getThirdQuartile($this->getData()),
+            'InterQuartileRange' => $this->getInterQuartileRange($this->getData()),
+            'QuartileDeviation' => $this->getQuartileDeviation($this->getData()),
+            'Classes' => $this->getClasses(),
+            'Frequencies' => $this->getFrequencies(),
+            'FrequencyTable' => $this->show(['Mean'=>true,'STDOUT'=>false,'ReturnValue'=>true]),
+        ];
+    }
 }
