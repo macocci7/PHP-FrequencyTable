@@ -5,6 +5,7 @@
 - [Prerequisite](#prerequisite)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Methods](#methods)
 - [Examples](#examples)
 - [Testing](#testing)
 - [LICENSE](#license)
@@ -68,7 +69,7 @@ You can use FrequencyTable class as follows.
 
 **PHP Code: [Example.php](src/Example.php)**
 
-```
+```php
 <?php
 require('./class/FrequencyTable.php');
 
@@ -78,14 +79,14 @@ $ft->show();
 
 **Command to Excute**
 
-```
+```bash
 cd src
 php -f Example.php
 ```
 
 **Standard Output**
 
-```
+```bash
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |0 ~ 10|2|0.40|5.0|10.0|
@@ -115,7 +116,7 @@ The name of new PHP file is `Example.php`.
 
     Require `FrequencyTable.php` as follows in your PHP code (Example.php).
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
     ```
@@ -126,7 +127,7 @@ The name of new PHP file is `Example.php`.
 
     Then create an instance of FrequencyTable in your PHP code as follows.
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
 
@@ -137,7 +138,7 @@ The name of new PHP file is `Example.php`.
 
     Then set the class range you as follows.
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
 
@@ -149,7 +150,7 @@ The name of new PHP file is `Example.php`.
 
     Then set the data to collect statistics as follows.
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
 
@@ -164,7 +165,7 @@ The name of new PHP file is `Example.php`.
 
     Now you can show the Frequency Table of the data you gave before as follows.
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
 
@@ -179,7 +180,7 @@ The name of new PHP file is `Example.php`.
 
     Or you can set both the class range and the data when you create an instance of FrequencyTable as follows.
 
-    ```
+    ```php
     <?php
     require('./class/FrequencyTable.php');
 
@@ -198,13 +199,13 @@ The name of new PHP file is `Example.php`.
 
     Excecute the PHP code in you console as follows.
 
-    ```
+    ```bash
     php -f Example.php
     ```
 
     Standard Output
 
-    ```
+    ```bash
     $ php -f Example.php
     |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
     |:---:|:---:|:---:|:---:|---:|
@@ -216,7 +217,7 @@ The name of new PHP file is `Example.php`.
     ```
     You can make the output file as follows.
 
-    ```
+    ```bash
     php -f Example.php > Example.md
     ```
 
@@ -234,6 +235,10 @@ The name of new PHP file is `Example.php`.
     |Total|5|1.00|---|65.0|
     |Mean|---|---|---|13.0|
 
+## Methods
+
+Learn more: [Methods](Methods.md)
+
 ## Examples
 
 - [ExampleCases.php](src/ExampleCases.php) >> results in [ExampleCases.md](src/ExampleCases.md)
@@ -247,75 +252,9 @@ You can test FrequencyTable.php using PHPUnit (phpunit.phar).
 
 Type the command at the project top folder.
 
-```
+```bash
 ./tools/phpunit.phar ./tests/FrequencyTableTest.php --color auto --testdox
 ```
-
-<details><summary>The result of this command:</summary>
-
-```
-PHPUnit 10.1.3 by Sebastian Bergmann and contributors.
-
-Runtime:       PHP 8.1.2-1ubuntu2.11
-
-........................................no data to show
-|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
-|:---:|:---:|:---:|:---:|---:|
-|0 ~ 10|2|0.40|5.0|10.0|
-|10 ~ 20|2|0.40|15.0|30.0|
-|20 ~ 30|1|0.20|25.0|25.0|
-|Total|5|1.00|---|65.0|
-|Mean|---|---|---|13.0|
-.                         41 / 41 (100%)
-
-Time: 00:00.072, Memory: 24.40 MB
-
-Frequency Table
- ✔ Constructor can create instance without params
- ✔ Constructor can set only data
- ✔ Constructor can set data
- ✔ Constructor can set columns2Show
- ✔ IsSettableData can judge correctly
- ✔ SetData can set null
- ✔ SetData can set empty data
- ✔ SetData can set correct data
- ✔ GetData can get correct data
- ✔ GetDataRange can get data range correctly
- ✔ IsSettableClassRange can judge correctly
- ✔ SetClassRange can set valid classRange
- ✔ GetFrequencies can get frequencies correctly
- ✔ GetClasses can get classes correctly
- ✔ IsSettableClass can judge correctly
- ✔ GetFrequency can get frequency correctly
- ✔ GetCumulativeFrequency can get cumulative frequency correctly
- ✔ GetMin can get correctly
- ✔ GetMax can get correctly
- ✔ SetSum and getSum can work correctly
- ✔ GetClassValue can get class value correctly
- ✔ GetRelativeFrequency can get relative frequency correctly
- ✔ GetCumulativeRelativeFrequency can get cumulative relative frequency correctly
- ✔ GetMean can get mean correctly
- ✔ GetMode can get mode correctly
- ✔ GetMedian can get median correctly
- ✔ GetMedianClass can get median class
- ✔ GetFirstQuartile can get fist quartile correctly
- ✔ GetThirdQuartile can get fist quartile correctly
- ✔ GetInterQuartileRange can get inter quartile range correctly
- ✔ GetQuartileDeviation can get quartile deviation correctly
- ✔ SetTableSeparator and getTableSeparator can work correctly
- ✔ SetDefaultTableSeparator can set default table separator
- ✔ IsSettableColumns2Show can judge columns 2 show correctly
- ✔ GetValidColumns2Show can get valid columns 2 show
- ✔ SetColumns2Show can set columns 2 show correctly
- ✔ GetData2Show cannot get data 2 show with unsettable data
- ✔ GetData2Show can get data 2 show with settable data
- ✔ GetData2Show can switch visibility of mean
- ✔ FilterData2Show can filter data 2 show correctly
- ✔ Show can work correctly
-
-OK (41 tests, 1451 assertions)
-```
-</details>
 
 [TestResult.txt](TestResult.txt)
 

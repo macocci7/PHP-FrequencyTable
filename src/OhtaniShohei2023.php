@@ -37,9 +37,8 @@ $ft->setClassRange(10);
 
 $groupBy = groupBy($csv, "game_date", "release_speed");
 echo "# Pitching speed (MPH)\n\n";
-echo "## Pitcher: Ohtani Shohei\n\n";
-echo "![Ohtani Shohei](https://img.mlbstatic.com/mlb-photos/image/upload/w_180,d_people:generic:headshot:silo:current.png,q_auto:best,f_auto/v1/people/660271/headshot/silo/current)\n\n";
-echo "*(Image Source: MLB)*\n\n";
+echo "## Pitcher:\n\n";
+echo "[Ohtani Shohei](#https://www.mlb.com/player/shohei-ohtani-660271)\n\n";
 echo "## Data Source\n\n[savant](https://baseballsavant.mlb.com/)\n\n";
 echo "## Dates\n\n";
 foreach(array_keys($groupBy) as $key) {

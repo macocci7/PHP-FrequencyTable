@@ -1,10 +1,8 @@
 # Pitching speed (MPH)
 
-## Pitcher: Ohtani Shohei
+## Pitcher:
 
-![Ohtani Shohei](https://img.mlbstatic.com/mlb-photos/image/upload/w_180,d_people:generic:headshot:silo:current.png,q_auto:best,f_auto/v1/people/660271/headshot/silo/current)
-
-*(Image Source: MLB)*
+[Ohtani Shohei](#https://www.mlb.com/player/shohei-ohtani-660271)
 
 ## Data Source
 
