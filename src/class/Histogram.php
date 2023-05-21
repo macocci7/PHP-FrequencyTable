@@ -17,7 +17,7 @@ class Histogram {
     private $frameYRatio = 0.7;
     private $axisColor = '#666666';
     private $axisWidth = 2;
-    private $classColor = '333333';
+    private $classColor = '#333333';
     private $fontPath = 'fonts/ipaexg.ttf'; // IPA ex Gothic 00401
     //private $fontPath = 'fonts/ipaexm.ttf'; // IPA ex Mincho 00401
     private $fontSize = 16;
