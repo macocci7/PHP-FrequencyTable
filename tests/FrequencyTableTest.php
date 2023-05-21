@@ -1253,6 +1253,7 @@ final class FrequencyTableTest extends TestCase
             'Min' => 0,
             'DataRange' => 20,
             'Mode' => 5,
+            'Total' => 5,
             'Mean' => 13,
             'Median' => 10,
             'MedianClass' => ['index'=>1,'bottom'=>10,'top'=>20],

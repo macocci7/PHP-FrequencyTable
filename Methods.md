@@ -1851,6 +1851,7 @@ Before using this method, you should set Class Range and data.
         'Min' => 0,
         'DataRange' => 20,
         'Mode' => 15,
+        'Total' => 5,
         'Mean' => 13,
         'Median' => 10,
         'MedianClass' => ['index' => 1, 'bottom' => 10, 'top' => 20 ],
@@ -1885,73 +1886,75 @@ Before using this method, you should set Class Range and data.
 
 - Result
     ```bash
-    array(16) {
-        ["classRange"]=>
-        int(10)
-        ["data"]=>
-        array(3) {
-            [0]=>
-            int(0)
-            [1]=>
-            int(5)
-            [2]=>
-            int(10)
-        }
-        ["Max"]=>
-        int(10)
-        ["Min"]=>
+    array(17) {
+    ["classRange"]=>
+    int(10)
+    ["data"]=>
+    array(3) {
+        [0]=>
         int(0)
-        ["DataRange"]=>
+        [1]=>
+        int(5)
+        [2]=>
         int(10)
-        ["Mode"]=>
-        int(5)
-        ["Mean"]=>
-        float(8.333333333333334)
-        ["Median"]=>
-        int(5)
-        ["MedianClass"]=>
-        array(3) {
-            ["index"]=>
-            int(0)
-            ["bottom"]=>
-            int(0)
-            ["top"]=>
-            int(10)
-        }
-        ["FirstQuartile"]=>
+    }
+    ["Max"]=>
+    int(10)
+    ["Min"]=>
+    int(0)
+    ["DataRange"]=>
+    int(10)
+    ["Mode"]=>
+    int(5)
+    ["Total"]=>
+    int(3)
+    ["Mean"]=>
+    float(8.333333333333334)
+    ["Median"]=>
+    int(5)
+    ["MedianClass"]=>
+    array(3) {
+        ["index"]=>
         int(0)
-        ["ThirdQuartile"]=>
+        ["bottom"]=>
+        int(0)
+        ["top"]=>
         int(10)
-        ["InterQuartileRange"]=>
+    }
+    ["FirstQuartile"]=>
+    int(0)
+    ["ThirdQuartile"]=>
+    int(10)
+    ["InterQuartileRange"]=>
+    int(10)
+    ["QuartileDeviation"]=>
+    int(5)
+    ["Classes"]=>
+    array(2) {
+        [0]=>
+        array(2) {
+        ["bottom"]=>
+        int(0)
+        ["top"]=>
         int(10)
-        ["QuartileDeviation"]=>
-        int(5)
-        ["Classes"]=>
-        array(2) {
-            [0]=>
-            array(2) {
-            ["bottom"]=>
-            int(0)
-            ["top"]=>
-            int(10)
-            }
-            [1]=>
-            array(2) {
-            ["bottom"]=>
-            int(10)
-            ["top"]=>
-            int(20)
-            }
         }
-        ["Frequencies"]=>
+        [1]=>
         array(2) {
-            [0]=>
-            int(2)
-            [1]=>
-            int(1)
+        ["bottom"]=>
+        int(10)
+        ["top"]=>
+        int(20)
         }
-        ["FrequencyTable"]=>
-        string(200) "|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    }
+    ["Frequencies"]=>
+    array(2) {
+        [0]=>
+        int(2)
+        [1]=>
+        int(1)
+    }
+    ["FrequencyTable"]=>
+    string(200) "|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
     |:---:|:---:|:---:|:---:|---:|
     |0 ~ 10|2|0.67|5.0|10.0|
     |10 ~ 20|1|0.33|15.0|15.0|

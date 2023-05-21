@@ -412,6 +412,7 @@ class FrequencyTable {
             'Min' => $this->getMin($this->getData()),
             'DataRange' => $this->getDataRange($this->getData()),
             'Mode' => $this->getMode(),
+            'Total' => $this->getTotal($this->getFrequencies()),
             'Mean' => $this->getMean(),
             'Median' => $this->getMedian($this->getData()),
             'MedianClass' => $this->getMedianClass(),
