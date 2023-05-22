@@ -1,5 +1,6 @@
 {
     "require": {
-        "intervention/image": "^2.7"
+        "intervention/image": "^2.7",
+        "vlucas/valitron": "^1.4"
     }
 }

@@ -13,10 +13,9 @@ class Histogram {
     private $frameYRatio = 0.7;
     private $axisColor = '#666666';
     private $axisWidth = 2;
-    private $gridBackgroundColor = '#333333';
-    private $gridBorderWidth = 1;
-    private $gridBorderColor = '#333333';
-    private $gridHeightPitch = 2;
+    private $gridColor = '#333333';
+    private $gridWidth = 1;
+    private $gridHeightPitch;
     private $barWidth;
     private $barHeightPitch;
     private $barBackgroundColor = '#0000ff';
@@ -36,9 +35,95 @@ class Histogram {
     private $baseY;
     private $ft;
     private $parsed = [];
+    private $configValidation = [
+        'barHeigtPitch' => 'integer|min:1',
+        'canvasWidth' => 'integer|min:100|max:1920',
+        'canvasHeight' => 'integer|min:100|max:1080',
+        'canvasBackgroundColor' => 'colorcode',
+        'frameXRatio' => 'float|min:0.5|max:1.0',
+        'frameYRatio'=> 'float|min:0.5|max:1.0',
+        'axisColor' => 'colorcode',
+        'axisWidth' => 'integer|min:1',
+        'gridColor' => 'colorcode',
+        'gridWidth' => 'integer|min:1',
+        'gridHeightPitch' => 'integer|min:1',
+        'barBackgroundColor' => 'colorcode',
+        'barBorderColor' => 'colorcode',
+        'barBorderWidth' => 'integer:min:1',
+        'frequencyPolygonColor' => 'colorcode',
+        'frequencyPolygonWidth' => 'integer|min:1',
+        'cumulativeRelativeFrequencyPolygonColor' => 'colorcode',
+        'cumulativeRelativeFrequencyPolygonWidth' => 'integer|min:1',
+        'classColor' => 'colorcode',
+        'fontPath' => 'file',
+        'fontSize' => 'integer|min:6',
+    ];
 
     public function __construct() {
         Image::configure(['driver' => 'imagick']);
+    }
+
+    public function getValidConfig($config) {
+        if (!is_array($config)) return [];
+        if (empty($config)) return [];
+        $acceptableKeys = array_keys($this->configValidation);
+        $validConfig = [];
+        foreach($config as $key => $value) {
+            if (!in_array($key, $acceptableKeys)) continue;
+            //if ($this->validateConfigKey($key,$value)) $validConfig[$key] = $value;
+            if ($this->validateConfig($key, $value)) $validConfig[$key] = $value;
+        }
+        return $validConfig;
+    }
+
+    public function validateConfig($key, $value) {
+        if (!strlen($this->configValidation[$key])) return false;
+        $conditions = explode('|',$this->configValidation[$key]);
+        $v = new Valitron\Validator([$key, $value]);
+        foreach($conditions as $condition) {
+            if (strcmp('file',$condition)===0) {
+                if (!file_exists($value)) return false;
+            }
+            if (strcmp('integer',$condition)===0) {
+                $v->rule('integer', $key);
+                continue;
+            }
+            if (strcmp('float',$condition)===0) {
+                $v->rule('numeric', $key);
+                continue;
+            }
+            if (strcmp('string',$condition)===0) {
+                $v->rule('lengthMin', $key, 0);
+                continue;
+            }
+            if (strcmp('colorcode',$condition)===0) {
+                $v->rule('regex', $key, '/^#[A-Fa-f0-9]{3,6}$/');
+                continue;
+            }
+            if (str_starts_with($condition, 'min:')) {
+                $min = substr($condition, 4);
+                if (!is_numeric($min)) continue;
+                $v->rule('min', $key, (float) $min);
+                echo "min:".$min."\n";
+                if ($value < (float) $min) return false;
+                continue;
+            }
+            if (str_starts_with($condition, 'max:')) {
+                $max = substr($condition, 4);
+                if (!is_numeric($max)) continue;
+                $v->rule('max', $key, (float) $max);
+                echo "max:".$max."\n";
+                if ($value > (float) $max) return false;
+                continue;
+            }
+        }
+        return $v->validate();
+    }
+
+    public function configure($config) {
+        foreach($this->getValidConfig($config) as $key => $value) {
+            $this->{$key} = $value;
+        }
     }
 
     public function getHorizontalAxisPosition() {
@@ -79,16 +164,16 @@ class Histogram {
             $x2 = $this->canvasWidth * (1 + $this->frameXRatio) / 2;
             $y2 = $y1;
             $this->image->line($x1,$y1,$x2,$y2, function ($draw) {
-                $draw->background($this->gridBackgroundColor);
-                $draw->border($this->gridBorderWidth, $this->gridBorderColor);
+                $draw->color($this->gridColor);
+                $draw->width($this->gridWidth);
             });
             $x1 = $this->canvasWidth * (1 + $this->frameXRatio) / 2;
             $y1 = $this->baseY - $this->barMaxValue * $this->barHeightPitch;
             $x2 = $x1;
             $y2 = $this->baseY;
             $this->image->line($x1,$y1,$x2,$y2, function ($draw) {
-                $draw->background($this->gridBackgroundColor);
-                $draw->border($this->gridBorderWidth, $this->gridBorderColor);
+                $draw->color($this->gridColor);
+                $draw->width($this->gridWidth);
             });
         }
     }
@@ -210,6 +295,9 @@ class Histogram {
         $this->barMinValue = 0;
         $this->barWidth = $this->canvasWidth * $this->frameXRatio / count($this->parsed['Classes']);
         $this->barHeightPitch = $this->canvasHeight * $this->frameYRatio / $this->barMaxValue;
+        $this->gridHeightPitch = 1;
+        if ($this->gridHeightPitch < 0.2 * $this->barMaxValue)
+            $this->gridHeightPitch = (int) (0.2 * $this->barMaxValue);
         $this->image = Image::canvas($this->canvasWidth, $this->canvasHeight, $this->canvasBackgroundColor);
         $this->setGrids();
         $this->setGridValues();

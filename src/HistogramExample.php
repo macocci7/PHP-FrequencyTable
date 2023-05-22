@@ -7,6 +7,11 @@ $ft->setClassRange(10);
 $ft->setData([0,5,10,15,20,22,24,26,28,30,33,36,39,40,45,50]);
 
 $hg = new Histogram();
+$config = [
+    'canvasWidth' => 600,
+    'canvasHeight' => 500,
+];
+$hg->configure($config);
 $hg->create($ft, 'img/HistogramExample01.png');
 $hg->create($ft, 'img/HistogramExample02.png', ['bar' => true, 'frequencyPolygon' => true, 'cumulativeFrequencyPolygon' => false]);
 $hg->create($ft, 'img/HistogramExample03.png', ['bar' => true, 'frequencyPolygon' => false, 'cumulativeFrequencyPolygon' => true]);
