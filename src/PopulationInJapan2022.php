@@ -54,7 +54,7 @@ $population = [
 
 $classRange = 1000000;  // 1 million
 
-$frequencyTable = new FrequencyTable([
+$ft = new FrequencyTable([
     'data' => $population,
     'classRange' => $classRange,
     'columns2Show' => [ // Only specified columns will be shown.
@@ -78,4 +78,5 @@ foreach($population as $key => $value) {
 }
 echo "</details>\n\n<br />\n\n";
 echo "## Frequency Table\n\n";
-$frequencyTable->show();
+$ft->show();
+echo "\n";

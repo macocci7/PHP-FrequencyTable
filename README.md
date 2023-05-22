@@ -254,7 +254,7 @@ You can test FrequencyTable.php using PHPUnit (phpunit.phar).
 Type the command at the project top folder.
 
 ```bash
-./tools/phpunit.phar ./tests/FrequencyTableTest.php --color auto --testdox
+php ./tools/phpunit.phar ./tests/FrequencyTableTest.php --color auto --testdox
 ```
 
 [TestResult.txt](TestResult.txt)
@@ -264,6 +264,46 @@ Type the command at the project top folder.
 [MIT](LICENSE)
 
 ## Appendix
+
+### Histogram
+
+[Histogram.php](src/class/Histogram.php) class is also additionally implemented.
+
+Before using `Histogram.php`, you must install [intervention/image](https://github.com/Intervention/image) as follows.
+
+```bash
+php ./tools/composer.phar require intervention/image
+```
+
+Documents of Histogram is not written at present.
+
+To learn more, see some examples.
+
+- [HistogramExample.php](src/HistogramExample.php) >> results in [HistogramExample.md](src/HistogramExample.md)
+- [OhtaniShoheiHistogram2023.php](src/OhtaniShoheiHistogram2023.php) >> results in [OhtaniShoheiHistogram2023.md](src/OhtaniShoheiHistogram2023.md)
+- [PopulationInJapanHistogram2022.php](src/PopulationInJapanHistogram2022.php) >> result in [PopulationInJapanHistogram2022.md](src/PopulationInJapanHistogram2022.md)
+
+`Histogram.php` uses [IPA ex Gothic 00401](https://moji.or.jp/ipafont/ipafontdownload/) font.
+
+You can use other True Type Font by the next step:
+- Copy `*.ttf` file which you want to use into `src/fonts/` folder.
+- Configure the font path as follows: replace `hoge.ttf` with the name of the copied font file.
+    ```php
+    <?php
+    require('./class/FrequencyTable.php');
+    require('./class/Histogram.php');
+
+    $ft = new FrequencyTable();
+    $ft->setClassRange(10);
+    $ft->setData([0,5,10,15,20]);
+
+    $hg = new Histogram();
+    $hg->configure(['fontPath' => 'fonts/hoge.ttf']);
+    $hg->create($ft, 'img/Histogram.png');
+    ```
+- Note: If the `fontPath` you specified does not exist, `fontPath` is not overwritten and `IPA ex Gothic 0041` is used.
+
+### Boxplot
 
 You can also get all data to draw a boxplot by using this FrequencyTable class.(without outlier detection)
 - Max Value

@@ -33,7 +33,7 @@ function convertString2IntegerInArray($strings) {
 $csv = array_map('str_getcsv', file('csv/660271_data.csv'));
 
 $ft = new FrequencyTable();
-$ft->setClassRange(10);
+$ft->setClassRange(5);
 
 $groupBy = groupBy($csv, "game_date", "release_speed");
 echo "# Pitching speed (MPH)\n\n";
@@ -62,8 +62,7 @@ foreach ($groupBy as $key => $data) {
     echo "|ThirdQuartile|" . $ft->getThirdQuartile($d) . "|\n";
     echo "|InterQuartileRange|" . $ft->getInterQuartileRange($d) . "|\n";
     echo "|QuartileDeviation|" . $ft->getQuartileDeviation($d) . "|\n";
-    echo "</details>\n";
-    echo "\n";
+    echo "</details>\n\n";
     $ft->show();
-    echo "\n";
+    echo "\n\n";
 }
