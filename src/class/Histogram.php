@@ -3,7 +3,8 @@ require_once('../vendor/autoload.php');
 
 use Intervention\Image\ImageManagerStatic as Image;
 
-class Histogram {
+class Histogram
+{
 
     private $image;
     private $canvasWidth = 400;

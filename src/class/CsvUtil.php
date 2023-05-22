@@ -4,7 +4,8 @@
  * Note: This code is written only for use in 'OutlierDetection.php'.
  */
 
-class CsvUtil {
+class CsvUtil
+{
 
     public function __construct()
     {

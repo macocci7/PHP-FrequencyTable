@@ -269,11 +269,35 @@ php ./tools/phpunit.phar ./tests/FrequencyTableTest.php --color auto --testdox
 
 [Histogram.php](src/class/Histogram.php) class is also additionally implemented.
 
-Before using `Histogram.php`, you must install [intervention/image](https://github.com/Intervention/image) as follows.
+Before using `Histogram.php`, you need to install [intervention/image](https://github.com/Intervention/image) as follows.
 
 ```bash
 php ./tools/composer.phar require intervention/image
 ```
+
+And you also need to install [Imagick PHP extension](https://www.php.net/manual/en/book.imagick.php) and make it enabled.
+
+Check whether `imagick` is installed or not as follows:
+- Command:
+    ```bash
+    php -i | grep imagick
+    ```
+- Output: `imagick` is `enabled`.
+    ```bash
+    /etc/php/8.1/cli/conf.d/20-imagick.ini,
+    imagick
+    imagick module => enabled
+    imagick module version => 3.6.0
+    imagick classes => Imagick, ImagickDraw, ImagickPixel, ImagickPixelIterator, ImagickKernel
+    imagick.allow_zero_dimension_images => 0 => 0
+    imagick.locale_fix => 0 => 0
+    imagick.progress_monitor => 0 => 0
+    imagick.set_single_thread => 1 => 1
+    imagick.shutdown_sleep_count => 10 => 10
+    imagick.skip_version_check => 1 => 1
+    ```
+
+If `imagick` is not installed or not `enabled`, follow the instruction of [php.net](https://www.php.net/manual/en/book.imagick.php) to install it or make it enabled.
 
 Documents of Histogram is not written at present.
 
@@ -331,7 +355,7 @@ Sample code is here: [OutlierDetection.php](src/OutlierDetection.php) >> results
     ```
     UCL: Upper Control Limit / Q3: Third Quartile / IQR: Inter Quartile Range
 
-2. Set the LCL(Lower Control Limit)
+2. Set the LCL
 
     ```
     LCL = Q1 - 1.5IQR
@@ -352,6 +376,6 @@ Have a happy coding!
 
 *Document written: 2023/05/18*
 
-*Last updated: 2023/05/21*
+*Last updated: 2023/05/23*
 
 Copyright (c) 2023 macocci7
