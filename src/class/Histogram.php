@@ -58,14 +58,24 @@ class Histogram {
         'fontPath' => 'file',
         'fontSize' => 'integer|min:6',
     ];
+    private $configValidationWarning = [];
+    private $configValidationError = [];
 
     public function __construct() {
         Image::configure(['driver' => 'imagick']);
     }
 
     public function getValidConfig($config) {
-        if (!is_array($config)) return [];
-        if (empty($config)) return [];
+        $this->configValidationWarning = [];
+        $this->configValidationError = [];
+        if (!is_array($config)) {
+            $this->configValidationError['isArray'] = '$config is not array.';
+            return [];
+        }
+        if (empty($config)) {
+            $this->configValidationWarning['count'] = '$config is empty.';
+            return [];
+        }
         $acceptableKeys = array_keys($this->configValidation);
         $validConfig = [];
         foreach($config as $key => $value) {
@@ -79,45 +89,88 @@ class Histogram {
     public function validateConfig($key, $value) {
         if (!strlen($this->configValidation[$key])) return false;
         $conditions = explode('|',$this->configValidation[$key]);
-        $v = new Valitron\Validator([$key, $value]);
         foreach($conditions as $condition) {
             if (strcmp('file',$condition)===0) {
-                if (!file_exists($value)) return false;
+                if (!file_exists($value)) {
+                    $this->setConfigValidationError($key, $condition, $value.' does not exist.');
+                    return false;
+                }
+                continue;
             }
             if (strcmp('integer',$condition)===0) {
-                $v->rule('integer', $key);
+                if (!is_int($value)) {
+                    $this->setConfigValidationError($key, $condition, $value.' is not integer.');
+                    return false;
+                }
                 continue;
             }
             if (strcmp('float',$condition)===0) {
-                $v->rule('numeric', $key);
+                if (!is_float($value)) {
+                    $this->setConfigValidationError($key, $condition, $value.' is not float.');
+                    return false;
+                }
                 continue;
             }
             if (strcmp('string',$condition)===0) {
-                $v->rule('lengthMin', $key, 0);
+                if (!is_string($value)) {
+                    $this->setConfigValidationError($key, $condition, $value.' is not string.');
+                    return false;
+                }
                 continue;
             }
             if (strcmp('colorcode',$condition)===0) {
-                $v->rule('regex', $key, '/^#[A-Fa-f0-9]{3,6}$/');
+                if (!preg_match('/^#[A-Fa-f0-9]{3}$|^#[A-Fa-f0-9]{6}$/', $value)) {
+                    $this->setConfigValidationError($key, $condition, $value.' is not colorcode.');
+                    return false;
+                }
                 continue;
             }
             if (str_starts_with($condition, 'min:')) {
                 $min = substr($condition, 4);
-                if (!is_numeric($min)) continue;
-                $v->rule('min', $key, (float) $min);
-                echo "min:".$min."\n";
-                if ($value < (float) $min) return false;
+                if (!is_numeric($min)) {
+                    $this->setConfigValidationWarning($key, $condition, 'specified min condition ' . $min .' is not numeric.');
+                    continue;
+                }
+                if ($value < (float) $min) {
+                    $this->setConfigValidationError($key, $condition, $value . ' is less than ' . $min . '.');
+                    return false;
+                }
                 continue;
             }
             if (str_starts_with($condition, 'max:')) {
                 $max = substr($condition, 4);
-                if (!is_numeric($max)) continue;
-                $v->rule('max', $key, (float) $max);
-                echo "max:".$max."\n";
-                if ($value > (float) $max) return false;
+                if (!is_numeric($max)) {
+                    $this->setConfigValidationError($key, $condition, 'specified max condition ' . $max . ' is not numeric.');
+                    continue;
+                }
+                if ($value > (float) $max) {
+                    $this->setConfigValidationError($key, $condition, $value.' is greater than ' . $max . '.');
+                    return false;
+                }
                 continue;
             }
         }
-        return $v->validate();
+        return true;
+    }
+
+    private function setConfigValidationWarning($key, $rule, $message) {
+        if (!array_key_exists($this->configValidationWarning)) $this->configValidationWarning[$key] = [];
+        $this->configValidationWarning[$key][$rule] = $message;
+        return true;
+    }
+
+    private function setConfigValidationError($key, $rule, $message) {
+        if (!array_key_exists($this->configValidationError)) $this->configValidationError[$key] = [];
+        $this->configValidationError[$key][$rule] = $message;
+        return true;
+    }
+
+    public function getConfigValidationWarning() {
+        return $this->configValidationWarning;
+    }
+
+    public function getConfigValidationError() {
+        return $this->configValidationError;
     }
 
     public function configure($config) {
@@ -280,14 +333,25 @@ class Histogram {
         }
     }
 
-    public function create($FrequencyTable, $filePath, $option = [
-        'bar' => true,
-        'frequencyPolygon' => false,
-        'cumulativeFrequencyPolygon' => false
-    ]) {
-        if (!is_string($filePath)) return;
-        if (strlen($filePath) == 0) return;
-        $this->ft = $FrequencyTable;
+    public function setFrequencies() {
+        if (!array_key_exists('Frequencies', $this->parsed)) return;
+        $frequencies = $this->parsed['Frequencies'];
+        if (!is_array($frequencies)) return;
+        if (empty($frequencies)) return;
+        foreach($frequencies as $index => $frequency) {
+            $x = $this->baseX + ($index + 0.5) * $this->barWidth;
+            $y = $this->baseY - $frequency * $this->barHeightPitch - $this->fontSize * 0.6;
+            $this->image->text($frequency, $x, $y, function ($font) {
+                $font->file($this->fontPath);
+                $font->size($this->fontSize);
+                $font->color($this->classColor);
+                $font->align('center');
+                $font->valign('bottom');
+            });
+        }
+    }
+
+    private function setProperties() {
         $this->parsed = $this->ft->parse();
         $this->baseX = $this->canvasWidth * (1 - $this->frameXRatio) / 2;
         $this->baseY = $this->canvasHeight * (1 + $this->frameYRatio) / 2;
@@ -299,6 +363,18 @@ class Histogram {
         if ($this->gridHeightPitch < 0.2 * $this->barMaxValue)
             $this->gridHeightPitch = (int) (0.2 * $this->barMaxValue);
         $this->image = Image::canvas($this->canvasWidth, $this->canvasHeight, $this->canvasBackgroundColor);
+    }
+
+    public function create($FrequencyTable, $filePath, $option = [
+        'bar' => true,
+        'frequencyPolygon' => false,
+        'cumulativeFrequencyPolygon' => false,
+        'frequency' => false,
+    ]) {
+        if (!is_string($filePath)) return;
+        if (strlen($filePath) == 0) return;
+        $this->ft = $FrequencyTable;
+        $this->setProperties();
         $this->setGrids();
         $this->setGridValues();
         if (array_key_exists('bar', $option))
@@ -309,6 +385,8 @@ class Histogram {
         if (array_key_exists('cumulativeFrequencyPolygon', $option))
             if ($option['cumulativeFrequencyPolygon']) $this->setCumulativeRelativeFrequencyPolygon();
         $this->setClasses();
+        if (array_key_exists('frequency', $option))
+            if ($option['frequency']) $this->setFrequencies();
         $this->image->save($filePath);
     }
 }

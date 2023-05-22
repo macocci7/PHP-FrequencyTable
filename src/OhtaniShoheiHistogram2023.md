@@ -39,6 +39,8 @@
 |QuartileDeviation|6.5|
 </details>
 
+<details><summary>Frequency Table</summary>
+
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |75 ~ 80|2|0.02|77.5|155.0|
@@ -49,7 +51,11 @@
 |100 ~ 105|1|0.01|102.5|102.5|
 |Total|93|1.00|---|8,282.5|
 |Mean|---|---|---|89.1|
+</details>
 
+
+
+![Histogram:2023-03-30](img/HistogramOhtaniShohei2023-03-30.png)
 
 
 ## 2023-04-05
@@ -71,6 +77,8 @@
 |QuartileDeviation|5.5|
 </details>
 
+<details><summary>Frequency Table</summary>
+
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |70 ~ 75|1|0.01|72.5|72.5|
@@ -81,7 +89,11 @@
 |95 ~ 100|26|0.23|97.5|2,535.0|
 |Total|111|1.00|---|9,792.5|
 |Mean|---|---|---|88.2|
+</details>
 
+
+
+![Histogram:2023-04-05](img/HistogramOhtaniShohei2023-04-05.png)
 
 
 ## 2023-04-11
@@ -103,6 +115,8 @@
 |QuartileDeviation|5.5|
 </details>
 
+<details><summary>Frequency Table</summary>
+
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |70 ~ 75|2|0.02|72.5|145.0|
@@ -113,7 +127,11 @@
 |95 ~ 100|16|0.17|97.5|1,560.0|
 |Total|92|1.00|---|7,980.0|
 |Mean|---|---|---|86.7|
+</details>
 
+
+
+![Histogram:2023-04-11](img/HistogramOhtaniShohei2023-04-11.png)
 
 
 ## 2023-04-17
@@ -135,6 +153,8 @@
 |QuartileDeviation|4.5|
 </details>
 
+<details><summary>Frequency Table</summary>
+
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |75 ~ 80|1|0.03|77.5|77.5|
@@ -144,7 +164,11 @@
 |95 ~ 100|6|0.19|97.5|585.0|
 |Total|31|1.00|---|2,717.5|
 |Mean|---|---|---|87.7|
+</details>
 
+
+
+![Histogram:2023-04-17](img/HistogramOhtaniShohei2023-04-17.png)
 
 
 ## 2023-04-21
@@ -166,6 +190,8 @@
 |QuartileDeviation|4|
 </details>
 
+<details><summary>Frequency Table</summary>
+
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |65 ~ 70|1|0.01|67.5|67.5|
@@ -178,7 +204,11 @@
 |100 ~ 105|1|0.01|102.5|102.5|
 |Total|102|1.00|---|8,920.0|
 |Mean|---|---|---|87.5|
+</details>
 
+
+
+![Histogram:2023-04-21](img/HistogramOhtaniShohei2023-04-21.png)
 
 
 ## 2023-04-27
@@ -200,6 +230,8 @@
 |QuartileDeviation|6.5|
 </details>
 
+<details><summary>Frequency Table</summary>
+
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |70 ~ 75|4|0.04|72.5|290.0|
@@ -211,7 +243,11 @@
 |100 ~ 105|2|0.02|102.5|205.0|
 |Total|93|1.00|---|8,182.5|
 |Mean|---|---|---|88.0|
+</details>
 
+
+
+![Histogram:2023-04-27](img/HistogramOhtaniShohei2023-04-27.png)
 
 
 ## 2023-05-03
@@ -233,6 +269,8 @@
 |QuartileDeviation|6.5|
 </details>
 
+<details><summary>Frequency Table</summary>
+
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |75 ~ 80|1|0.01|77.5|77.5|
@@ -243,7 +281,11 @@
 |100 ~ 105|1|0.01|102.5|102.5|
 |Total|97|1.00|---|8,672.5|
 |Mean|---|---|---|89.4|
+</details>
 
+
+
+![Histogram:2023-05-03](img/HistogramOhtaniShohei2023-05-03.png)
 
 
 ## 2023-05-09
@@ -265,6 +307,8 @@
 |QuartileDeviation|5|
 </details>
 
+<details><summary>Frequency Table</summary>
+
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |75 ~ 80|1|0.01|77.5|77.5|
@@ -275,7 +319,11 @@
 |100 ~ 105|1|0.01|102.5|102.5|
 |Total|103|1.00|---|9,377.5|
 |Mean|---|---|---|91.0|
+</details>
 
+
+
+![Histogram:2023-05-09](img/HistogramOhtaniShohei2023-05-09.png)
 
 
 ## 2023-05-15
@@ -297,6 +345,8 @@
 |QuartileDeviation|4.5|
 </details>
 
+<details><summary>Frequency Table</summary>
+
 |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|---:|
 |75 ~ 80|2|0.02|77.5|155.0|
@@ -306,5 +356,9 @@
 |95 ~ 100|25|0.26|97.5|2,437.5|
 |Total|98|1.00|---|8,840.0|
 |Mean|---|---|---|90.2|
+</details>
 
+
+
+![Histogram:2023-05-15](img/HistogramOhtaniShohei2023-05-15.png)
 

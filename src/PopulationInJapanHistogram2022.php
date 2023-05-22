@@ -1,6 +1,7 @@
 <?php
 
 require('./class/FrequencyTable.php');
+require('./class/Histogram.php');
 
 $population = [
     '北海道' => 5246170,
@@ -77,6 +78,19 @@ foreach($population as $key => $value) {
     echo sprintf("|%s|%s|\n",$key,number_format($value));
 }
 echo "</details>\n\n<br />\n\n";
-echo "## Frequency Table\n\n";
+echo "<details><summary>Frequency Table</summary>\n\n";
 $ft->show();
-echo "\n";
+echo "\n</details>\n\n\n";
+
+$hg = new Histogram();
+$histogramPath = 'img/HistogramPopulationInJapan2022.png';
+$config = [
+    'canvasWidth' => 1024,
+    'canvasHeight' => 768,
+    'frameXRatio' => 0.9,
+    'fontSize' => 10,
+];
+$hg->configure($config);
+$hg->create($ft, $histogramPath, ['bar' => true, 'frequency' => true]);
+echo "## Histogram\n\n";
+echo '<img src="' . $histogramPath . '" width="1024" height="768">' . "\n\n";

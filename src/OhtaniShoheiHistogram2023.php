@@ -1,6 +1,7 @@
 <?php
 
 require('./class/FrequencyTable.php');
+require('./class/Histogram.php');
 
 function groupBy($csv, $keyColumn, $valueColumn) {
     // CSV MUST INCLUDES COLUMN NAMES IN HEAD LINE
@@ -35,6 +36,8 @@ $csv = array_map('str_getcsv', file('csv/660271_data.csv'));
 $ft = new FrequencyTable();
 $ft->setClassRange(5);
 
+$hg = new Histogram();
+
 $groupBy = groupBy($csv, "game_date", "release_speed");
 echo "# Pitching speed (MPH)\n\n";
 echo "## Pitcher:\n\n";
@@ -48,6 +51,8 @@ foreach ($groupBy as $key => $data) {
     $d = convertString2IntegerInArray($data);
     echo "\n## " . $key . "\n\n";
     $ft->setData($d);
+    $histogramPath = 'img/HistogramOhtaniShohei'.$key.'.png';
+    $hg->create($ft, $histogramPath, ['bar' => true, 'frequency' => true]);
     echo "<details><summary>Properties</summary>\n\n";
     echo "|Property|Value|\n";
     echo "|:---|---:|\n";
@@ -63,6 +68,10 @@ foreach ($groupBy as $key => $data) {
     echo "|InterQuartileRange|" . $ft->getInterQuartileRange($d) . "|\n";
     echo "|QuartileDeviation|" . $ft->getQuartileDeviation($d) . "|\n";
     echo "</details>\n\n";
+    echo "<details><summary>Frequency Table</summary>\n\n";
     $ft->show();
+    echo "</details>\n\n";
+    echo "\n\n";
+    echo "![Histogram:".$key."](".$histogramPath.")";
     echo "\n\n";
 }

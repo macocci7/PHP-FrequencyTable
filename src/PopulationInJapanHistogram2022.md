@@ -59,7 +59,7 @@
 
 <br />
 
-## Frequency Table
+<details><summary>Frequency Table</summary>
 
 |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|
 |:---:|:---:|:---:|:---:|:---:|:---:|---:|
@@ -80,4 +80,11 @@
 |14,000,000 ~ 15,000,000|1|47|0.02|1.00|14,500,000.0|14,500,000.0|
 |Total|47|47|1.00|1.00|---|125,500,000.0|
 |Mean|---|---|---|---|---|2,670,212.8|
+
+</details>
+
+
+## Histogram
+
+<img src="img/HistogramPopulationInJapan2022.png" width="1024" height="768">
 
