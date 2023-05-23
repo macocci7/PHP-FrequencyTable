@@ -274,6 +274,16 @@ php ./tools/phpunit.phar ./tests/FrequencyTableTest.php --color auto --testdox
 
 [Histogram.php](src/class/Histogram.php) class is also additionally implemented.
 
+You can create Histogram images like this:
+
+- Histogram & Frequency Polygon & Cumulative Relative Frequency Polygon & Frequency
+
+    ![HistogramExample08.png](src/img/HistogramExample08.png)
+
+- Histogram & Frequency
+
+    ![HistogramExample04.png](src/img/HistogramExample04.png)
+
 Before using `Histogram.php`, you need to install [intervention/image](https://github.com/Intervention/image) as follows.
 
 ```bash
@@ -340,8 +350,13 @@ It's still under construction, but you can create boxplot image file by using th
 
 Example:
 - [BoxplotExample.php](src/BoxplotExample.php) >> results in:
-    - [BoxplotExample672282_01.png](src/img/BoxplotExample672282_01.png)
-    - [BoxplotExample672282_02.png](src/img/BoxplotExample672282_02.png)
+    - with Outlier Detection & Jitter Plotting
+
+        ![BoxplotExample672282_01.png](src/img/BoxplotExample672282_01.png)
+
+    - no Outlier Detection, no Jitter Plotting
+
+        ![BoxplotExample672282_02.png](src/img/BoxplotExample672282_02.png)
 
 `Boxplot.php` has instance of FrequencyTable inside.
 
