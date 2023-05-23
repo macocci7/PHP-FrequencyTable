@@ -1,12 +1,15 @@
 <?php
 require_once('../vendor/autoload.php');
+require_once('./class/FrequencyTable.php');
 
 use Intervention\Image\ImageManagerStatic as Image;
 
-class Histogram
+class Boxplot
 {
     private $ft;
     private $image;
+    private $data;
+    private $parsed = [];
     private $canvasWidth = 400;
     private $canvasHeight = 300;
     private $canvasBackgroundColor = '#ffffff';
@@ -14,191 +17,309 @@ class Histogram
     private $frameYRatio = 0.7;
     private $axisColor = '#666666';
     private $axisWidth = 2;
-    private $gridColor = '#333333';
+    private $gridColor = '#999999';
     private $gridWidth = 1;
     private $gridHeightPitch;
-    private $barWidth;
-    private $barHeightPitch;
-    private $barBackgroundColor = '#0000ff';
-    private $barBorderColor = '#9999ff';
-    private $barBorderWidth = 1;
-    private $frequencyPolygonColor = '#ff0000';
-    private $frequencyPolygonWidth = 2;
-    private $cumulativeRelativeFrequencyPolygonColor = '#33ff66';
-    private $cumulativeRelativeFrequencyPolygonWidth = 2;
-    private $classColor = '#333333';
+    private $pixGridWidth;
+    private $gridMax;
+    private $gridMin;
+    private $boxCount = 0;
+    private $boxWidth = 20;
+    private $boxBackgroundColor = '#9999cc';
+    private $boxBorderColor = '#3333cc';
+    private $boxBorderWidth = 1;
+    private $pixHeightPitch;
+    private $whiskerColor = '#3333cc';
+    private $whiskerWidth = 1;
     private $fontPath = 'fonts/ipaexg.ttf'; // IPA ex Gothic 00401
     //private $fontPath = 'fonts/ipaexm.ttf'; // IPA ex Mincho 00401
     private $fontSize = 16;
-    private $barMaxValue;
-    private $barMinValue;
+    private $fontColor = '#333333';
     private $baseX;
     private $baseY;
-    private $parsed = [];
-    private $configValidation = [
-        'barHeigtPitch' => 'integer|min:1',
-        'canvasWidth' => 'integer|min:100|max:1920',
-        'canvasHeight' => 'integer|min:100|max:1080',
-        'canvasBackgroundColor' => 'colorcode',
-        'frameXRatio' => 'float|min:0.5|max:1.0',
-        'frameYRatio'=> 'float|min:0.5|max:1.0',
-        'axisColor' => 'colorcode',
-        'axisWidth' => 'integer|min:1',
-        'gridColor' => 'colorcode',
-        'gridWidth' => 'integer|min:1',
-        'gridHeightPitch' => 'integer|min:1',
-        'barBackgroundColor' => 'colorcode',
-        'barBorderColor' => 'colorcode',
-        'barBorderWidth' => 'integer:min:1',
-        'frequencyPolygonColor' => 'colorcode',
-        'frequencyPolygonWidth' => 'integer|min:1',
-        'cumulativeRelativeFrequencyPolygonColor' => 'colorcode',
-        'cumulativeRelativeFrequencyPolygonWidth' => 'integer|min:1',
-        'classColor' => 'colorcode',
-        'fontPath' => 'file',
-        'fontSize' => 'integer|min:6',
-    ];
-    private $configValidationWarning = [];
-    private $configValidationError = [];
+    private $outlier = true;
+    private $outlierDiameter = 2;
+    private $outlierColor = '#ff0000';
+    private $jitter = false;
+    private $jitterColor = '#009900';
+    private $jitterDiameter = 1;
 
     public function __construct() {
         Image::configure(['driver' => 'imagick']);
     }
 
-    public function getValidConfig($config) {
-        $this->configValidationWarning = [];
-        $this->configValidationError = [];
-        if (!is_array($config)) {
-            $this->configValidationError['isArray'] = '$config is not array.';
-            return [];
-        }
-        if (empty($config)) {
-            $this->configValidationWarning['count'] = '$config is empty.';
-            return [];
-        }
-        $acceptableKeys = array_keys($this->configValidation);
-        $validConfig = [];
-        foreach($config as $key => $value) {
-            if (!in_array($key, $acceptableKeys)) continue;
-            //if ($this->validateConfigKey($key,$value)) $validConfig[$key] = $value;
-            if ($this->validateConfig($key, $value)) $validConfig[$key] = $value;
-        }
-        return $validConfig;
-    }
-
-    public function validateConfig($key, $value) {
-        if (!strlen($this->configValidation[$key])) return false;
-        $conditions = explode('|',$this->configValidation[$key]);
-        foreach($conditions as $condition) {
-            if (strcmp('file',$condition)===0) {
-                if (!file_exists($value)) {
-                    $this->setConfigValidationError($key, $condition, $value.' does not exist.');
-                    return false;
-                }
-                continue;
-            }
-            if (strcmp('integer',$condition)===0) {
-                if (!is_int($value)) {
-                    $this->setConfigValidationError($key, $condition, $value.' is not integer.');
-                    return false;
-                }
-                continue;
-            }
-            if (strcmp('float',$condition)===0) {
-                if (!is_float($value)) {
-                    $this->setConfigValidationError($key, $condition, $value.' is not float.');
-                    return false;
-                }
-                continue;
-            }
-            if (strcmp('string',$condition)===0) {
-                if (!is_string($value)) {
-                    $this->setConfigValidationError($key, $condition, $value.' is not string.');
-                    return false;
-                }
-                continue;
-            }
-            if (strcmp('colorcode',$condition)===0) {
-                if (!preg_match('/^#[A-Fa-f0-9]{3}$|^#[A-Fa-f0-9]{6}$/', $value)) {
-                    $this->setConfigValidationError($key, $condition, $value.' is not colorcode.');
-                    return false;
-                }
-                continue;
-            }
-            if (str_starts_with($condition, 'min:')) {
-                $min = substr($condition, 4);
-                if (!is_numeric($min)) {
-                    $this->setConfigValidationWarning($key, $condition, 'specified min condition ' . $min .' is not numeric.');
-                    continue;
-                }
-                if ($value < (float) $min) {
-                    $this->setConfigValidationError($key, $condition, $value . ' is less than ' . $min . '.');
-                    return false;
-                }
-                continue;
-            }
-            if (str_starts_with($condition, 'max:')) {
-                $max = substr($condition, 4);
-                if (!is_numeric($max)) {
-                    $this->setConfigValidationError($key, $condition, 'specified max condition ' . $max . ' is not numeric.');
-                    continue;
-                }
-                if ($value > (float) $max) {
-                    $this->setConfigValidationError($key, $condition, $value.' is greater than ' . $max . '.');
-                    return false;
-                }
-                continue;
-            }
-        }
-        return true;
-    }
-
-    private function setConfigValidationWarning($key, $rule, $message) {
-        if (!array_key_exists($this->configValidationWarning)) $this->configValidationWarning[$key] = [];
-        $this->configValidationWarning[$key][$rule] = $message;
-        return true;
-    }
-
-    private function setConfigValidationError($key, $rule, $message) {
-        if (!array_key_exists($this->configValidationError)) $this->configValidationError[$key] = [];
-        $this->configValidationError[$key][$rule] = $message;
-        return true;
-    }
-
-    public function getConfigValidationWarning() {
-        return $this->configValidationWarning;
-    }
-
-    public function getConfigValidationError() {
-        return $this->configValidationError;
-    }
-
-    public function configure($config) {
-        foreach($this->getValidConfig($config) as $key => $value) {
-            $this->{$key} = $value;
-        }
-    }
-
     private function setProperties() {
-        $this->parsed = $this->ft->parse();
-        $this->baseX = $this->canvasWidth * (1 - $this->frameXRatio) / 2;
-        $this->baseY = $this->canvasHeight * (1 + $this->frameYRatio) / 2;
-        $this->barMaxValue = max($this->parsed['Frequencies']) + 1;
-        $this->barMinValue = 0;
-        $this->barWidth = $this->canvasWidth * $this->frameXRatio / count($this->parsed['Classes']);
-        $this->barHeightPitch = $this->canvasHeight * $this->frameYRatio / $this->barMaxValue;
+        $this->ft = new FrequencyTable();
+        $this->ft->setClassRange(10);
+        $this->boxCount = count($this->data);
+        $this->baseX = (int) ($this->canvasWidth * (1 - $this->frameXRatio) / 2);
+        $this->baseY = (int) ($this->canvasHeight * (1 + $this->frameYRatio) / 2);
+        $maxValues = [];
+        foreach($this->data as $key => $values) {
+            $maxValues[] = max($values);
+        }
+        $maxValue = max($maxValues);
+        $minValues = [];
+        foreach($this->data as $key => $values) {
+            $minValues[] = min($values);
+        }
+        $minValue = min($minValues);
+        $this->gridMax = $maxValue + ($maxValue - $minValue) * 0.1;
+        $this->gridMin = $minValue - ($maxValue - $minValue) * 0.1;
+        $this->pixHeightPitch = $this->canvasHeight * $this->frameYRatio / ($this->gridMax - $this->gridMin);
         $this->gridHeightPitch = 1;
-        if ($this->gridHeightPitch < 0.2 * $this->barMaxValue)
-            $this->gridHeightPitch = (int) (0.2 * $this->barMaxValue);
+        $gridHeightSpan = $this->gridMax - $this->gridMin;
+        if ($this->gridHeightPitch < 0.15 * $gridHeightSpan)
+            $this->gridHeightPitch = 0.15 * $gridHeightSpan;
+        if ($this->gridHeightPitch > 0.2 * $gridHeightSpan)
+            $this->gridHeightPitch = 0.2 * $gridHeightSpan;
+        $this->pixGridWidth = $this->canvasWidth * $this->frameXRatio / count($this->data);
         $this->image = Image::canvas($this->canvasWidth, $this->canvasHeight, $this->canvasBackgroundColor);
+    }
+
+    public function setData($key, $data) {
+        $this->data[$key] = $data;
+        return $this;
+    }
+
+    public function getUcl() {
+        if (!is_array($this->parsed)) return;
+        if (!array_key_exists('ThirdQuartile',$this->parsed)) return;
+        if (!array_key_exists('InterQuartileRange',$this->parsed)) return;
+        return $this->parsed['ThirdQuartile'] + 1.5 * $this->parsed['InterQuartileRange'];
+    }
+    
+    public function getLcl() {
+        if (!is_array($this->parsed)) return;
+        if (!array_key_exists('FirstQuartile',$this->parsed)) return;
+        if (!array_key_exists('InterQuartileRange',$this->parsed)) return;
+        return $this->parsed['FirstQuartile'] - 1.5 * $this->parsed['InterQuartileRange'];
+    }
+    
+    public function getOutliers() {
+        if (!array_key_exists('data', $this->parsed)) return;
+        $ucl = $this->getUcl();
+        $lcl = $this->getLcl();
+        if (null === $ucl || null === $lcl) return;
+        $outliers = [];
+        foreach($this->parsed['data'] as $value) {
+            if ($value > $ucl || $value < $lcl) $outliers[] = $value;
+        }
+        return $outliers;
+    }
+
+    public function getHorizontalAxisPosition() {
+        return [
+            (int) $this->baseX,
+            (int) $this->baseY,
+            (int) $this->canvasWidth * (1 + $this->frameXRatio) / 2,
+            (int) $this->baseY,
+        ];
+    }
+
+    public function getVerticalAxisPosition() {
+        return [
+            (int) $this->baseX,
+            (int) $this->canvasHeight * (1 - $this->frameYRatio) / 2,
+            (int) $this->baseX,
+            (int) $this->baseY,
+        ];
+    }
+
+    public function setAxis() {
+        list($x1,$y1,$x2,$y2) = $this->getHorizontalAxisPosition();
+        $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
+            $draw->color($this->axisColor);
+            $draw->width($this->axisWidth);
+        });
+        list($x1,$y1,$x2,$y2) = $this->getVerticalAxisPosition();
+        $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
+            $draw->color($this->axisColor);
+            $draw->width($this->axisWidth);
+        });
+        return $this;
+    }
+
+    public function setGrids() {
+        for ($y = $this->gridMin; $y <= $this->gridMax; $y += $this->gridHeightPitch) {
+            $x1 = (int) $this->baseX;
+            $y1 = (int) ($this->baseY - ($y - $this->gridMin) * $this->pixHeightPitch);
+            $x2 = (int) ($this->canvasWidth * (1 + $this->frameXRatio) / 2);
+            $y2 = (int) $y1;
+            $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
+                $draw->color($this->gridColor);
+                $draw->width($this->gridWidth);
+            });
+        }
+        return $this;
+    }
+
+    public function setGridValues() {
+        for ($y = $this->gridMin; $y <= $this->gridMax; $y += $this->gridHeightPitch) {
+            $x1 = (int) ($this->baseX - $this->fontSize * 1.1);
+            $y1 = (int) ($this->baseY - ($y - $this->gridMin) * $this->pixHeightPitch + $this->fontSize * 0.4);
+            $this->image->text($y, $x1, $y1, function ($font) {
+                $font->file($this->fontPath);
+                $font->size($this->fontSize);
+                $font->color($this->fontColor);
+                $font->align('center');
+                $font->valign('bottom');
+            });
+        }
+        return $this;
+    }
+
+    public function getBoxPosition($index) {
+        return [
+            (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth - 0.5 * $this->boxWidth),
+            (int) ($this->baseY - ($this->parsed['ThirdQuartile'] - $this->gridMin) * $this->pixHeightPitch),
+            (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth + 0.5 * $this->boxWidth),
+            (int) ($this->baseY - ($this->parsed['FirstQuartile'] - $this->gridMin) * $this->pixHeightPitch),
+        ];
+    }
+
+    public function plotBox($index) {
+        list($x1, $y1, $x2, $y2) = $this->getBoxPosition($index);
+        $this->image->rectangle($x1, $y1, $x2, $y2, function ($draw) {
+            $draw->background($this->boxBackgroundColor);
+            $draw->border($this->boxBorderWidth, $this->boxBorderColor);
+        });
+        return $this;
+    }
+
+    public function plotMedian($index) {
+        $x1 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth - 0.5 * $this->boxWidth);
+        $y1 = (int) ($this->baseY - ($this->parsed['Median'] - $this->gridMin) * $this->pixHeightPitch);
+        $x2 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth + 0.5 * $this->boxWidth);
+        $y2 = (int) $y1;
+        $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
+            $draw->color($this->boxBorderColor);
+            $draw->width($this->boxBorderWidth);
+        });
+    }
+
+    public function plotWhiskerUpper($index) {
+        // upper whisker
+        $x1 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth);
+        if ($this->outlier) {
+            $max = $this->parsed['Max'];
+            $ucl = $this->getUcl();
+            $max = ($ucl > $max) ? $max : $ucl;
+            $y1 = (int) ($this->baseY - ($max - $this->gridMin) * $this->pixHeightPitch);
+        } else {
+            $y1 = (int) ($this->baseY - ($this->parsed['Max'] - $this->gridMin) * $this->pixHeightPitch);
+        }
+        $x2 = (int) $x1;
+        $y2 = (int) ($this->baseY - ($this->parsed['ThirdQuartile'] - $this->gridMin) * $this->pixHeightPitch);
+        $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
+            $draw->color($this->whiskerColor);
+            $draw->width($this->whiskerWidth);
+        });
+        // top bar
+        $x1 = (int) ($x1 - $this->boxWidth / 4);
+        $x2 = (int) ($x1 + $this->boxWidth / 2);
+        $y2 = (int) $y1;
+        $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
+            $draw->color($this->whiskerColor);
+            $draw->width($this->whiskerWidth);
+        });
+    }
+
+    public function plotWhiskerLower($index) {
+        // lower whisker
+        $x1 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth);
+        $y1 = (int) ($this->baseY - ($this->parsed['FirstQuartile'] - $this->gridMin) * $this->pixHeightPitch);
+        $x2 = (int) $x1;
+        if ($this->outlier) {
+            $min = $this->parsed['Min'];
+            $lcl = $this->getLcl();
+            $min = ($lcl < $min) ? $min : $lcl;
+            $y2 = (int) ($this->baseY - ($min - $this->gridMin) * $this->pixHeightPitch);
+        } else {
+            $y2 = (int) ($this->baseY - ($this->parsed['Min'] - $this->gridMin) * $this->pixHeightPitch);
+        }
+        $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
+            $draw->color($this->whiskerColor);
+            $draw->width($this->whiskerWidth);
+        });
+        // bottom bar
+        $x1 = (int) ($x1 - $this->boxWidth / 4);
+        $y1 = (int) $y2;
+        $x2 = (int) ($x1 + $this->boxWidth / 2);
+        $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
+            $draw->color($this->whiskerColor);
+            $draw->width($this->whiskerWidth);
+        });
+    }
+
+    public function plotWhisker($index) {
+        $this->plotWhiskerUpper($index);
+        $this->plotWhiskerLower($index);
+    }
+
+    public function plotOutliers($index) {
+        if (!$this->outlier) return;
+        foreach($this->getOutliers() as $outlier) {
+            $x = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth);
+            $y = (int) ($this->baseY - ($outlier - $this->gridMin) * $this->pixHeightPitch);
+            $this->image->circle($this->outlierDiameter, $x, $y, function ($draw) {
+                $draw->background($this->outlierColor);
+                $draw->border(1, $this->outlierColor);
+            });
+        }
+    }
+
+    public function plotJitter($index) {
+        if (!$this->jitter) return;
+        if (!array_key_exists('data', $this->parsed)) return;
+        $data = $this->parsed['data'];
+        if (empty($data)) return;
+        $baseX = $this->baseX + ($index + 0.5) * $this->pixGridWidth - $this->boxWidth / 2;
+        $pitchX = $this->boxWidth / count($data);
+        foreach($data as $key => $value) {
+            $x = (int) ($baseX + $key * $pitchX);
+            $y = (int) ($this->baseY - ($value - $this->gridMin) * $this->pixHeightPitch);
+            $this->image->circle($this->jitterDiameter, $x, $y, function ($draw) {
+                $draw->background($this->jitterColor);
+                $draw->border(1, $this->jitterColor);
+            });
+        }
+    }
+
+    public function plot($index) {
+        // plot a box
+        $this->plotBox($index);
+        // plot median
+        $this->plotMedian($index);
+        // plot a whisker
+        $this->plotWhisker($index);
+        // plot outliers
+        $this->plotOutliers($index);
+        // plot jitter
+        $this->plotJitter($index);
     }
 
     public function create() {
         $this->setProperties();
+        if (!is_array($this->data)) return false;
+        if (empty($this->data)) return false;
+        $this->setGrids();
+        $this->setGridValues();
+        $index = 0;
+        foreach($this->data as $key => $values) {
+            $this->ft->setData($values);
+            $this->parsed = $this->ft->parse($values);
+            $this->plot($index);
+            $index++;
+        }
+        $this->setAxis();
         return $this;
     }
 
     public function save($filePath) {
+        if (!is_string($filePath)) return false;
+        if (!(strlen($filePath)>0)) return false;
         $this->image->save($filePath);
+        return $this;
     }
 }

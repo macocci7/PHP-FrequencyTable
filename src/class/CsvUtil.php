@@ -21,6 +21,7 @@ class CsvUtil
         if (!$indexKeyColumn || !$indexValueColumn) return;
         $groupBy = [];
         foreach($data as $index => $row) {
+            if (null == $row[$indexValueColumn]) continue;
             $key = $row[$indexKeyColumn];
             $groupBy[$key][] = $row[$indexValueColumn];
         }

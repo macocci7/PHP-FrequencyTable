@@ -5,11 +5,16 @@
 - [Prerequisite](#prerequisite)
 - [Installation](#installation)
 - [Usage](#usage)
+    - [The Most Simple Usage](#the-most-simple-usage)
+    - [Other Usage](#other-usage)
 - [Methods](#methods)
 - [Examples](#examples)
 - [Testing](#testing)
 - [LICENSE](#license)
 - [Appendix](#appendix)
+    - [Histogram](#histogram)
+    - [Boxplot](#boxplot)
+    - [IQR Method](#iqr-method)
 
 ## Overview
 
@@ -368,6 +373,8 @@ Sample code is here: [OutlierDetection.php](src/OutlierDetection.php) >> results
     ```
     VALUE < LCL or UCL < VALUE
     ```
+
+Learn more about boxplot: [box plot](https://byjus.com/maths/box-plot/)
 
 Thanks for reading.
 
