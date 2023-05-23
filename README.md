@@ -334,6 +334,17 @@ You can use other True Type Font by the next step:
 
 ### Boxplot
 
+[Boxplot.php](src/class/Boxplot.php) is also implemented.
+
+It's still under construction, but you can create boxplot image file by using this file.
+
+Example:
+- [BoxplotExample.php](src/BoxplotExample.php) >> results in:
+    - [BoxplotExample672282_01.png](src/img/BoxplotExample672282_01.png)
+    - [BoxplotExample672282_02.png](src/img/BoxplotExample672282_02.png)
+
+`Boxplot.php` has instance of FrequencyTable inside.
+
 You can also get all data to draw a boxplot by using this FrequencyTable class.(without outlier detection)
 - Max Value
 - Min Value

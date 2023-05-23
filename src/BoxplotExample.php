@@ -10,8 +10,22 @@ if (!$dailyData) {
     echo "Failed to load CSV data.\n\n";
 }
 
-$filePath = 'img/BoxplotExample672282.png';
+$filePath01 = 'img/BoxplotExample672282_01.png';
+$filePath02 = 'img/BoxplotExample672282_02.png';
+$labels = [];
 foreach($dailyData as $date => $data) {
+    $labels[] = preg_replace('/\d+\-(\d+)\-(\d+)/', '$1/$2', $date);
     $bp->setData($date, $data);
 }
-$bp->create()->save($filePath);
+$bp->setLabels($labels)
+   ->setLabelX('hogehoge')
+   ->setLabelY('hugahuga')
+   ->setCaption('hogehogehugahuga')
+   ->outlierOn()
+   ->jitterOn()
+   ->create()
+   ->save($filePath01)
+   ->outlierOff()
+   ->jitterOff()
+   ->create()
+   ->save($filePath02);

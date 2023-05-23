@@ -10,13 +10,13 @@ class Boxplot
     private $image;
     private $data;
     private $parsed = [];
-    private $canvasWidth = 400;
-    private $canvasHeight = 300;
+    private $canvasWidth = 600;
+    private $canvasHeight = 500;
     private $canvasBackgroundColor = '#ffffff';
     private $frameXRatio = 0.8;
     private $frameYRatio = 0.7;
     private $axisColor = '#666666';
-    private $axisWidth = 2;
+    private $axisWidth = 1;
     private $gridColor = '#999999';
     private $gridWidth = 1;
     private $gridHeightPitch;
@@ -42,7 +42,11 @@ class Boxplot
     private $outlierColor = '#ff0000';
     private $jitter = false;
     private $jitterColor = '#009900';
-    private $jitterDiameter = 1;
+    private $jitterDiameter = 2;
+    private $labels;
+    private $labelX;
+    private $labelY;
+    private $caption;
 
     public function __construct() {
         Image::configure(['driver' => 'imagick']);
@@ -52,7 +56,7 @@ class Boxplot
         $this->ft = new FrequencyTable();
         $this->ft->setClassRange(10);
         $this->boxCount = count($this->data);
-        $this->baseX = (int) ($this->canvasWidth * (1 - $this->frameXRatio) / 2);
+        $this->baseX = (int) ($this->canvasWidth * (1 - $this->frameXRatio) * 3 / 4);
         $this->baseY = (int) ($this->canvasHeight * (1 + $this->frameYRatio) / 2);
         $maxValues = [];
         foreach($this->data as $key => $values) {
@@ -69,16 +73,65 @@ class Boxplot
         $this->pixHeightPitch = $this->canvasHeight * $this->frameYRatio / ($this->gridMax - $this->gridMin);
         $this->gridHeightPitch = 1;
         $gridHeightSpan = $this->gridMax - $this->gridMin;
-        if ($this->gridHeightPitch < 0.15 * $gridHeightSpan)
-            $this->gridHeightPitch = 0.15 * $gridHeightSpan;
+        if ($this->gridHeightPitch < 0.125 * $gridHeightSpan)
+            $this->gridHeightPitch = 0.125 * $gridHeightSpan;
         if ($this->gridHeightPitch > 0.2 * $gridHeightSpan)
             $this->gridHeightPitch = 0.2 * $gridHeightSpan;
         $this->pixGridWidth = $this->canvasWidth * $this->frameXRatio / count($this->data);
         $this->image = Image::canvas($this->canvasWidth, $this->canvasHeight, $this->canvasBackgroundColor);
+        if (empty($this->labels)) $this->labels = array_keys($this->data);
+        return $this;
     }
 
     public function setData($key, $data) {
         $this->data[$key] = $data;
+        return $this;
+    }
+
+    public function setLabels($labels) {
+        if (!is_array($labels)) throw "Boxplot::setLabels: parameter is not array.";
+        $this->label = [];
+        foreach($labels as $label) {
+            $this->labels[] = $label;
+        }
+        return $this;
+    }
+
+    public function setLabelX($label) {
+        if (!is_string($label)) throw "Boxplot::setLabelX: parameter is not string.";
+        $this->labelX = $label;
+        return $this;
+    }
+
+    public function setLabelY($label) {
+        if (!is_string($label)) throw "Boxplot::setLabelY: parameter is not string.";
+        $this->labelY = $label;
+        return $this;
+    }
+
+    public function setCaption($caption) {
+        if (!is_string($caption)) throw "Boxplot::setCaption: parameter is not string.";
+        $this->caption = $caption;
+        return $this;
+    }
+
+    public function outlierOn() {
+        $this->outlier = true;
+        return $this;
+    }
+
+    public function outlierOff() {
+        $this->outlier = false;
+        return $this;
+    }
+
+    public function jitterOn() {
+        $this->jitter = true;
+        return $this;
+    }
+
+    public function jitterOff() {
+        $this->jitter = false;
         return $this;
     }
 
@@ -108,31 +161,21 @@ class Boxplot
         return $outliers;
     }
 
-    public function getHorizontalAxisPosition() {
-        return [
-            (int) $this->baseX,
-            (int) $this->baseY,
-            (int) $this->canvasWidth * (1 + $this->frameXRatio) / 2,
-            (int) $this->baseY,
-        ];
-    }
-
-    public function getVerticalAxisPosition() {
-        return [
-            (int) $this->baseX,
-            (int) $this->canvasHeight * (1 - $this->frameYRatio) / 2,
-            (int) $this->baseX,
-            (int) $this->baseY,
-        ];
-    }
-
     public function setAxis() {
-        list($x1,$y1,$x2,$y2) = $this->getHorizontalAxisPosition();
+        // Horizontal Axis
+        $x1 = (int) $this->baseX;
+        $y1 = (int) $this->baseY;
+        $x2 = (int) $this->canvasWidth * (3 + $this->frameXRatio) / 4;
+        $y2 = (int) $this->baseY;
         $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
             $draw->color($this->axisColor);
             $draw->width($this->axisWidth);
         });
-        list($x1,$y1,$x2,$y2) = $this->getVerticalAxisPosition();
+        // Vertical Axis
+        $x1 = (int) $this->baseX;
+        $y1 = (int) $this->canvasHeight * (1 - $this->frameYRatio) / 2;
+        $x2 = (int) $this->baseX;
+        $y2 = (int) $this->baseY;
         $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
             $draw->color($this->axisColor);
             $draw->width($this->axisWidth);
@@ -144,7 +187,7 @@ class Boxplot
         for ($y = $this->gridMin; $y <= $this->gridMax; $y += $this->gridHeightPitch) {
             $x1 = (int) $this->baseX;
             $y1 = (int) ($this->baseY - ($y - $this->gridMin) * $this->pixHeightPitch);
-            $x2 = (int) ($this->canvasWidth * (1 + $this->frameXRatio) / 2);
+            $x2 = (int) ($this->canvasWidth * (3 + $this->frameXRatio) / 4);
             $y2 = (int) $y1;
             $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
                 $draw->color($this->gridColor);
@@ -169,17 +212,11 @@ class Boxplot
         return $this;
     }
 
-    public function getBoxPosition($index) {
-        return [
-            (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth - 0.5 * $this->boxWidth),
-            (int) ($this->baseY - ($this->parsed['ThirdQuartile'] - $this->gridMin) * $this->pixHeightPitch),
-            (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth + 0.5 * $this->boxWidth),
-            (int) ($this->baseY - ($this->parsed['FirstQuartile'] - $this->gridMin) * $this->pixHeightPitch),
-        ];
-    }
-
     public function plotBox($index) {
-        list($x1, $y1, $x2, $y2) = $this->getBoxPosition($index);
+        $x1 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth - 0.5 * $this->boxWidth);
+        $y1 = (int) ($this->baseY - ($this->parsed['ThirdQuartile'] - $this->gridMin) * $this->pixHeightPitch);
+        $x2 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth + 0.5 * $this->boxWidth);
+        $y2 = (int) ($this->baseY - ($this->parsed['FirstQuartile'] - $this->gridMin) * $this->pixHeightPitch);
         $this->image->rectangle($x1, $y1, $x2, $y2, function ($draw) {
             $draw->background($this->boxBackgroundColor);
             $draw->border($this->boxBorderWidth, $this->boxBorderColor);
@@ -196,6 +233,7 @@ class Boxplot
             $draw->color($this->boxBorderColor);
             $draw->width($this->boxBorderWidth);
         });
+        return $this;
     }
 
     public function plotWhiskerUpper($index) {
@@ -223,6 +261,7 @@ class Boxplot
             $draw->color($this->whiskerColor);
             $draw->width($this->whiskerWidth);
         });
+        return $this;
     }
 
     public function plotWhiskerLower($index) {
@@ -250,11 +289,13 @@ class Boxplot
             $draw->color($this->whiskerColor);
             $draw->width($this->whiskerWidth);
         });
+        return $this;
     }
 
     public function plotWhisker($index) {
         $this->plotWhiskerUpper($index);
         $this->plotWhiskerLower($index);
+        return $this;
     }
 
     public function plotOutliers($index) {
@@ -267,6 +308,7 @@ class Boxplot
                 $draw->border(1, $this->outlierColor);
             });
         }
+        return $this;
     }
 
     public function plotJitter($index) {
@@ -284,6 +326,67 @@ class Boxplot
                 $draw->border(1, $this->jitterColor);
             });
         }
+        return $this;
+    }
+
+    public function plotLabels() {
+        if (!is_array($this->labels)) return;
+        foreach($this->labels as $index => $label) {
+            if (!is_string($label) && !is_numeric($label)) continue;
+            $x = $this->baseX + ($index + 0.5) * $this->pixGridWidth - $this->fontSize * 0.5;
+            $y = $this->baseY + $this->fontSize * 1.2;
+            $this->image->text((string) $label, $x, $y, function ($font) {
+                $font->file($this->fontPath);
+                $font->size($this->fontSize);
+                $font->color($this->fontColor);
+                $font->align('center');
+                $font->valign('bottom');
+            });
+        }
+        return $this;
+    }
+
+    public function plotLabelX() {
+        $x = (int) $this->canvasWidth / 2;
+        $y = $this->baseY + (1 - $this->frameYRatio) * $this->canvasHeight / 3 ;
+        $this->image->text((string) $this->labelX, $x, $y, function ($font) {
+            $font->file($this->fontPath);
+            $font->size($this->fontSize);
+            $font->color($this->fontColor);
+            $font->align('center');
+            $font->valign('bottom');
+        });
+        return $this;
+    }
+
+    public function plotLabelY() {
+        $width = $this->canvasHeight;
+        $height = (int) ($this->canvasWidth * (1 - $this->frameXRatio) / 3);
+        $image = Image::canvas($width, $height, $this->canvasBackgroundColor);
+        $x = $width / 2;
+        $y = ($height + $this->fontSize) / 2;
+        $image->text((string) $this->labelY, $x, $y, function ($font) {
+            $font->file($this->fontPath);
+            $font->size($this->fontSize);
+            $font->color($this->fontColor);
+            $font->align('center');
+            $font->valign('bottom');
+        });
+        $image->rotate(90);
+        $this->image->insert($image, 'left');
+        return $this;
+    }
+
+    public function plotCaption() {
+        $x = $this->canvasWidth / 2;
+        $y = $this->canvasHeight * (1 - $this->frameYRatio) / 3;
+        $this->image->text((string) $this->caption, $x, $y, function ($font) {
+            $font->file($this->fontPath);
+            $font->size($this->fontSize);
+            $font->color($this->fontColor);
+            $font->align('center');
+            $font->valign('bottom');
+        });
     }
 
     public function plot($index) {
@@ -297,6 +400,7 @@ class Boxplot
         $this->plotOutliers($index);
         // plot jitter
         $this->plotJitter($index);
+        return $this;
     }
 
     public function create() {
@@ -313,6 +417,10 @@ class Boxplot
             $index++;
         }
         $this->setAxis();
+        $this->plotLabels();
+        $this->plotLabelX();
+        $this->plotLabelY();
+        $this->plotCaption();
         return $this;
     }
 
