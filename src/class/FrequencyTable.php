@@ -4,7 +4,8 @@
  * Date: 2023/05/18
  */
 
-class FrequencyTable {
+class FrequencyTable
+{
 
     private $data = null;
     private $classRange = null;

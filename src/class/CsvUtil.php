@@ -4,7 +4,8 @@
  * Note: This code is written only for use in 'OutlierDetection.php'.
  */
 
-class CsvUtil {
+class CsvUtil
+{
 
     public function __construct()
     {
@@ -20,6 +21,7 @@ class CsvUtil {
         if (!$indexKeyColumn || !$indexValueColumn) return;
         $groupBy = [];
         foreach($data as $index => $row) {
+            if (null == $row[$indexValueColumn]) continue;
             $key = $row[$indexKeyColumn];
             $groupBy[$key][] = $row[$indexValueColumn];
         }

@@ -5,11 +5,16 @@
 - [Prerequisite](#prerequisite)
 - [Installation](#installation)
 - [Usage](#usage)
+    - [The Most Simple Usage](#the-most-simple-usage)
+    - [Other Usage](#other-usage)
 - [Methods](#methods)
 - [Examples](#examples)
 - [Testing](#testing)
 - [LICENSE](#license)
 - [Appendix](#appendix)
+    - [Histogram](#histogram)
+    - [Boxplot](#boxplot)
+    - [IQR Method](#iqr-method)
 
 ## Overview
 
@@ -269,11 +274,35 @@ php ./tools/phpunit.phar ./tests/FrequencyTableTest.php --color auto --testdox
 
 [Histogram.php](src/class/Histogram.php) class is also additionally implemented.
 
-Before using `Histogram.php`, you must install [intervention/image](https://github.com/Intervention/image) as follows.
+Before using `Histogram.php`, you need to install [intervention/image](https://github.com/Intervention/image) as follows.
 
 ```bash
 php ./tools/composer.phar require intervention/image
 ```
+
+And you also need to install [Imagick PHP extension](https://www.php.net/manual/en/book.imagick.php) and make it enabled.
+
+Check whether `imagick` is installed or not as follows:
+- Command:
+    ```bash
+    php -i | grep imagick
+    ```
+- Output: `imagick` is `enabled`.
+    ```bash
+    /etc/php/8.1/cli/conf.d/20-imagick.ini,
+    imagick
+    imagick module => enabled
+    imagick module version => 3.6.0
+    imagick classes => Imagick, ImagickDraw, ImagickPixel, ImagickPixelIterator, ImagickKernel
+    imagick.allow_zero_dimension_images => 0 => 0
+    imagick.locale_fix => 0 => 0
+    imagick.progress_monitor => 0 => 0
+    imagick.set_single_thread => 1 => 1
+    imagick.shutdown_sleep_count => 10 => 10
+    imagick.skip_version_check => 1 => 1
+    ```
+
+If `imagick` is not installed or not `enabled`, follow the instruction of [php.net](https://www.php.net/manual/en/book.imagick.php) to install it or make it enabled.
 
 Documents of Histogram is not written at present.
 
@@ -305,6 +334,17 @@ You can use other True Type Font by the next step:
 
 ### Boxplot
 
+[Boxplot.php](src/class/Boxplot.php) is also implemented.
+
+It's still under construction, but you can create boxplot image file by using this file.
+
+Example:
+- [BoxplotExample.php](src/BoxplotExample.php) >> results in:
+    - [BoxplotExample672282_01.png](src/img/BoxplotExample672282_01.png)
+    - [BoxplotExample672282_02.png](src/img/BoxplotExample672282_02.png)
+
+`Boxplot.php` has instance of FrequencyTable inside.
+
 You can also get all data to draw a boxplot by using this FrequencyTable class.(without outlier detection)
 - Max Value
 - Min Value
@@ -331,7 +371,7 @@ Sample code is here: [OutlierDetection.php](src/OutlierDetection.php) >> results
     ```
     UCL: Upper Control Limit / Q3: Third Quartile / IQR: Inter Quartile Range
 
-2. Set the LCL(Lower Control Limit)
+2. Set the LCL
 
     ```
     LCL = Q1 - 1.5IQR
@@ -345,6 +385,8 @@ Sample code is here: [OutlierDetection.php](src/OutlierDetection.php) >> results
     VALUE < LCL or UCL < VALUE
     ```
 
+Learn more about boxplot: [box plot](https://byjus.com/maths/box-plot/)
+
 Thanks for reading.
 
 Have a happy coding!
@@ -352,6 +394,6 @@ Have a happy coding!
 
 *Document written: 2023/05/18*
 
-*Last updated: 2023/05/21*
+*Last updated: 2023/05/23*
 
 Copyright (c) 2023 macocci7
