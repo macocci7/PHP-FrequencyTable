@@ -369,6 +369,19 @@ Example:
 
         ![BoxplotDetmersReid2023_02.png](src/img/BoxplotDetmersReid2023_02.png)
 
+- [BoxplotExample.php](src/BoxplotExample.php) >> results in:
+    - with Outlier Detection & Jitter Plotting & Mean Plotting & Legends Plotting & Vertical Grid & Multiple Legends
+
+        ![BoxplotExample.png](src/img/BoxplotExample.png)
+    
+    - Note: This example needs [FakerPHP/Faker](https://github.com/FakerPHP/Faker) to be installed.
+    
+        In order to install `FakerPHP/Faker`, type a command as follows:
+
+        ```bash
+        php ./tools/composer.phar require fakerphp/faker
+        ```
+
 `Boxplot.php` has instance of FrequencyTable inside.
 
 You can also get all data to draw a boxplot by using this FrequencyTable class.(without outlier detection)

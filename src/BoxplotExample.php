@@ -6,50 +6,43 @@ $bp = new Boxplot();
 $filePath = 'img/BoxplotExample.png';
 
 $keys = [
-    /*
-    '5/10',
-    '5/11',
-    '5/12',
-    '5/13',
-    '5/14',
-    '5/15',
-    '5/16',
-    '5/17',
-    '5/18',
-    '5/19',
-    '5/20',
-    */
     '5/21',
     '5/22',
     '5/23',
     '5/24',
     '5/25',
-    /*
-    '5/26',
-    '5/27',
-    '5/28',
-    '5/29',
-    '5/30',
-    '5/31',
-    */
 ];
-
-foreach ($keys as $index => $key) {
+$players = [
+    'John',
+    'Jake',
+    'Hugo',
+];
+$dataset = [];
+foreach ($players as $playre => $name) {
+    $waightP = $faker->numberBetween(7, 13) * 10 / 100;
     $data = [];
-    for ($i = 0; $i < $faker->numberBetween(50, 600); $i++) {
-        $data[] = $faker->numberBetween(600, 1100) / 100;
+    foreach ($keys as $index => $key) {
+        $waightD = $faker->numberBetween(7, 13) * 10 / 100;
+        $data[$index] = [];
+        for ($i = 0; $i < $faker->numberBetween(50, 600); $i++) {
+            $data[$index][] = $waightD * $waightP * $faker->numberBetween(600, 1100) / 100;
+        }
     }
-    $bp->setData($data);
+    $dataset[] = $data;
 }
-$bp->setSize(600, 400)
+$bp->setDataset($dataset)
+   ->setSize(600, 400)
    ->setBoxWidth(20)
+   ->gridVerticalOn()
    ->outlierOn()
    ->jitterOn()
    ->meanOn()
+   ->legendOn()
    ->setGridHeightPitch(2)
    ->setLabels($keys)
    ->setLabelX('Index')
    ->setLabelY('Value')
    ->setCaption('Random Data')
+   ->setLegends($players)
    ->create()
    ->save($filePath);
