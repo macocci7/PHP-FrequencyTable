@@ -23,9 +23,10 @@ class Boxplot
     private $pixGridWidth;
     private $gridMax;
     private $gridMin;
+    private $gridVertical = false;
     private $boxCount = 0;
     private $boxWidth = 20;
-    private $boxBackgroundColor = '#9999cc';
+    private $boxBackgroundColor;
     private $boxBorderColor = '#3333cc';
     private $boxBorderWidth = 1;
     private $pixHeightPitch;
@@ -49,6 +50,21 @@ class Boxplot
     private $labelX;
     private $labelY;
     private $caption;
+    private $legend = false;
+    private $legendCount;
+    private $legends;
+    private $legendWidth = 100;
+    private $legendFontSize = 10;
+    private $colors = [
+        '#9999cc',
+        '#cc9999',
+        '#99cc99',
+        '#99cccc',
+        '#cc6666',
+        '#ffcc99',
+        '#cccc99',
+        '#cc99cc',
+    ];
 
     public function __construct() {
         Image::configure(['driver' => 'imagick']);
@@ -56,64 +72,136 @@ class Boxplot
 
     private function setProperties() {
         $this->ft = new FrequencyTable();
-        $this->ft->setClassRange(10);
-        $this->boxCount = count($this->data);
+        $this->legendCount = count($this->data);
+        if (!$this->boxBackgroundColor) $this->boxBackgroundColor = $this->colors;
+        $counts = [];
+        foreach($this->data as $values) {
+            $counts[] = count($values);
+        }
+        $this->boxCount = max($counts);
         $this->baseX = (int) ($this->canvasWidth * (1 - $this->frameXRatio) * 3 / 4);
         $this->baseY = (int) ($this->canvasHeight * (1 + $this->frameYRatio) / 2);
         $maxValues = [];
-        foreach($this->data as $key => $values) {
-            $maxValues[] = max($values);
+        foreach($this->data as $data) {
+            foreach($data as $key => $values) {
+                $maxValues[] = max($values);
+            }
         }
         $maxValue = max($maxValues);
         $minValues = [];
-        foreach($this->data as $key => $values) {
-            $minValues[] = min($values);
+        foreach($this->data as $data) {
+            foreach($data as $key => $values) {
+                $minValues[] = min($values);
+            }
         }
         $minValue = min($minValues);
-        $this->gridMax = $maxValue + ($maxValue - $minValue) * 0.1;
-        $this->gridMin = $minValue - ($maxValue - $minValue) * 0.1;
-        $this->pixHeightPitch = $this->canvasHeight * $this->frameYRatio / ($this->gridMax - $this->gridMin);
-        $this->gridHeightPitch = 1;
+        $this->gridMax = ((int) ($maxValue + ($maxValue - $minValue) * 0.1) * 10 ) / 10;
+        $this->gridMin = ((int) ($minValue - ($maxValue - $minValue) * 0.1) * 10 ) / 10;
         $gridHeightSpan = $this->gridMax - $this->gridMin;
-        if ($this->gridHeightPitch < 0.125 * $gridHeightSpan)
-            $this->gridHeightPitch = 0.125 * $gridHeightSpan;
-        if ($this->gridHeightPitch > 0.2 * $gridHeightSpan)
-            $this->gridHeightPitch = 0.2 * $gridHeightSpan;
-        $this->pixGridWidth = $this->canvasWidth * $this->frameXRatio / count($this->data);
+        // Note:
+        // - The Class Range affects the accuracy of the Mean Value.
+        // - This value should be set appropriately: 10% of $gridHeightSpan in this case.
+        $clsasRange = ((int) ($gridHeightSpan * 10)) / 100;
+        $this->ft->setClassRange($clsasRange);
+        $this->pixHeightPitch = $this->canvasHeight * $this->frameYRatio / ($this->gridMax - $this->gridMin);
+        // Note:
+        // - If $this->gridHeightPitch has a value, that value takes precedence.
+        // - The value of $this->girdHeightPitch may be set by the funciton setGridHeightPitch().
+        if (!$this->gridHeightPitch) {
+            $this->gridHeightPitch = 1;
+            if ($this->gridHeightPitch < 0.125 * $gridHeightSpan)
+                $this->gridHeightPitch = ( (int) (0.125 * $gridHeightSpan * 10)) / 10;
+            if ($this->gridHeightPitch > 0.2 * $gridHeightSpan)
+                $this->gridHeightPitch = ( (int) (0.200 * $gridHeightSpan * 10)) / 10;
+        }
+        $this->pixGridWidth = $this->canvasWidth * $this->frameXRatio / $this->boxCount;
+        // Creating an instance of intervention/image.
         $this->image = Image::canvas($this->canvasWidth, $this->canvasHeight, $this->canvasBackgroundColor);
-        if (empty($this->labels)) $this->labels = array_keys($this->data);
+        // Note:
+        // - If $this->labels has values, those values takes precedence.
+        // - The values of $this->labels may be set by the function setLabels().
+        if (empty($this->labels)) $this->labels = array_keys(array_fill(0, $this->boxCount, 0));
         return $this;
     }
 
-    public function setData($key, $data) {
-        $this->data[$key] = $data;
+    public function setData($data) {
+        $this->data[0][] = $data;
+        return $this;
+    }
+
+    public function setDataset($dataset) {
+        $this->data = $dataset;
+        return $this;
+    }
+
+    public function setGridHeightPitch($pitch) {
+        if (!is_int($pitch) && !is_float($pitch)) return;
+        if ($pitch <= 0) return;
+        $this->gridHeightPitch = $pitch;
+        return $this;
+    }
+
+    public function setSize($width, $height) {
+        if (!is_int($width) || !is_int($height)) return;
+        if ($width < 100 || $height < 100) return;
+        $this->canvasWidth = $width;
+        $this->canvasHeight = $height;
+        return $this;
+    }
+
+    public function setBoxWidth($width) {
+        if (!is_int($width)) return;
+        if ($width < $this->boxBorderWidth * 2 + 1) return;
+        $this->boxWidth = $width;
+        return $this;
+    }
+
+    public function setBoxBacground($colors) {
+        if (!is_array($colors)) return;
+        $this->boxBackgroundColor = $colors;
         return $this;
     }
 
     public function setLabels($labels) {
-        if (!is_array($labels)) throw "Boxplot::setLabels: parameter is not array.";
+        if (!is_array($labels)) return;
         $this->label = [];
         foreach($labels as $label) {
-            $this->labels[] = $label;
+            $this->labels[] = (string) $label;
         }
         return $this;
     }
 
     public function setLabelX($label) {
-        if (!is_string($label)) throw "Boxplot::setLabelX: parameter is not string.";
+        if (!is_string($label)) return;
         $this->labelX = $label;
         return $this;
     }
 
     public function setLabelY($label) {
-        if (!is_string($label)) throw "Boxplot::setLabelY: parameter is not string.";
+        if (!is_string($label)) return;
         $this->labelY = $label;
         return $this;
     }
 
     public function setCaption($caption) {
-        if (!is_string($caption)) throw "Boxplot::setCaption: parameter is not string.";
+        if (!is_string($caption)) return;
         $this->caption = $caption;
+        return $this;
+    }
+
+    public function setLegends($legends) {
+        if (!is_array($legends)) return;
+        $this->legends = $legends;
+        return $this;
+    }
+
+    public function gridVerticalOn() {
+        $this->gridVertical = true;
+        return $this;
+    }
+
+    public function gridVerticalOff() {
+        $this->gridVertical = false;
         return $this;
     }
 
@@ -144,6 +232,16 @@ class Boxplot
 
     public function meanOff() {
         $this->mean = false;
+        return $this;
+    }
+
+    public function legendOn() {
+        $this->legend = true;
+        return $this;
+    }
+
+    public function legendOff() {
+        $this->legend = false;
         return $this;
     }
 
@@ -206,6 +304,22 @@ class Boxplot
                 $draw->width($this->gridWidth);
             });
         }
+        $this->setGridVertical();
+        return $this;
+    }
+
+    public function setGridVertical() {
+        if (!$this->gridVertical) return;
+        for ($i = 1; $i <= $this->boxCount; $i++) {
+            $x1 = (int) ($this->baseX + $i * $this->pixGridWidth);
+            $y1 = (int) ($this->canvasHeight * (1 - $this->frameYRatio) / 2);
+            $x2 = (int) $x1;
+            $y2 = (int) ($this->canvasHeight * (1 + $this->frameYRatio) / 2);
+            $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
+                $draw->color($this->gridColor);
+                $draw->width($this->gridWidth);
+            });
+        }
         return $this;
     }
 
@@ -224,22 +338,28 @@ class Boxplot
         return $this;
     }
 
-    public function plotBox($index) {
-        $x1 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth - 0.5 * $this->boxWidth);
+    public function plotBox($index, $legend) {
+        $gridWidth = $this->pixGridWidth;
+        $legends = $this->legendCount;
+        $offsetX = ($index + ($legend + 0.5) / $legends) * $gridWidth - 0.5 * $this->boxWidth;
+        $x1 = (int) ($this->baseX + $offsetX);
         $y1 = (int) ($this->baseY - ($this->parsed['ThirdQuartile'] - $this->gridMin) * $this->pixHeightPitch);
-        $x2 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth + 0.5 * $this->boxWidth);
+        $x2 = (int) ($x1 + $this->boxWidth);
         $y2 = (int) ($this->baseY - ($this->parsed['FirstQuartile'] - $this->gridMin) * $this->pixHeightPitch);
-        $this->image->rectangle($x1, $y1, $x2, $y2, function ($draw) {
-            $draw->background($this->boxBackgroundColor);
+        $this->image->rectangle($x1, $y1, $x2, $y2, function ($draw) use($legend) {
+            $draw->background($this->boxBackgroundColor[$legend]);
             $draw->border($this->boxBorderWidth, $this->boxBorderColor);
         });
         return $this;
     }
 
-    public function plotMedian($index) {
-        $x1 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth - 0.5 * $this->boxWidth);
+    public function plotMedian($index, $legend) {
+        $gridWidth = $this->pixGridWidth;
+        $legends = $this->legendCount;
+        $offsetX = ($index + ($legend + 0.5) / $legends) * $gridWidth - 0.5 * $this->boxWidth;
+        $x1 = (int) ($this->baseX + $offsetX);
         $y1 = (int) ($this->baseY - ($this->parsed['Median'] - $this->gridMin) * $this->pixHeightPitch);
-        $x2 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth + 0.5 * $this->boxWidth);
+        $x2 = (int) ($x1 + $this->boxWidth);
         $y2 = (int) $y1;
         $this->image->line($x1, $y1, $x2, $y2, function ($draw) {
             $draw->color($this->boxBorderColor);
@@ -248,24 +368,29 @@ class Boxplot
         return $this;
     }
 
-    public function plotMean($index) {
+    public function plotMean($index, $legend) {
         if (!$this->mean) return;
         $mean = $this->parsed['Mean'];
-        $x = $this->baseX + ($index + 0.5) * $this->pixGridWidth;
-        $y = $this->baseY - ($mean - $this->gridMin) * $this->pixHeightPitch;
+        $gridWidth = $this->pixGridWidth;
+        $legends = $this->legendCount;
+        $offsetX = ($index + ($legend + 0.5) / $legends) * $gridWidth;
+        $x = (int) ($this->baseX + $offsetX);
+        $y = (int) $this->baseY - ($mean - $this->gridMin) * $this->pixHeightPitch;
         $this->image->text('+', $x, $y, function ($font) {
             $font->file($this->fontPath);
             $font->size($this->fontSize);
-            //$font->color($this->boxBorderColor);
             $font->color($this->meanColor);
             $font->align('center');
             $font->valign('center');
         });
     }
 
-    public function plotWhiskerUpper($index) {
+    public function plotWhiskerUpper($index, $legend) {
         // upper whisker
-        $x1 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth);
+        $gridWidth = $this->pixGridWidth;
+        $legends = $this->legendCount;
+        $offsetX = ($index + ($legend + 0.5) / $legends) * $gridWidth;
+        $x1 = (int) ($this->baseX + $offsetX);
         if ($this->outlier) {
             $max = $this->parsed['Max'];
             $ucl = $this->getUcl();
@@ -291,9 +416,12 @@ class Boxplot
         return $this;
     }
 
-    public function plotWhiskerLower($index) {
+    public function plotWhiskerLower($index, $legend) {
         // lower whisker
-        $x1 = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth);
+        $gridWidth = $this->pixGridWidth;
+        $legends = $this->legendCount;
+        $offsetX = ($index + ($legend + 0.5) / $legends) * $gridWidth;
+        $x1 = (int) ($this->baseX + $offsetX);
         $y1 = (int) ($this->baseY - ($this->parsed['FirstQuartile'] - $this->gridMin) * $this->pixHeightPitch);
         $x2 = (int) $x1;
         if ($this->outlier) {
@@ -319,16 +447,19 @@ class Boxplot
         return $this;
     }
 
-    public function plotWhisker($index) {
-        $this->plotWhiskerUpper($index);
-        $this->plotWhiskerLower($index);
+    public function plotWhisker($index, $legend) {
+        $this->plotWhiskerUpper($index, $legend);
+        $this->plotWhiskerLower($index, $legend);
         return $this;
     }
 
-    public function plotOutliers($index) {
+    public function plotOutliers($index, $legend) {
         if (!$this->outlier) return;
+        $gridWidth = $this->pixGridWidth;
+        $legends = $this->legendCount;
         foreach($this->getOutliers() as $outlier) {
-            $x = (int) ($this->baseX + ($index + 0.5) * $this->pixGridWidth);
+            $offsetX = ($index + ($legend + 0.5) / $legends) * $gridWidth;
+            $x = (int) ($this->baseX + $offsetX);
             $y = (int) ($this->baseY - ($outlier - $this->gridMin) * $this->pixHeightPitch);
             $this->image->circle($this->outlierDiameter, $x, $y, function ($draw) {
                 $draw->background($this->outlierColor);
@@ -338,12 +469,14 @@ class Boxplot
         return $this;
     }
 
-    public function plotJitter($index) {
+    public function plotJitter($index, $legend) {
         if (!$this->jitter) return;
         if (!array_key_exists('data', $this->parsed)) return;
         $data = $this->parsed['data'];
         if (empty($data)) return;
-        $baseX = $this->baseX + ($index + 0.5) * $this->pixGridWidth - $this->boxWidth / 2;
+        $gridWidth = $this->pixGridWidth;
+        $legends = $this->legendCount;
+        $baseX = $this->baseX + ($index + ($legend + 0.5) / $legends) * $gridWidth - $this->boxWidth / 2;
         $pitchX = $this->boxWidth / count($data);
         foreach($data as $key => $value) {
             $x = (int) ($baseX + $key * $pitchX);
@@ -360,7 +493,7 @@ class Boxplot
         if (!is_array($this->labels)) return;
         foreach($this->labels as $index => $label) {
             if (!is_string($label) && !is_numeric($label)) continue;
-            $x = $this->baseX + ($index + 0.5) * $this->pixGridWidth - $this->fontSize * 0.5;
+            $x = $this->baseX + ($index + 0.5) * $this->pixGridWidth;
             $y = $this->baseY + $this->fontSize * 1.2;
             $this->image->text((string) $label, $x, $y, function ($font) {
                 $font->file($this->fontPath);
@@ -416,19 +549,57 @@ class Boxplot
         });
     }
 
-    public function plot($index) {
+    public function plotLegend() {
+        if (!$this->legend) return;
+        $baseX = $this->canvasWidth * (3 + $this->frameXRatio) / 4 - $this->legendWidth;
+        $baseY = 10;
+        $x1 = $baseX;
+        $y1 = $baseY;
+        $x2 = $x1 + $this->legendWidth;
+        $y2 = $y1 + $this->legendFontSize * 1.2 * $this->legendCount + 8;
+        $this->image->rectangle($x1, $y1, $x2, $y2, function ($draw) {
+            $draw->background('#ffffff');
+            $draw->border(1, '#000000');
+        });
+        for ($i = 0; $i < $this->legendCount; $i++) {
+            if (empty($this->legends[$i])) {
+                $label = 'unknown ' . $i;
+            } else {
+                $label = $this->legends[$i];
+            }
+            $x1 = (int) ($baseX + 4);
+            $y1 = (int) ($baseY + $i * $this->legendFontSize * 1.2 + 4);
+            $x2 = (int) ($x1 + 20);
+            $y2 = (int) ($y1 + $this->legendFontSize);
+            $this->image->rectangle($x1, $y1, $x2, $y2, function ($draw) use($i) {
+                $draw->background($this->boxBackgroundColor[$i]);
+                $draw->border(1, $this->boxBorderColor);
+            });
+            $x = $x2 + 4;
+            $y = $y1;
+            $this->image->text($label, $x, $y, function ($font) {
+                $font->file($this->fontPath);
+                $font->size($this->legendFontSize);
+                $font->color($this->fontColor);
+                $font->align('left');
+                $font->valign('top');
+            });
+        }
+    }
+
+    public function plot($index, $legend) {
         // plot a box
-        $this->plotBox($index);
+        $this->plotBox($index, $legend);
         // plot median
-        $this->plotMedian($index);
+        $this->plotMedian($index, $legend);
         // plot mean
-        $this->plotMean($index);
+        $this->plotMean($index, $legend);
         // plot a whisker
-        $this->plotWhisker($index);
+        $this->plotWhisker($index, $legend);
         // plot outliers
-        $this->plotOutliers($index);
+        $this->plotOutliers($index, $legend);
         // plot jitter
-        $this->plotJitter($index);
+        $this->plotJitter($index, $legend);
         return $this;
     }
 
@@ -438,18 +609,21 @@ class Boxplot
         if (empty($this->data)) return false;
         $this->setGrids();
         $this->setGridValues();
-        $index = 0;
-        foreach($this->data as $key => $values) {
-            $this->ft->setData($values);
-            $this->parsed = $this->ft->parse($values);
-            $this->plot($index);
-            $index++;
+        foreach($this->data as $legend => $data) {
+            $index = 0;
+            foreach($data as $key => $values) {
+                $this->ft->setData($values);
+                $this->parsed = $this->ft->parse($values);
+                $this->plot($index, $legend);
+                $index++;
+            }
         }
         $this->setAxis();
         $this->plotLabels();
         $this->plotLabelX();
         $this->plotLabelY();
         $this->plotCaption();
+        $this->plotLegend();
         return $this;
     }
 
