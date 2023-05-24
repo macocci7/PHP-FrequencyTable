@@ -18,9 +18,10 @@ foreach($dailyData as $date => $data) {
     $bp->setData($date, $data);
 }
 $bp->setLabels($labels)
-   ->setLabelX('hogehoge')
-   ->setLabelY('hugahuga')
-   ->setCaption('hogehogehugahuga')
+   ->setLabelX('Game Date')
+   ->setLabelY('MPH')
+   ->setCaption('Release Speed: Detmers, Reid')
+   ->meanOn()
    ->outlierOn()
    ->jitterOn()
    ->create()

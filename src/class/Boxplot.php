@@ -43,6 +43,8 @@ class Boxplot
     private $jitter = false;
     private $jitterColor = '#009900';
     private $jitterDiameter = 2;
+    private $mean = false;
+    private $meanColor = '#ff0000';
     private $labels;
     private $labelX;
     private $labelY;
@@ -132,6 +134,16 @@ class Boxplot
 
     public function jitterOff() {
         $this->jitter = false;
+        return $this;
+    }
+
+    public function meanOn() {
+        $this->mean = true;
+        return $this;
+    }
+
+    public function meanOff() {
+        $this->mean = false;
         return $this;
     }
 
@@ -234,6 +246,21 @@ class Boxplot
             $draw->width($this->boxBorderWidth);
         });
         return $this;
+    }
+
+    public function plotMean($index) {
+        if (!$this->mean) return;
+        $mean = $this->parsed['Mean'];
+        $x = $this->baseX + ($index + 0.5) * $this->pixGridWidth;
+        $y = $this->baseY - ($mean - $this->gridMin) * $this->pixHeightPitch;
+        $this->image->text('+', $x, $y, function ($font) {
+            $font->file($this->fontPath);
+            $font->size($this->fontSize);
+            //$font->color($this->boxBorderColor);
+            $font->color($this->meanColor);
+            $font->align('center');
+            $font->valign('center');
+        });
     }
 
     public function plotWhiskerUpper($index) {
@@ -394,6 +421,8 @@ class Boxplot
         $this->plotBox($index);
         // plot median
         $this->plotMedian($index);
+        // plot mean
+        $this->plotMean($index);
         // plot a whisker
         $this->plotWhisker($index);
         // plot outliers

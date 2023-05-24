@@ -350,11 +350,11 @@ It's still under construction, but you can create boxplot image file by using th
 
 Example:
 - [BoxplotExample.php](src/BoxplotExample.php) >> results in:
-    - with Outlier Detection & Jitter Plotting
+    - with Outlier Detection & Jitter Plotting & Mean Plotting
 
         ![BoxplotExample672282_01.png](src/img/BoxplotExample672282_01.png)
 
-    - no Outlier Detection, no Jitter Plotting
+    - with Mean Plotting, without Outlier Detection, without Jitter Plotting
 
         ![BoxplotExample672282_02.png](src/img/BoxplotExample672282_02.png)
 
@@ -409,6 +409,6 @@ Have a happy coding!
 
 *Document written: 2023/05/18*
 
-*Last updated: 2023/05/23*
+*Last updated: 2023/05/24*
 
 Copyright (c) 2023 macocci7
