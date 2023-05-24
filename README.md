@@ -9,7 +9,7 @@
 - Histogram and Boxplots:
 
     <a href="#histogram"><img src="src/img/HistogramExample06.png" width="300"></a>
-    　<a href="#boxplot"><img src="src/img/BoxplotExample672282_01.png" width="300"></a>
+    　<a href="#boxplot"><img src="src/img/BoxplotDetmersReid2023_01.png" width="300"></a>
 
 ## Contents
 - [Overview](#overview)
@@ -360,14 +360,14 @@ You can use other True Type Font by the next step:
 It's still under construction, but you can create boxplot image file by using this file.
 
 Example:
-- [BoxplotExample.php](src/BoxplotExample.php) >> results in:
+- [DetmersReidBoxplot2023.php](src/DetmersReidBoxplot2023.php) >> results in:
     - with Outlier Detection & Jitter Plotting & Mean Plotting
 
-        ![BoxplotExample672282_01.png](src/img/BoxplotExample672282_01.png)
+        ![BoxplotDetmersReid2023_01.png](src/img/BoxplotDetmersReid2023_01.png)
 
     - with Mean Plotting, without Outlier Detection, without Jitter Plotting
 
-        ![BoxplotExample672282_02.png](src/img/BoxplotExample672282_02.png)
+        ![BoxplotDetmersReid2023_02.png](src/img/BoxplotDetmersReid2023_02.png)
 
 `Boxplot.php` has instance of FrequencyTable inside.
 

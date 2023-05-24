@@ -56,7 +56,6 @@ class Boxplot
 
     private function setProperties() {
         $this->ft = new FrequencyTable();
-        $this->ft->setClassRange(10);
         $this->boxCount = count($this->data);
         $this->baseX = (int) ($this->canvasWidth * (1 - $this->frameXRatio) * 3 / 4);
         $this->baseY = (int) ($this->canvasHeight * (1 + $this->frameYRatio) / 2);
@@ -70,49 +69,85 @@ class Boxplot
             $minValues[] = min($values);
         }
         $minValue = min($minValues);
-        $this->gridMax = $maxValue + ($maxValue - $minValue) * 0.1;
-        $this->gridMin = $minValue - ($maxValue - $minValue) * 0.1;
-        $this->pixHeightPitch = $this->canvasHeight * $this->frameYRatio / ($this->gridMax - $this->gridMin);
-        $this->gridHeightPitch = 1;
+        $this->gridMax = ((int) ($maxValue + ($maxValue - $minValue) * 0.1) * 10 ) / 10;
+        $this->gridMin = ((int) ($minValue - ($maxValue - $minValue) * 0.1) * 10 ) / 10;
         $gridHeightSpan = $this->gridMax - $this->gridMin;
-        if ($this->gridHeightPitch < 0.125 * $gridHeightSpan)
-            $this->gridHeightPitch = 0.125 * $gridHeightSpan;
-        if ($this->gridHeightPitch > 0.2 * $gridHeightSpan)
-            $this->gridHeightPitch = 0.2 * $gridHeightSpan;
+        // Note:
+        // - The Class Range affects the accuracy of the Mean Value.
+        // - This value should be set appropriately: 10% of $gridHeightSpan in this case.
+        $clsasRange = ((int) ($gridHeightSpan * 10)) / 100;
+        $this->ft->setClassRange($clsasRange);
+        $this->pixHeightPitch = $this->canvasHeight * $this->frameYRatio / ($this->gridMax - $this->gridMin);
+        // Note:
+        // - If $this->gridHeightPitch has a value, that value takes precedence.
+        // - The value of $this->girdHeightPitch may be set by the funciton setGridHeightPitch().
+        if (!$this->gridHeightPitch) {
+            $this->gridHeightPitch = 1;
+            if ($this->gridHeightPitch < 0.125 * $gridHeightSpan)
+                $this->gridHeightPitch = ( (int) (0.125 * $gridHeightSpan * 10)) / 10;
+            if ($this->gridHeightPitch > 0.2 * $gridHeightSpan)
+                $this->gridHeightPitch = ( (int) (0.200 * $gridHeightSpan * 10)) / 10;
+        }
         $this->pixGridWidth = $this->canvasWidth * $this->frameXRatio / count($this->data);
+        // Creating an instance of intervention/image.
         $this->image = Image::canvas($this->canvasWidth, $this->canvasHeight, $this->canvasBackgroundColor);
+        // Note:
+        // - If $this->labels has values, those values takes precedence.
+        // - The values of $this->labels may be set by the function setLabels().
         if (empty($this->labels)) $this->labels = array_keys($this->data);
         return $this;
     }
 
-    public function setData($key, $data) {
-        $this->data[$key] = $data;
+    public function setData($data) {
+        $this->data[] = $data;
+        return $this;
+    }
+
+    public function setGridHeightPitch($pitch) {
+        if (!is_int($pitch) && !is_float($pitch)) return;
+        if ($pitch <= 0) return;
+        $this->gridHeightPitch = $pitch;
+        return $this;
+    }
+
+    public function setSize($width, $height) {
+        if (!is_int($width) || !is_int($height)) return;
+        if ($width < 100 || $height < 100) return;
+        $this->canvasWidth = $width;
+        $this->canvasHeight = $height;
+        return $this;
+    }
+
+    public function setBoxWidth($width) {
+        if (!is_int($width)) return;
+        if ($width < $this->boxBorderWidth * 2 + 1) return;
+        $this->boxWidth = $width;
         return $this;
     }
 
     public function setLabels($labels) {
-        if (!is_array($labels)) throw "Boxplot::setLabels: parameter is not array.";
+        if (!is_array($labels)) return;
         $this->label = [];
         foreach($labels as $label) {
-            $this->labels[] = $label;
+            $this->labels[] = (string) $label;
         }
         return $this;
     }
 
     public function setLabelX($label) {
-        if (!is_string($label)) throw "Boxplot::setLabelX: parameter is not string.";
+        if (!is_string($label)) return;
         $this->labelX = $label;
         return $this;
     }
 
     public function setLabelY($label) {
-        if (!is_string($label)) throw "Boxplot::setLabelY: parameter is not string.";
+        if (!is_string($label)) return;
         $this->labelY = $label;
         return $this;
     }
 
     public function setCaption($caption) {
-        if (!is_string($caption)) throw "Boxplot::setCaption: parameter is not string.";
+        if (!is_string($caption)) return;
         $this->caption = $caption;
         return $this;
     }
@@ -256,7 +291,6 @@ class Boxplot
         $this->image->text('+', $x, $y, function ($font) {
             $font->file($this->fontPath);
             $font->size($this->fontSize);
-            //$font->color($this->boxBorderColor);
             $font->color($this->meanColor);
             $font->align('center');
             $font->valign('center');
@@ -360,7 +394,7 @@ class Boxplot
         if (!is_array($this->labels)) return;
         foreach($this->labels as $index => $label) {
             if (!is_string($label) && !is_numeric($label)) continue;
-            $x = $this->baseX + ($index + 0.5) * $this->pixGridWidth - $this->fontSize * 0.5;
+            $x = $this->baseX + ($index + 0.5) * $this->pixGridWidth;
             $y = $this->baseY + $this->fontSize * 1.2;
             $this->image->text((string) $label, $x, $y, function ($font) {
                 $font->file($this->fontPath);
