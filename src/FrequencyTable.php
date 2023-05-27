@@ -69,7 +69,7 @@ class FrequencyTable
     public function isSettableData($data) {
         if (!is_array($data)) return false;
         if (empty($data)) return false;
-        foreach($data as $value) {
+        foreach ($data as $value) {
             if (!(is_int($value) || is_float($value))) return false;
         }
         return true;
@@ -162,7 +162,7 @@ class FrequencyTable
     {
         if (!($this->isSettableData($data) && $this->isSettableClass($class))) return;
         $count = 0;
-        foreach($data as $d) {
+        foreach ($data as $d) {
             if ($d >= $class['bottom'] && $d < $class['top']) {
                 $count++;
             }
@@ -223,7 +223,7 @@ class FrequencyTable
         if (!$this->isSettableData($frequencies) || !is_int($index)) return;
         if (!($index >= 0) || $index >= count($frequencies)) return;
         $rf = [];
-        foreach(array_slice($frequencies,0,$index + 1) as $frequency) {
+        foreach (array_slice($frequencies,0,$index + 1) as $frequency) {
             $rf[] = $this->getRelativeFrequency($frequency);
         }
         return array_sum($rf);
@@ -263,7 +263,7 @@ class FrequencyTable
     {
         if (!$this->isSettableData($this->getData())) return;
         $median = $this->getMedian($this->getData());
-        foreach($this->getClasses() as $index => $class) {
+        foreach ($this->getClasses() as $index => $class) {
             if ($median >= $class['bottom'] && $median < $class['top']) {
                 return ['index' => $index, ...$class];
             }
@@ -337,7 +337,7 @@ class FrequencyTable
     {
         if (!is_array($columns)) return false;
         if (empty($columns)) return false;
-        foreach($columns as $c) {
+        foreach ($columns as $c) {
             if (!in_array($c, $this->getValidColumns2Show())) return false;
         }
         return true;
@@ -364,7 +364,7 @@ class FrequencyTable
         $fc = [];
         $rf = [];
         $rowOffset = 1;
-        foreach($frequencies as $index => $frequency) {
+        foreach ($frequencies as $index => $frequency) {
             $fc[] = $frequency * $this->getClassValue($classes[$index]);
             $rf[] = $this->getRelativeFrequency($frequency);
             $data[] = [
@@ -406,7 +406,7 @@ class FrequencyTable
         $filtered = [];
         foreach ($data as $index => $row) {
             $filtered[$index] = [];
-            foreach($columns2Show as $c) {
+            foreach ($columns2Show as $c) {
                 $filtered[$index][$c] = array_key_exists($c, $row) ? $row[$c] : null;
             }
         }
@@ -418,7 +418,7 @@ class FrequencyTable
         $option = ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ];
         if (!is_array($optionParam)) return $option;
         if (empty($optionParam)) return $option;
-        foreach($optionParam as $key => $value) {
+        foreach ($optionParam as $key => $value) {
             if (array_key_exists($key,$option) && is_bool($value)) {
                 $option[$key] = $value;
             }
@@ -436,7 +436,7 @@ class FrequencyTable
             return $option['ReturnValue'] ? $buffer : null;
         }
         $separator = $this->getTableSeparator();
-        foreach($this->filterData2Show($this->getData2Show($option)) as $row) {
+        foreach ($this->filterData2Show($this->getData2Show($option)) as $row) {
             $buffer .= $separator . implode($separator, $row) . $separator . "\n";
         }
         if ($option['STDOUT']) echo $buffer;
