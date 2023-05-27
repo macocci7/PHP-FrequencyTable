@@ -17,10 +17,6 @@
 - [Examples](#examples)
 - [Testing](#testing)
 - [LICENSE](#license)
-- [Appendix](#appendix)
-    - [Histogram](#histogram)
-    - [Boxplot](#boxplot)
-    - [IQR Method](#iqr-method)
 
 ## Overview
 
@@ -274,151 +270,6 @@ php ./tools/phpunit.phar ./tests/FrequencyTableTest.php --color auto --testdox
 
 [MIT](LICENSE)
 
-## Appendix
-
-### Histogram
-
-[Histogram.php](src/class/Histogram.php) class is also additionally implemented.
-
-You can create Histogram images like this:
-
-- Histogram & Frequency Polygon & Cumulative Relative Frequency Polygon & Frequency
-
-    ![HistogramExample08.png](src/img/HistogramExample08.png)
-
-- Histogram & Frequency
-
-    ![HistogramExample04.png](src/img/HistogramExample04.png)
-
-Before using `Histogram.php`, you need to install [intervention/image](https://github.com/Intervention/image) as follows.
-
-```bash
-php ./tools/composer.phar require intervention/image
-```
-
-And you also need to install [Imagick PHP extension](https://www.php.net/manual/en/book.imagick.php) and make it enabled.
-
-Check whether `imagick` is installed or not as follows:
-- Command:
-    ```bash
-    php -i | grep imagick
-    ```
-- Output: `imagick` is `enabled`.
-    ```bash
-    /etc/php/8.1/cli/conf.d/20-imagick.ini,
-    imagick
-    imagick module => enabled
-    imagick module version => 3.6.0
-    imagick classes => Imagick, ImagickDraw, ImagickPixel, ImagickPixelIterator, ImagickKernel
-    imagick.allow_zero_dimension_images => 0 => 0
-    imagick.locale_fix => 0 => 0
-    imagick.progress_monitor => 0 => 0
-    imagick.set_single_thread => 1 => 1
-    imagick.shutdown_sleep_count => 10 => 10
-    imagick.skip_version_check => 1 => 1
-    ```
-
-If `imagick` is not installed or not `enabled`, follow the instruction of [php.net](https://www.php.net/manual/en/book.imagick.php) to install it or make it enabled.
-
-Documents of Histogram is not written at present.
-
-To learn more, see some examples.
-
-- [HistogramExample.php](src/HistogramExample.php) >> results in [HistogramExample.md](src/HistogramExample.md)
-- [OhtaniShoheiHistogram2023.php](src/OhtaniShoheiHistogram2023.php) >> results in [OhtaniShoheiHistogram2023.md](src/OhtaniShoheiHistogram2023.md)
-- [PopulationInJapanHistogram2022.php](src/PopulationInJapanHistogram2022.php) >> result in [PopulationInJapanHistogram2022.md](src/PopulationInJapanHistogram2022.md)
-
-`Histogram.php` uses [IPA ex Gothic 00401](https://moji.or.jp/ipafont/ipafontdownload/) font.
-
-You can use other True Type Font by the next step:
-- Copy `*.ttf` file which you want to use into `src/fonts/` folder.
-- Configure the font path as follows: replace `hoge.ttf` with the name of the copied font file.
-    ```php
-    <?php
-    require('./class/FrequencyTable.php');
-    require('./class/Histogram.php');
-
-    $ft = new FrequencyTable();
-    $ft->setClassRange(10);
-    $ft->setData([0,5,10,15,20]);
-
-    $hg = new Histogram();
-    $hg->configure(['fontPath' => 'fonts/hoge.ttf']);
-    $hg->create($ft, 'img/Histogram.png');
-    ```
-- Note: If the `fontPath` you specified does not exist, `fontPath` is not overwritten and `IPA ex Gothic 0041` is used.
-
-### Boxplot
-
-[Boxplot.php](src/class/Boxplot.php) is also implemented.
-
-It's still under construction, but you can create boxplot image file by using this file.
-
-Example:
-- [DetmersReidBoxplot2023.php](src/DetmersReidBoxplot2023.php) >> results in:
-    - with Outlier Detection & Jitter Plotting & Mean Plotting
-
-        ![BoxplotDetmersReid2023_01.png](src/img/BoxplotDetmersReid2023_01.png)
-
-    - with Mean Plotting, without Outlier Detection, without Jitter Plotting
-
-        ![BoxplotDetmersReid2023_02.png](src/img/BoxplotDetmersReid2023_02.png)
-
-- [BoxplotExample.php](src/BoxplotExample.php) >> results in:
-    - with Outlier Detection & Jitter Plotting & Mean Plotting & Legends Plotting & Vertical Grid & Multiple Legends
-
-        ![BoxplotExample.png](src/img/BoxplotExample.png)
-    
-    - Note: This example needs [FakerPHP/Faker](https://github.com/FakerPHP/Faker) to be installed.
-    
-        In order to install `FakerPHP/Faker`, type a command as follows:
-
-        ```bash
-        php ./tools/composer.phar require fakerphp/faker
-        ```
-
-`Boxplot.php` has instance of FrequencyTable inside.
-
-You can also get all data to draw a boxplot by using this FrequencyTable class.(without outlier detection)
-- Max Value
-- Min Value
-- First Quartile
-- Third Quartile
-- Median
-- Mean 
-- Data Range
-- Inter Quartile Range
-
-Outlier Detection is not the job of FrequencyTable.
-
-But, if you want to detect outliers, you can detect them by using IQR (Inter Quartile Range) Method.
-
-Sample code is here: [OutlierDetection.php](src/OutlierDetection.php) >> results in [OutlierDetection.md](src/OutlierDetection.md)
-
-### IQR Method
-
-1. Set the UCL
-
-    Mathmatical Formula (not PHP) is:
-    ```
-    UCL = Q3 + 1.5IQR
-    ```
-    UCL: Upper Control Limit / Q3: Third Quartile / IQR: Inter Quartile Range
-
-2. Set the LCL
-
-    ```
-    LCL = Q1 - 1.5IQR
-    ```
-    LCL: Lower Control Limit / Q1: First Quartile / IQR: Inter Quartile Range
-
-3. Detect Outliers
-
-    If the VALUE meets the following condition, it's the Outlier.
-    ```
-    VALUE < LCL or UCL < VALUE
-    ```
-
 Learn more about boxplot: [box plot](https://byjus.com/maths/box-plot/)
 
 Thanks for reading.
@@ -428,6 +279,6 @@ Have a happy coding!
 
 *Document written: 2023/05/18*
 
-*Last updated: 2023/05/24*
+*Last updated: 2023/05/27*
 
 Copyright (c) 2023 macocci7
