@@ -77,7 +77,7 @@ You can use FrequencyTable class as follows.
 <?php
 require('../vendor/autoload.php');
 
-use Macocci7\PHPFrequencyTable\FrequencyTable;
+use Macocci7\PhpFrequencyTable\FrequencyTable;
 
 $ft = new FrequencyTable(['data'=>[0,5,10,15,20],'classRange'=>10]);
 $ft->show();
@@ -126,7 +126,7 @@ The name of new PHP file is `examples/Example.php`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     ```
 
@@ -138,7 +138,7 @@ The name of new PHP file is `examples/Example.php`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
     ```
@@ -151,7 +151,7 @@ The name of new PHP file is `examples/Example.php`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
     $ft->setClassRange(10);
@@ -165,7 +165,7 @@ The name of new PHP file is `examples/Example.php`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
     $ft->setClassRange(10);
@@ -182,7 +182,7 @@ The name of new PHP file is `examples/Example.php`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
     $ft->setClassRange(10);
@@ -199,7 +199,7 @@ The name of new PHP file is `examples/Example.php`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $data = [0,5,10,15,20];
     $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);

@@ -3,7 +3,7 @@ require('../vendor/autoload.php');
 require('./class/CsvUtil.php');
 require('./class/Outlier.php');
 
-use Macocci7\PHPFrequencyTable\FrequencyTable;
+use Macocci7\PhpFrequencyTable\FrequencyTable;
 use Macocci7\CsvUtil;
 use Macocci7\Outlier;
 

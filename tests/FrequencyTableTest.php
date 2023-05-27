@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-require('src/class/FrequencyTable.php');
+require('src/FrequencyTable.php');
 
 use PHPUnit\Framework\TestCase;
+use Macocci7\PhpFrequencyTable\FrequencyTable;
 
 final class FrequencyTableTest extends TestCase
 {

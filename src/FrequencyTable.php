@@ -1,5 +1,5 @@
 <?php
-namespace Macocci7\PHPFrequencyTable;
+namespace Macocci7\PhpFrequencyTable;
 
 /**
  * Created by: macocci7

@@ -1,4 +1,4 @@
-# Class: Macocci7\PHPFrequencyTable\FrequencyTable
+# Class: Macocci7\PhpFrequencyTable\FrequencyTable
 
 
 [README](README.md)
@@ -76,7 +76,7 @@ void
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable([
         'data' => [0,5,10,15,20],
@@ -117,7 +117,7 @@ Judges whether `$data` is valid or not for FrequencyTable operation.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -174,7 +174,7 @@ FrequencyTable release the data set when invalid data set is given.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -251,7 +251,7 @@ when `$key` is given as a parameter.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -307,7 +307,7 @@ getDataRange() returns null when `$data` is invalid.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -351,7 +351,7 @@ Judges whether `$classRange` is valid or not.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -404,7 +404,7 @@ FrequencyTable holds the Class Range Value until other Value is set.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -461,7 +461,7 @@ See Example.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -517,7 +517,7 @@ See Example.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -596,7 +596,7 @@ Judges whether `$class` is valid or not.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -659,7 +659,7 @@ not form the data set FrequencyTable holds.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -718,7 +718,7 @@ Returns the Cumulative Frequency of the Class specified by Array `$index` of Arr
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -772,7 +772,7 @@ Returns the Min(imum) Value of the data set `$data`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -818,7 +818,7 @@ Returns the Max(imum) Value of the data set `$data`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -868,7 +868,7 @@ or if the Value of Total is `null` when getTotal() is called.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -925,7 +925,7 @@ if the Value of Total is `null` when getTotal() is called.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -994,7 +994,7 @@ Returns the Class Value of the `$class`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1049,7 +1049,7 @@ Before using this method, you should set Total by calling setData() or setTotal(
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1113,7 +1113,7 @@ Before using this method, you should set Total using setTotal() or setData().
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1166,7 +1166,7 @@ Before using this method, you should set Class Range and data.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1220,7 +1220,7 @@ Before using this method, you should set Class Range and data.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1276,7 +1276,7 @@ Returns Median of `$param`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1338,7 +1338,7 @@ Before using this class, you should set Class Range and data.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1417,7 +1417,7 @@ Returns First Quartile of `$data`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1471,7 +1471,7 @@ Returns Third Quartile of `$data`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1525,7 +1525,7 @@ Returns Inter Quartile Range of `$data`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1579,7 +1579,7 @@ Returns Quartile Deviation of `$data`.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1625,7 +1625,7 @@ Returns Columns to show in the Frequency Table.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1690,7 +1690,7 @@ You can check Column Names to set by using this method.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1747,7 +1747,7 @@ Judges whether `$columns` is valid or not for setColumns2Show().
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1794,7 +1794,7 @@ Sets Columns to show in Frequency Table.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
 
@@ -1885,7 +1885,7 @@ Prints the Frequency Table in markdown format to standard output.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable(['classRange'=>10,'data'=>[0,5,10,15,20]]);
 
@@ -1973,7 +1973,7 @@ Before using this method, you should set Class Range and data.
     <?php
     require('../vendor/autoload.php');
 
-    use Macocci7\PHPFrequencyTable\FrequencyTable;
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
 
 
     $ft = new FrequencyTable();
