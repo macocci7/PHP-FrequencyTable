@@ -1,15 +1,10 @@
 # FrequencyTable.php
 
-## Example Images
+## Example Image
 
 - Frequency Table Example:
 
-    <a href="#the-most-simple-usage"><img src="src/img/FrequencyTableExample.png" width="400"></a>
-
-- Histogram and Boxplots:
-
-    <a href="#histogram"><img src="src/img/HistogramExample06.png" width="300"></a>
-    　<a href="#boxplot"><img src="src/img/BoxplotDetmersReid2023_01.png" width="300"></a>
+    <a href="#the-most-simple-usage"><img src="img/FrequencyTableExample.png" width="400"></a>
 
 ## Contents
 - [Overview](#overview)

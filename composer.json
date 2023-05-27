@@ -1,6 +1,20 @@
 {
+    "name": "macocci7/php-frequency-table",
+    "description": "it's easy to use for creating frequency distribution tables.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Macocci7\\PhpFrequencyTable\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "macocci7",
+            "email": "macocci7@yahoo.co.jp"
+        }
+    ],
     "require": {
-        "intervention/image": "^2.7",
-        "fakerphp/faker": "^1.22"
+        "php": ">= 8.0.0"
     }
 }
