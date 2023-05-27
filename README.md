@@ -259,11 +259,14 @@ Learn more: [Methods](Methods.md)
 
 ## Examples
 
+preparing.
+<!--
 - [ExampleCases.php](src/ExampleCases.php) >> results in [ExampleCases.md](src/ExampleCases.md)
 - [PopulationInJapan2022.php](src/PopulationInJapan2022.php) >> results in [PopulationInJapan2022.md](src/PopulationInJapan2022.md)
 - [OhtaniShohei2023.php](src/OhtaniShohei2023.php) >> results in [OhtaniShohei2023.md](src/OhtaniShohei2023.md)
 - [OutlierDetection.php](src/OutlierDetection.php) >> results in [OutlierDetection.md](src/OutlierDetection.md)
 - [FrequencyTableTest.php](tests/FrequencyTableTest.php) : all usage is written in this code.
+-->
 
 ## LICENSE
 
