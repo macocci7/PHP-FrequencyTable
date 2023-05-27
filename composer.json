@@ -8,7 +8,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Macocci7\\PhpFrequencyTable\\": "src/"
+            "Macocci7\\PHPFrequencyTable\\": "src/"
         }
     },
     "authors": [
