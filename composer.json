@@ -1,6 +1,0 @@
-{
-    "require": {
-        "intervention/image": "^2.7",
-        "fakerphp/faker": "^1.22"
-    }
-}
