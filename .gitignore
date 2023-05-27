@@ -2,7 +2,7 @@
 /vendor
 /.phpunit.cache
 .phpunit.result.cache
-
+/tools
 /examples
 
 # Logs

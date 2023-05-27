@@ -51,7 +51,8 @@ class FrequencyTable
         'ClassValue * Frequency' => '---:',
     ];
 
-    public function __construct($param = []) {
+    public function __construct($param = [])
+    {
         if (array_key_exists('classRange', $param)) {
             $this->setClassRange($param['classRange']);
         }
@@ -74,7 +75,8 @@ class FrequencyTable
         return true;
     }
 
-    public function setData($data = null) {
+    public function setData($data = null)
+    {
         if ($this->isSettableData($data)) {
             $this->data = $data;
             $this->setTotal($this->getFrequencies());
@@ -85,22 +87,26 @@ class FrequencyTable
         return false;
     }
 
-    public function getData($key = null) {
+    public function getData($key = null)
+    {
         return (null === $key) ? $this->data : (array_key_exists($key,$this->data) ? $this->data[$key] : null);
     }
 
-    public function getDataRange($data) {
+    public function getDataRange($data)
+    {
         if (!$this->isSettableData($data)) return;
         return $this->getMax($data) - $this->getMin($data);
     }
 
-    public function isSettableClassRange($classRange) {
+    public function isSettableClassRange($classRange)
+    {
         if (!(is_int($classRange) || is_float($classRange))) return false;
         if ($classRange > 0) return true;
         return false;
     }
 
-    public function setClassRange($classRange = null) {
+    public function setClassRange($classRange = null)
+    {
         if ($this->isSettableClassRange($classRange)) {
             $this->classRange = $classRange;
             return true;
@@ -109,11 +115,13 @@ class FrequencyTable
         return false;
     }
 
-    public function getClassRange() {
+    public function getClassRange()
+    {
         return $this->classRange;
     }
 
-    public function getFrequencies() {
+    public function getFrequencies()
+    {
         $frequencies = [];
         foreach ($this->getClasses($this->data, $this->classRange) as $class) {
             $frequencies[] = $this->getFrequency($this->data, $class);
@@ -121,7 +129,8 @@ class FrequencyTable
         return $frequencies;
     }
 
-    public function getClasses() {
+    public function getClasses()
+    {
         if (!($this->isSettableData($this->data) && $this->isSettableClassRange($this->classRange))) return [];
         $min = min($this->data);
         $max = max($this->data);
@@ -137,7 +146,8 @@ class FrequencyTable
         return $class;
     }
 
-    public function isSettableClass($class) {
+    public function isSettableClass($class)
+    {
         if (!is_array($class)) return false;
         if (empty($class)) return false;
         if (!(array_key_exists('bottom',$class) && array_key_exists('top',$class))) return false;
@@ -148,7 +158,8 @@ class FrequencyTable
         return true;
     }
 
-    public function getFrequency($data, $class) {
+    public function getFrequency($data, $class)
+    {
         if (!($this->isSettableData($data) && $this->isSettableClass($class))) return;
         $count = 0;
         foreach($data as $d) {
@@ -159,21 +170,25 @@ class FrequencyTable
         return $count;
     }
 
-    public function getCumulativeFrequency($frequencies, $index) {
+    public function getCumulativeFrequency($frequencies, $index)
+    {
         if (!$this->isSettableData($frequencies) || !is_int($index)) return;
         if (!($index >= 0) || $index >= count($frequencies)) return;
         return array_sum(array_slice($frequencies,0,$index + 1));
     }
 
-    public function getMin($data) {
+    public function getMin($data)
+    {
         return $this->isSettableData($data) ? min($data) : null;
     }
 
-    public function getMax($data) {
+    public function getMax($data)
+    {
         return $this->isSettableData($data) ? max($data) : null;
     }
 
-    public function setTotal($data) {
+    public function setTotal($data)
+    {
         if (!$this->isSettableData($data)) {
             $this->total = null;
             return false;
@@ -182,25 +197,29 @@ class FrequencyTable
         return true;
     }
 
-    public function getTotal() {
+    public function getTotal()
+    {
         if (null == $this->total && null != $this->getData()) {
             $this->setTotal($this->getFrequencies());
         }
         return $this->total;
     }
 
-    public function getClassValue($class) {
+    public function getClassValue($class)
+    {
         if (!$this->isSettableClass($class)) return;
         return ($class['bottom'] + $class['top']) / 2;
     }
 
-    public function getRelativeFrequency($frequency) {
+    public function getRelativeFrequency($frequency)
+    {
         if (!$this->getTotal() || !(is_int($frequency))) return;
         if ($frequency < 0 || $frequency > $this->getTotal()) return;
         return $frequency / $this->getTotal();
     }
 
-    public function getCumulativeRelativeFrequency($frequencies, $index) {
+    public function getCumulativeRelativeFrequency($frequencies, $index)
+    {
         if (!$this->isSettableData($frequencies) || !is_int($index)) return;
         if (!($index >= 0) || $index >= count($frequencies)) return;
         $rf = [];
@@ -210,7 +229,8 @@ class FrequencyTable
         return array_sum($rf);
     }
 
-    public function getMean() {
+    public function getMean()
+    {
         if (!$this->isSettableData($this->getData()) || !$this->getTotal()) return;
         $fc = [];
         $classes = $this->getClasses();
@@ -220,7 +240,8 @@ class FrequencyTable
         return array_sum($fc) / $this->getTotal();
     }
 
-    public function getMode() {
+    public function getMode()
+    {
         $frequencies = $this->getFrequencies();
         if (!count($frequencies) > 0) return;
         $classes = $this->getClasses();
@@ -228,7 +249,8 @@ class FrequencyTable
         return $this->getClassValue($classes[$index]);
     }
 
-    public function getMedian($param) {
+    public function getMedian($param)
+    {
         if (!$this->isSettableData($param)) return;
         $data = [...$param];
         $count = count($data);
@@ -237,7 +259,8 @@ class FrequencyTable
         return ($data[(int) ($count / 2) - 1] + $data[(int) ($count / 2)]) / 2;
     }
 
-    public function getMedianClass() {
+    public function getMedianClass()
+    {
         if (!$this->isSettableData($this->getData())) return;
         $median = $this->getMedian($this->getData());
         foreach($this->getClasses() as $index => $class) {
@@ -247,7 +270,8 @@ class FrequencyTable
         }
     }
 
-    public function getFirstQuartile($data) {
+    public function getFirstQuartile($data)
+    {
         if (!$this->isSettableData($data)) return;
         $a = [...$data];
         sort($a);
@@ -258,7 +282,8 @@ class FrequencyTable
         return $this->getMedian($forward);
     }
 
-    public function getThirdQuartile($data) {
+    public function getThirdQuartile($data)
+    {
         if (!$this->isSettableData($data)) return;
         $a = [...$data];
         sort($a);
@@ -269,39 +294,47 @@ class FrequencyTable
         return $this->getMedian($backward);
     }
 
-    public function getInterQuartileRange($data) {
+    public function getInterQuartileRange($data)
+    {
         if (!$this->isSettableData($data)) return;
         return $this->getThirdQuartile($data) - $this->getFirstQuartile($data);
     }
 
-    public function getQuartileDeviation($data) {
+    public function getQuartileDeviation($data)
+    {
         if (!$this->isSettableData($data)) return;
         return $this->getInterQuartileRange($data) / 2;
     }
 
-    public function setTableSeparator($separator) {
+    public function setTableSeparator($separator)
+    {
         if (!is_string($separator)) return false;
         $this->tableSeparator = $separator;
         return true;
     }
 
-    public function getTableSeparator() {
+    public function getTableSeparator()
+    {
         return $this->tableSeparator;
     }
 
-    public function setDefaultTableSeparator() {
+    public function setDefaultTableSeparator()
+    {
         return $this->setTableSeparator($this->defaultTableSeparator);
     }
 
-    public function getColumns2Show() {
+    public function getColumns2Show()
+    {
         return $this->columns2Show;
     }
 
-    public function getValidColumns2Show() {
+    public function getValidColumns2Show()
+    {
         return $this->validColumns2Show;
     }
 
-    public function isSettableColumns2Show($columns) {
+    public function isSettableColumns2Show($columns)
+    {
         if (!is_array($columns)) return false;
         if (empty($columns)) return false;
         foreach($columns as $c) {
@@ -310,7 +343,8 @@ class FrequencyTable
         return true;
     }
 
-    public function setColumns2Show($columns) {
+    public function setColumns2Show($columns)
+    {
         if ($this->isSettableColumns2Show($columns)){
             $this->columns2Show = $columns;
             return true;
@@ -318,7 +352,8 @@ class FrequencyTable
         return false;
     }
 
-    public function getData2Show($option = ['Mean' => true, ]) {
+    public function getData2Show($option = ['Mean' => true, ])
+    {
         if (!$this->isSettableData($this->getData())) return [];
         if (!is_array($option)) return [];
         $data = [];
@@ -365,7 +400,8 @@ class FrequencyTable
         return $data;
     }
 
-    public function filterData2Show($data) {
+    public function filterData2Show($data)
+    {
         $columns2Show = $this->getColumns2Show();
         $filtered = [];
         foreach ($data as $index => $row) {
@@ -377,7 +413,8 @@ class FrequencyTable
         return $filtered;
     }
 
-    public function validateShowOption($optionParam) {
+    public function validateShowOption($optionParam)
+    {
         $option = ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ];
         if (!is_array($optionParam)) return $option;
         if (empty($optionParam)) return $option;
@@ -389,7 +426,8 @@ class FrequencyTable
         return $option;
     }
 
-    public function show($optionParam = ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ]) {
+    public function show($optionParam = ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ])
+    {
         $option = $this->validateShowOption($optionParam);
         $buffer = null;
         if (!$this->isSettableData($this->data)) {
@@ -405,7 +443,8 @@ class FrequencyTable
         return $option['ReturnValue'] ? $buffer : null;
     }
 
-    public function parse() {
+    public function parse()
+    {
         if (!$this->isSettableClassRange($this->getClassRange())) return;
         if (!$this->isSettableData($this->getData())) return;
         return [
