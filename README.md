@@ -15,7 +15,6 @@
     - [Other Usage](#other-usage)
 - [Methods](#methods)
 - [Examples](#examples)
-- [Testing](#testing)
 - [LICENSE](#license)
 
 ## Overview
@@ -253,18 +252,6 @@ Learn more: [Methods](Methods.md)
 - [OhtaniShohei2023.php](src/OhtaniShohei2023.php) >> results in [OhtaniShohei2023.md](src/OhtaniShohei2023.md)
 - [OutlierDetection.php](src/OutlierDetection.php) >> results in [OutlierDetection.md](src/OutlierDetection.md)
 - [FrequencyTableTest.php](tests/FrequencyTableTest.php) : all usage is written in this code.
-
-## Testing
-
-You can test FrequencyTable.php using PHPUnit (phpunit.phar).
-
-Type the command at the project top folder.
-
-```bash
-php ./tools/phpunit.phar ./tests/FrequencyTableTest.php --color auto --testdox
-```
-
-[TestResult.txt](TestResult.txt)
 
 ## LICENSE
 
