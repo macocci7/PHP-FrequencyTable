@@ -17,5 +17,6 @@
     ],
     "require": {
         "php": ">= 8.0.0"
-    }
+    },
+    "prefer-stable": true
 }
