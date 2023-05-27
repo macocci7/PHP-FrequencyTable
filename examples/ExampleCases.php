@@ -2,7 +2,7 @@
 
 require('../vendor/autoload.php');
 
-use Macocci7\PHPFrequencyTable\FrequencyTable;
+use Macocci7\PhpFrequencyTable\FrequencyTable;
 
 $data = [
     //null, // This results in Exception

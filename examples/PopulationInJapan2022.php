@@ -2,7 +2,7 @@
 
 require('../vendor/autoload.php');
 
-use Macocci7\PHPFrequencyTable\FrequencyTable;
+use Macocci7\PhpFrequencyTable\FrequencyTable;
 
 $population = [
     '北海道' => 5246170,
