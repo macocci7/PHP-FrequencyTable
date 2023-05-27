@@ -116,7 +116,7 @@ php -f Example.php
 
 Let's create the PHP code to show a Frequency Table.
 
-The name of new PHP file is `Example.php`.
+The name of new PHP file is `examples/Example.php`.
 
 1. Require `autoload.php` and declare use statement.
 
@@ -129,8 +129,6 @@ The name of new PHP file is `Example.php`.
     use Macocci7\PHPFrequencyTable\FrequencyTable;
 
     ```
-
-    Rewirte the path to the correct path which you located `FrequencyTable.php`.
 
 2. Create an instance
 
@@ -239,9 +237,9 @@ The name of new PHP file is `Example.php`.
     php -f Example.php > Example.md
     ```
 
-    Then the output will be written in [Example.md](src/Example.md).
+    Then the output will be written in [Example.md](examples/Example.md).
 
-    When you open [Example.md](src/Example.md) in your tool like `VSCode Preview` (or on Github),
+    When you open [Example.md](examples/Example.md) in your tool like `VSCode Preview` (or on Github),
 
     the frequency table will be shown as follows.
 
@@ -260,19 +258,16 @@ Learn more: [Methods](Methods.md)
 ## Examples
 
 preparing.
-<!--
-- [ExampleCases.php](src/ExampleCases.php) >> results in [ExampleCases.md](src/ExampleCases.md)
-- [PopulationInJapan2022.php](src/PopulationInJapan2022.php) >> results in [PopulationInJapan2022.md](src/PopulationInJapan2022.md)
-- [OhtaniShohei2023.php](src/OhtaniShohei2023.php) >> results in [OhtaniShohei2023.md](src/OhtaniShohei2023.md)
-- [OutlierDetection.php](src/OutlierDetection.php) >> results in [OutlierDetection.md](src/OutlierDetection.md)
+- [ExampleCases.php](examples/ExampleCases.php) >> results in [ExampleCases.md](examples/ExampleCases.md)
+- [PopulationInJapan2022.php](examples/PopulationInJapan2022.php) >> results in [PopulationInJapan2022.md](examples/PopulationInJapan2022.md)
+- [OhtaniShohei2023.php](examples/OhtaniShohei2023.php) >> results in [OhtaniShohei2023.md](examples/OhtaniShohei2023.md)
+- [OutlierDetection.php](examples/OutlierDetection.php) >> results in [OutlierDetection.md](examples/OutlierDetection.md)
 - [FrequencyTableTest.php](tests/FrequencyTableTest.php) : all usage is written in this code.
--->
 
 ## LICENSE
 
 [MIT](LICENSE)
 
-Learn more about boxplot: [box plot](https://byjus.com/maths/box-plot/)
 
 Thanks for reading.
 
