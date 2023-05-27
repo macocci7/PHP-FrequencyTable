@@ -1,4 +1,4 @@
-# FrequencyTable.php
+# PHP-FrequencyTable
 
 ## Example Image
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-`FrequencyTable.php` is single object class file written in PHP in order to operate frequency table easily.
+`PHP-FrequencyTable` is single object class file written in PHP in order to operate frequency table easily.
 
 ChatGTP and Google Bard cannot take statistics correctly at present, so I made this to teach them how to make a frequency table.
 
@@ -27,15 +27,11 @@ There seems to be some tools to make a Frequency Table in the world.
 
 However, this FrequencyTable class is the most easiest tool to use, I think. (just I think so)
 
-You can use it easily by just requiring the file `FrequencyTable.php`.
-
-Locate `FrequencyTable.php` wherever you like.
-
 Let's create an instance of FrequencyTable and operate it!
 
 ## Prerequisite
 
-- `FrequencyTable.php` is written and tested in `PHP 8.1.2 CLI` environment. 
+- `PHP-FrequencyTable` is written and tested in `PHP 8.1.2 CLI` environment. 
 - `PHPUnit 10.1.3` is used in testing.
 - You are expected to have known what frequency table is, and mathmatical terms used in this code:
 
@@ -65,7 +61,9 @@ Let's create an instance of FrequencyTable and operate it!
 
 ## Installation
 
-Locate `FrequencyTable.php` wherever you like.
+```bash
+composer require macocci7/php-frequency-table
+```
 
 ## Usage
 
@@ -77,7 +75,9 @@ You can use FrequencyTable class as follows.
 
 ```php
 <?php
-require('./class/FrequencyTable.php');
+require('../vendor/autoload.php');
+
+use Macocci7\PHPFrequencyTable\FrequencyTable;
 
 $ft = new FrequencyTable(['data'=>[0,5,10,15,20],'classRange'=>10]);
 $ft->show();
@@ -118,13 +118,16 @@ Let's create the PHP code to show a Frequency Table.
 
 The name of new PHP file is `Example.php`.
 
-1. Require `FrequencyTable.php`
+1. Require `autoload.php` and declare use statement.
 
-    Require `FrequencyTable.php` as follows in your PHP code (Example.php).
+    Require `autoload.php` as follows in your PHP code (Example.php).
 
     ```php
     <?php
-    require('./class/FrequencyTable.php');
+    require('../vendor/autoload.php');
+
+    use Macocci7\PHPFrequencyTable\FrequencyTable;
+
     ```
 
     Rewirte the path to the correct path which you located `FrequencyTable.php`.
@@ -135,7 +138,9 @@ The name of new PHP file is `Example.php`.
 
     ```php
     <?php
-    require('./class/FrequencyTable.php');
+    require('../vendor/autoload.php');
+
+    use Macocci7\PHPFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
     ```
@@ -146,7 +151,9 @@ The name of new PHP file is `Example.php`.
 
     ```php
     <?php
-    require('./class/FrequencyTable.php');
+    require('../vendor/autoload.php');
+
+    use Macocci7\PHPFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
     $ft->setClassRange(10);
@@ -158,7 +165,9 @@ The name of new PHP file is `Example.php`.
 
     ```php
     <?php
-    require('./class/FrequencyTable.php');
+    require('../vendor/autoload.php');
+
+    use Macocci7\PHPFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
     $ft->setClassRange(10);
@@ -173,7 +182,9 @@ The name of new PHP file is `Example.php`.
 
     ```php
     <?php
-    require('./class/FrequencyTable.php');
+    require('../vendor/autoload.php');
+
+    use Macocci7\PHPFrequencyTable\FrequencyTable;
 
     $ft = new FrequencyTable();
     $ft->setClassRange(10);
@@ -188,7 +199,9 @@ The name of new PHP file is `Example.php`.
 
     ```php
     <?php
-    require('./class/FrequencyTable.php');
+    require('../vendor/autoload.php');
+
+    use Macocci7\PHPFrequencyTable\FrequencyTable;
 
     $data = [0,5,10,15,20];
     $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
@@ -212,7 +225,6 @@ The name of new PHP file is `Example.php`.
     Standard Output
 
     ```bash
-    $ php -f Example.php
     |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
     |:---:|:---:|:---:|:---:|---:|
     |0 ~ 10|2|0.40|5.0|10.0|
