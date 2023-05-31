@@ -38,6 +38,8 @@
 - [setColumns2Show()](#setcolumns2show)
 - [show()](#show)
 - [parse()](#parse)
+- [csv()](#csv)
+- [tsv()](#tsv)
 
 ***
 
@@ -2066,6 +2068,146 @@ Before using this method, you should set Class Range and data.
 
 ***
 
+### csv
+
+```php
+csv($path, $quatation = true, $eol = "\n")
+```
+
+Output Frequency Table into the CSV file specified by `$path`.
+
+Before using this method, you should set Class Range and data.
+
+#### Parameters
+
+> $path
+
+- Type: string
+- Value: file path of the CSV file to save data.
+
+> $quatation
+
+- Default: `true`
+- Type: bool
+- Value:
+    - `true`: each data is quated by double quatation mark.
+    - `false`: each data is not quated.
+
+> $eol
+
+The character code appended at end of each lines.
+
+- Default: "\n"
+- Type: string
+- Value: any (at your own risk)
+
+#### Return
+
+- Type: integer or `false` or `null`
+- Value:
+    - integer: byte length of data saved.
+    - `false`: failed to save data into the file.
+    - `null`: parameters are invalid.
+
+#### Example
+
+- PHP
+    ```php
+    <?php
+    require('../vendor/autoload.php');
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+
+    $ft = new FrequencyTable();
+
+    $ft->setClassRange(10);
+    $ft->setData([0,5,10,15,20]);
+
+    $ft->csv('test.csv');
+    ```
+
+- Result: `test.csv`
+    ```
+    "Class","Frequency"
+    "0 ~ 10","2"
+    "10 ~ 20","2"
+    "20 ~ 30","1"
+    "Total","5"
+    ```
+
+***
+
+### tsv
+
+```php
+tsv($path, $quatation = true, $eol = "\n")
+```
+
+Output Frequency Table into the TSV file specified by `$path`.
+
+Before using this method, you should set Class Range and data.
+
+#### Parameters
+
+> $path
+
+- Type: string
+- Value: file path of the TSV file to save data.
+
+> $quatation
+
+- Default: `true`
+- Type: bool
+- Value:
+    - `true`: each data is quated by double quatation mark.
+    - `false`: each data is not quated.
+
+> $eol
+
+The character code appended at end of each lines.
+
+- Default: "\n"
+- Type: string
+- Value: any (at your own risk)
+
+#### Return
+
+- Type: integer or `false` or `null`
+- Value:
+    - integer: byte length of data saved.
+    - `false`: failed to save data into the file.
+    - `null`: parameters are invalid.
+
+#### Example
+
+- PHP
+    ```php
+    <?php
+    require('../vendor/autoload.php');
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+
+    $ft = new FrequencyTable();
+
+    $ft->setClassRange(10);
+    $ft->setData([0,5,10,15,20]);
+
+    $ft->tsv('test.tsv');
+    ```
+
+- Result: `test.tsv`
+    ```
+    "Class"	"Frequency"
+    "0 ~ 10"	"2"
+    "10 ~ 20"	"2"
+    "20 ~ 30"	"1"
+    "Total"	"5"
+    ```
+
+***
+
 *Document written: 2023/05/20*
 
-*Last Updated: 2023/05/27*
+*Last Updated: 2023/05/31*

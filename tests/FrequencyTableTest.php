@@ -1075,6 +1075,64 @@ final class FrequencyTableTest extends TestCase
         $this->assertFalse(in_array('Mean',array_column($data2Show,'Class')));
     }
 
+    public function test_getData4EachClass_can_get_data_4_each_class_correctly(): void
+    {
+        $cases = [
+            ['classRange' => null, 'data' => null, 'expect' => [], ],
+            ['classRange' => 10, 'data' => null, 'expect' => [], ],
+            ['classRange' => null, 'data' => [0], 'expect' => [], ],
+            ['classRange' => 10, 'data' => [0], 'expect' => [
+                    [
+                        'Class' => '0 ~ 10',
+                        'Frequency' => 1,
+                        'CumulativeFrequency' => 1,
+                        'RelativeFrequency' => '1.00',
+                        'CumulativeRelativeFrequency' => '1.00',
+                        'ClassValue' => '5.0',
+                        'ClassValue * Frequency' => '5.0',
+                    ],
+                ], 
+            ],
+            ['classRange' => 10, 'data' => [0, 5, 10, 15, 20], 'expect' => [
+                    [
+                        'Class' => '0 ~ 10',
+                        'Frequency' => 2,
+                        'CumulativeFrequency' => 2,
+                        'RelativeFrequency' => '0.40',
+                        'CumulativeRelativeFrequency' => '0.40',
+                        'ClassValue' => '5.0',
+                        'ClassValue * Frequency' => '10.0',
+                    ],
+                    [
+                        'Class' => '10 ~ 20',
+                        'Frequency' => 2,
+                        'CumulativeFrequency' => 4,
+                        'RelativeFrequency' => '0.40',
+                        'CumulativeRelativeFrequency' => '0.80',
+                        'ClassValue' => '15.0',
+                        'ClassValue * Frequency' => '30.0',
+                    ],
+                    [
+                        'Class' => '20 ~ 30',
+                        'Frequency' => 1,
+                        'CumulativeFrequency' => 5,
+                        'RelativeFrequency' => '0.20',
+                        'CumulativeRelativeFrequency' => '1.00',
+                        'ClassValue' => '25.0',
+                        'ClassValue * Frequency' => '25.0',
+                    ],
+                ], 
+            ],
+        ];
+        $ft = new FrequencyTable();
+        $ft->setColumns2Show(['Class', 'Frequency']);
+        foreach ($cases as $index => $case) {
+            $ft->setClassRange($case['classRange']);
+            $ft->setData($case['data']);
+            $this->assertSame($case['expect'], $ft->getData4EachClass());
+        }
+    }
+
     public function test_filterData2Show_can_filter_data_2_show_correctly(): void
     {
         $ft = new FrequencyTable();
@@ -1267,5 +1325,94 @@ final class FrequencyTableTest extends TestCase
             'FrequencyTable' => $ft->show(['Mean'=>true,'STDOUT'=>false,'ReturnValue'=>true]),
         ];
         $this->assertSame($expect,$ft->parse());
+    }
+
+    public function test_xsv_can_return_null_with_invalid_parameters(): void
+    {
+        $cases = [
+            ['path' => null, 'separator' => null, 'quatation' => null, ],
+            ['path' => true, 'separator' => null, 'quatation' => null, ],
+            ['path' => false, 'separator' => null, 'quatation' => null, ],
+            ['path' => '', 'separator' => null, 'quatation' => null, ],
+            ['path' => 0, 'separator' => null, 'quatation' => null, ],
+            ['path' => 1.2, 'separator' => null, 'quatation' => null, ],
+            ['path' => [], 'separator' => null, 'quatation' => null, ],
+            ['path' => ['path'], 'separator' => null, 'quatation' => null, ],
+            ['path' => 'path', 'separator' => null, 'quatation' => null, ],
+            ['path' => 'path', 'separator' => null, 'quatation' => 0, ],
+            ['path' => 'path', 'separator' => null, 'quatation' => 1, ],
+            ['path' => 'path', 'separator' => null, 'quatation' => 0.0, ],
+            ['path' => 'path', 'separator' => null, 'quatation' => 1.0, ],
+            ['path' => 'path', 'separator' => null, 'quatation' => '', ],
+            ['path' => 'path', 'separator' => null, 'quatation' => [], ],
+            ['path' => 'path', 'separator' => null, 'quatation' => [true], ],
+            ['path' => 'path', 'separator' => null, 'quatation' => [false], ],
+
+            ['path' => null, 'separator' => '', 'quatation' => null, ],
+            ['path' => true, 'separator' => '', 'quatation' => null, ],
+            ['path' => false, 'separator' => '', 'quatation' => null, ],
+            ['path' => '', 'separator' => '', 'quatation' => null, ],
+            ['path' => 0, 'separator' => '', 'quatation' => null, ],
+            ['path' => 1.2, 'separator' => '', 'quatation' => null, ],
+            ['path' => [], 'separator' => '', 'quatation' => null, ],
+            ['path' => ['path'], 'separator' => '', 'quatation' => null, ],
+            ['path' => 'path', 'separator' => '', 'quatation' => null, ],
+            ['path' => 'path', 'separator' => '', 'quatation' => 0, ],
+            ['path' => 'path', 'separator' => '', 'quatation' => 1, ],
+            ['path' => 'path', 'separator' => '', 'quatation' => 0.0, ],
+            ['path' => 'path', 'separator' => '', 'quatation' => 1.0, ],
+            ['path' => 'path', 'separator' => '', 'quatation' => '', ],
+            ['path' => 'path', 'separator' => '', 'quatation' => [], ],
+            ['path' => 'path', 'separator' => '', 'quatation' => [true], ],
+            ['path' => 'path', 'separator' => '', 'quatation' => [false], ],
+        ];
+        $ft = new FrequencyTable();
+        foreach ($cases as $index => $case) {
+            $this->assertNull($ft->xsv($case['path'], ',', $case['quatation']));
+        }
+    }
+
+    public function test_csv_can_output_csv(): void
+    {
+        $data = [0, 5, 10, 15, 20];
+        $columns2Show = ['Class', 'Frequency', ];
+        $expect = [
+            ['Class', 'Frequency', ],
+            ['0 ~ 10', '2', ],
+            ['10 ~ 20', '2', ],
+            ['20 ~ 30', '1', ],
+            ['Total', '5',],
+        ];
+        $path = 'storage/test.csv';
+        $ft = new FrequencyTable();
+        $ft->setClassRange(10);
+        $ft->setData($data);
+        $ft->setColumns2Show($columns2Show);
+        $this->assertIsInt($ft->csv($path));
+        $this->assertTrue(file_exists($path));
+        $csv = array_map(fn($value): array => str_getcsv($value, ","), file($path, FILE_IGNORE_NEW_LINES));
+        $this->assertSame($expect, $csv);
+    }
+
+    public function test_tsv_can_output_tsv(): void
+    {
+        $data = [0, 5, 10, 15, 20];
+        $columns2Show = ['Class', 'Frequency', ];
+        $expect = [
+            ['Class', 'Frequency', ],
+            ['0 ~ 10', '2', ],
+            ['10 ~ 20', '2', ],
+            ['20 ~ 30', '1', ],
+            ['Total', '5',],
+        ];
+        $path = 'storage/test.tsv';
+        $ft = new FrequencyTable();
+        $ft->setClassRange(10);
+        $ft->setData($data);
+        $ft->setColumns2Show($columns2Show);
+        $this->assertIsInt($ft->tsv($path));
+        $this->assertTrue(file_exists($path));
+        $csv = array_map(fn($value): array => str_getcsv($value, "\t"), file($path, FILE_IGNORE_NEW_LINES));
+        $this->assertSame($expect, $csv);
     }
 }
