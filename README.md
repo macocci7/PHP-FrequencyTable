@@ -21,11 +21,11 @@
 
 `PHP-FrequencyTable` is single object class file written in PHP in order to operate frequency table easily.
 
-ChatGTP and Google Bard cannot take statistics correctly at present, so I made this to teach them how to make a frequency table.
+You can create Frequency Tables easily just by setting data in array and Class Range.
 
-There seems to be some tools to make a Frequency Table in the world.
+You can save them into some formats, Markdown Table, CSV and TSV.
 
-However, this FrequencyTable class is the most easiest tool to use, I think. (just I think so)
+You can also get parsed data as hash array of PHP.
 
 Let's create an instance of FrequencyTable and operate it!
 
@@ -33,31 +33,6 @@ Let's create an instance of FrequencyTable and operate it!
 
 - `PHP-FrequencyTable` is written and tested in `PHP 8.1.2 CLI` environment. 
 - `PHPUnit 10.1.3` is used in testing.
-- You are expected to have known what frequency table is, and mathmatical terms used in this code:
-
-    <details>
-    <summary>Mathmatical Terms used in this code</summary>
-
-    - Frequency Table
-    - Class
-    - Class Range
-    - Class Value
-    - Frequency
-    - Cumulative Frequency
-    - Relative Frequency
-    - Cumulative Relative Frequency
-    - Total
-    - Mean
-    - Max(imum)
-    - Min(imum)
-    - Data Range
-    - Mode
-    - Median
-    - First Quartile
-    - Third Quartile
-    - Inter Quartile Range
-    - Quartile Deviation
-    </details>
 
 ## Installation
 
@@ -250,6 +225,203 @@ The name of new PHP file is `examples/Example.php`.
     |20 ~ 30|1|0.20|25.0|25.0|
     |Total|5|1.00|---|65.0|
     |Mean|---|---|---|13.0|
+
+### Saving data into CSV
+
+- PHP
+
+    ```php
+    <?php
+    require('../vendor/autoload.php');
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+    $data = [0,5,10,15,20];
+    $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
+
+    $ft->csv('test.csv');
+    ```
+
+- Result: `test.csv`
+    ```
+    "Class","Frequency"
+    "0 ~ 10","2"
+    "10 ~ 20","2"
+    "20 ~ 30","1"
+    "Total","5"
+    ```
+
+### Saving data into TSV
+
+- PHP
+    ```php
+    <?php
+    require('../vendor/autoload.php');
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+
+    $ft = new FrequencyTable();
+
+    $ft->setClassRange(10);
+    $ft->setData([0,5,10,15,20]);
+
+    $ft->tsv('test.tsv');
+    ```
+
+- Result: `test.tsv`
+    ```
+    "Class"	"Frequency"
+    "0 ~ 10"	"2"
+    "10 ~ 20"	"2"
+    "20 ~ 30"	"1"
+    "Total"	"5"
+    ```
+
+### Retrieving Parsed Data
+
+You can also retrieve parsed data without showing Frequency Table.
+
+Use `parse()` method. `parse()` method returns Hash Array as follows.
+
+- PHP
+
+    ```php
+    <?php
+    require('../vendor/autoload.php');
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+    $ft = new FrequencyTable();
+    $ft->setClassRange(10);
+
+    $data = [0,5,10,15,20];
+    $ft->setData($data);
+
+    print_r($ft->parse());
+    ```
+
+- Result
+
+    ```bash
+    Array
+    (
+        [classRange] => 10
+        [data] => Array
+            (
+                [0] => 0
+                [1] => 5
+                [2] => 10
+                [3] => 15
+                [4] => 20
+            )
+
+        [Max] => 20
+        [Min] => 0
+        [DataRange] => 20
+        [Mode] => 5
+        [Total] => 5
+        [Mean] => 13
+        [Median] => 10
+        [MedianClass] => Array
+            (
+                [index] => 1
+                [bottom] => 10
+                [top] => 20
+            )
+
+        [FirstQuartile] => 2.5
+        [ThirdQuartile] => 17.5
+        [InterQuartileRange] => 15
+        [QuartileDeviation] => 7.5
+        [Classes] => Array
+            (
+                [0] => Array
+                    (
+                        [bottom] => 0
+                        [top] => 10
+                    )
+
+                [1] => Array
+                    (
+                        [bottom] => 10
+                        [top] => 20
+                    )
+
+                [2] => Array
+                    (
+                        [bottom] => 20
+                        [top] => 30
+                    )
+
+            )
+
+        [Frequencies] => Array
+            (
+                [0] => 2
+                [1] => 2
+                [2] => 1
+            )
+
+        [FrequencyTable] => |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|---:|
+    |0 ~ 10|2|0.40|5.0|10.0|
+    |10 ~ 20|2|0.40|15.0|30.0|
+    |20 ~ 30|1|0.20|25.0|25.0|
+    |Total|5|1.00|---|65.0|
+    |Mean|---|---|---|13.0|
+
+    )
+    ```
+
+You can use the parsed data like this:
+
+- PHP
+
+    ```php
+    <?php
+    require('../vendor/autoload.php');
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+    $ft = new FrequencyTable();
+    $ft->setClassRange(10);
+
+    $data = [0,5,10,15,20];
+    $ft->setData($data);
+
+    $parsed = $ft->parse();
+    echo "Data:[" . implode(', ', $parsed['data']) . "]\n";
+    echo "Max:" . $parsed['Max'] . "\n";
+    echo "Min:" . $parsed['Min'] . "\n";
+    echo "Median:" . $parsed['Median'] . "\n";
+    echo "Median is in the class of "
+         . $parsed['MedianClass']['bottom']
+         . " ~ "
+         . $parsed['MedianClass']['top'] . "\n";
+    echo "Total:" . $parsed['Total'] . "\n";
+    echo "Mean:" . $parsed['Mean'] . "\n";
+    echo "Q1:" . $parsed['FirstQuartile'] . "\n";
+    echo "Q2:" . $parsed['ThirdQuartile'] . "\n";
+    echo "IQR:" . $parsed['InterQuartileRange'] . "\n";
+    echo "QD:" . $parsed['QuartileDeviation'] . "\n";
+    ```
+
+- Output
+
+    ```bash
+    Data:[0, 5, 10, 15, 20]
+    Max:20
+    Min:0
+    Median:10
+    Median is in the class of 10 ~ 20
+    Total:5
+    Mean:13
+    Q1:2.5
+    Q2:17.5
+    IQR:15
+    QD:7.5
+    ```
 
 ## Methods
 
