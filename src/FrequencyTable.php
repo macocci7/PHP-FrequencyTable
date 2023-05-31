@@ -517,4 +517,23 @@ class FrequencyTable
     {
         return $this->xsv($path, "\t", $quatation, $eol);
     }
+
+    public function html($path = null)
+    {
+        if (null !== $path && !is_string($path)) return;
+        $pre = '<tr><td>';
+        $pro = '</td></tr>';
+        $eol = "\n";
+        $splitter = '</td><td>';
+        $buff = "<table>" . $eol;
+        $buff .= $pre . implode($splitter, $this->getColumns2Show()) . $pro . $eol;
+        $data4EachClass = $this->filterData2Show($this->getData4EachClass());
+        foreach ($data4EachClass as $index => $data) {
+            $buff .= $pre . implode($splitter, $data) . $pro . $eol;
+        }
+        $totals = $this->filterData2Show([$this->getTableTotal2Show($data4EachClass)]);
+        $buff .= $pre . implode($splitter, $totals[0]) . $pro . $eol;
+        $buff .= "</table>" . $eol;
+        return empty($path) ? $buff : file_put_contents($path, $buff);
+    }
 }

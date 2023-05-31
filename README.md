@@ -15,6 +15,7 @@
     - [Other Usage](#other-usage)
     - [Saving data into CSV](#saving-data-into-csv)
     - [Saving data into TSV](#saving-data-into-tsv)
+    - [Saving data into HTML](#saving-data-into-html)
     - [Retrieving Parsed Data](#retrieving-parsed-data)
 - [Methods](#methods)
 - [Examples](#examples)
@@ -26,7 +27,7 @@
 
 You can create Frequency Tables easily just by setting data in array and Class Range.
 
-You can save them into some formats, Markdown Table, CSV and TSV.
+You can save them into some formats, Markdown Table, CSV, TSV and HTML.
 
 You can also get parsed data as hash array of PHP.
 
@@ -279,6 +280,37 @@ The name of new PHP file is `examples/Example.php`.
     "10 ~ 20"	"2"
     "20 ~ 30"	"1"
     "Total"	"5"
+    ```
+
+### Saving data into HTML
+
+- PHP
+
+    ```php
+    <?php
+    require('../vendor/autoload.php');
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+
+    $ft = new FrequencyTable();
+
+    $ft->setClassRange(10);
+    $ft->setData([0,5,10,15,20]);
+
+    $ft->html('test.html');
+    ```
+
+- Result: `test.html`
+
+    ```html
+    <table>
+    <tr><td>Class</td><td>Frequency</td><td>RelativeFrequency</td><td>ClassValue</td><td>ClassValue * Frequency</td></tr>
+    <tr><td>0 ~ 10</td><td>2</td><td>0.40</td><td>5.0</td><td>10.0</td></tr>
+    <tr><td>10 ~ 20</td><td>2</td><td>0.40</td><td>15.0</td><td>30.0</td></tr>
+    <tr><td>20 ~ 30</td><td>1</td><td>0.20</td><td>25.0</td><td>25.0</td></tr>
+    <tr><td>Total</td><td>5</td><td>1.00</td><td>---</td><td>65.0</td></tr>
+    </table>
     ```
 
 ### Retrieving Parsed Data
