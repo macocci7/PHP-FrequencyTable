@@ -421,7 +421,7 @@ You can use the parsed data like this:
     Total:5
     Mean:13
     Q1:2.5
-    Q2:17.5
+    Q3:17.5
     IQR:15
     QD:7.5
     ```
