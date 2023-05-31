@@ -1384,13 +1384,14 @@ final class FrequencyTableTest extends TestCase
             ['Total', '5',],
         ];
         $path = 'storage/test.csv';
+        $splitter = ',';
         $ft = new FrequencyTable();
         $ft->setClassRange(10);
         $ft->setData($data);
         $ft->setColumns2Show($columns2Show);
         $this->assertIsInt($ft->csv($path));
         $this->assertTrue(file_exists($path));
-        $csv = array_map(fn($value): array => str_getcsv($value, ","), file($path, FILE_IGNORE_NEW_LINES));
+        $csv = array_map(fn($value): array => str_getcsv($value, $splitter), file($path, FILE_IGNORE_NEW_LINES));
         $this->assertSame($expect, $csv);
     }
 
@@ -1406,13 +1407,66 @@ final class FrequencyTableTest extends TestCase
             ['Total', '5',],
         ];
         $path = 'storage/test.tsv';
+        $splitter = "\t";
         $ft = new FrequencyTable();
         $ft->setClassRange(10);
         $ft->setData($data);
         $ft->setColumns2Show($columns2Show);
         $this->assertIsInt($ft->tsv($path));
         $this->assertTrue(file_exists($path));
-        $csv = array_map(fn($value): array => str_getcsv($value, "\t"), file($path, FILE_IGNORE_NEW_LINES));
+        $csv = array_map(fn($value): array => str_getcsv($value, $splitter), file($path, FILE_IGNORE_NEW_LINES));
         $this->assertSame($expect, $csv);
+    }
+
+    public function test_html_can_save_html(): void
+    {
+        $data = [0, 5, 10, 15, 20];
+        $columns2Show = ['Class', 'Frequency', ];
+        $expect = [
+            ['Class', 'Frequency', ],
+            ['0 ~ 10', '2', ],
+            ['10 ~ 20', '2', ],
+            ['20 ~ 30', '1', ],
+            ['Total', '5',],
+        ];
+        $path = 'storage/test.html';
+        $splitter = "</td><td>";
+        $ft = new FrequencyTable();
+        $ft->setClassRange(10);
+        $ft->setData($data);
+        $ft->setColumns2Show($columns2Show);
+        $this->assertIsInt($ft->html($path));
+        $this->assertTrue(file_exists($path));
+        $lines = file($path, FILE_IGNORE_NEW_LINES);
+        array_shift($lines);
+        array_pop($lines);
+        $data = array_map(
+            fn($value): array => explode(
+                '</td><td>', str_replace('</td></tr>', '', str_replace('<tr><td>', '', $value))
+            ),
+            $lines
+        );
+        $this->assertSame($expect, $data);
+    }
+
+    public function test_html_can_return_html(): void
+    {
+        $data = [0, 5, 10, 15, 20];
+        $columns2Show = ['Class', 'Frequency', ];
+        $expect = "<table>
+<tr><td>Class</td><td>Frequency</td></tr>
+<tr><td>0 ~ 10</td><td>2</td></tr>
+<tr><td>10 ~ 20</td><td>2</td></tr>
+<tr><td>20 ~ 30</td><td>1</td></tr>
+<tr><td>Total</td><td>5</td></tr>
+</table>
+";
+        $path = null;
+        $ft = new FrequencyTable();
+        $ft->setClassRange(10);
+        $ft->setData($data);
+        $ft->setColumns2Show($columns2Show);
+        $html = $ft->html($path);
+        $this->assertSame($expect, $html);
     }
 }

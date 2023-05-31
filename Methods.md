@@ -40,6 +40,7 @@
 - [parse()](#parse)
 - [csv()](#csv)
 - [tsv()](#tsv)
+- [html()](#html)
 
 ***
 
@@ -2204,6 +2205,68 @@ The character code appended at end of each lines.
     "10 ~ 20"	"2"
     "20 ~ 30"	"1"
     "Total"	"5"
+    ```
+
+***
+
+### html
+
+```php
+html($path = null)
+```
+
+Output Frequency Table into the html file specified by `$path`.
+
+If `empty($path)` is `true`, this method returns Frequency Table html.
+
+Before using this method, you should set Class Range and data.
+
+#### Parameters
+
+> $path = null
+
+- Default: `null`
+- Type: string
+- Value: file path of the TSV file to save data.
+
+#### Return
+
+- Type: integer or string or `false` or `null`
+- Value:
+    - integer: byte length of data saved.
+    - string: Frequency Table html.
+    - `false`: failed to save data into the file.
+    - `null`: parameters are invalid.
+
+#### Example
+
+- PHP
+
+    ```php
+    <?php
+    require('../vendor/autoload.php');
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+
+    $ft = new FrequencyTable();
+
+    $ft->setClassRange(10);
+    $ft->setData([0,5,10,15,20]);
+
+    $ft->html('test.html');
+    ```
+
+- Result: `test.html`
+
+    ```html
+    <table>
+    <tr><td>Class</td><td>Frequency</td><td>RelativeFrequency</td><td>ClassValue</td><td>ClassValue * Frequency</td></tr>
+    <tr><td>0 ~ 10</td><td>2</td><td>0.40</td><td>5.0</td><td>10.0</td></tr>
+    <tr><td>10 ~ 20</td><td>2</td><td>0.40</td><td>15.0</td><td>30.0</td></tr>
+    <tr><td>20 ~ 30</td><td>1</td><td>0.20</td><td>25.0</td><td>25.0</td></tr>
+    <tr><td>Total</td><td>5</td><td>1.00</td><td>---</td><td>65.0</td></tr>
+    </table>
     ```
 
 ***
