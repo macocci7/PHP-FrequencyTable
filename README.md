@@ -405,7 +405,7 @@ You can use the parsed data like this:
     echo "Total:" . $parsed['Total'] . "\n";
     echo "Mean:" . $parsed['Mean'] . "\n";
     echo "Q1:" . $parsed['FirstQuartile'] . "\n";
-    echo "Q2:" . $parsed['ThirdQuartile'] . "\n";
+    echo "Q3:" . $parsed['ThirdQuartile'] . "\n";
     echo "IQR:" . $parsed['InterQuartileRange'] . "\n";
     echo "QD:" . $parsed['QuartileDeviation'] . "\n";
     ```
