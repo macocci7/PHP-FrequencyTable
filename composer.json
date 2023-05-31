@@ -1,6 +1,6 @@
 {
     "name": "macocci7/php-frequency-table",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "it's easy to use for creating frequency distribution tables.",
     "type": "library",
     "require": {
