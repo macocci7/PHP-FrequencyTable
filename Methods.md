@@ -41,6 +41,7 @@
 - [csv()](#csv)
 - [tsv()](#tsv)
 - [html()](#html)
+- [save()](#save)
 
 ***
 
@@ -1847,34 +1848,12 @@ Sets Columns to show in Frequency Table.
 ### show
 
 ```php
-show($option = ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true])
+show()
 ```
 
 Prints the Frequency Table in markdown format to standard output.
 
-#### Parameter
-
-> $option
-- Default: `['Mean' => true, ]`
-- Type: 1 Dimensional Hash Array
-- Structure:
-    ```php
-    $option = [
-        'Mean' => true,
-        'STDOUT' => true,
-        'ReturnValue' => true,
-    ];
-    ```
-- Values:
-    - `Mean`: bool
-        - `true`: Mean is shown at the bottom line of the Frequency Table.
-        - `false`: Mean is not shown at the bottom line of the Frequency Table.
-    - `STDOUT`: bool
-        - `true`: Frequency Table is printed to standard output.
-        - `false`: no output to standard output.
-    - `ReturnValue`: bool
-        - `true`: Frequency Table in markdown format is returned as a return value.
-        - `false`: no return value
+**Note: Parameters are deprecated. Use meanOn() or meanOff() method to show Mean, instead.**
 
 #### Return
 
@@ -1892,39 +1871,32 @@ Prints the Frequency Table in markdown format to standard output.
 
     $ft = new FrequencyTable(['classRange'=>10,'data'=>[0,5,10,15,20]]);
 
-    echo "CASE1: STDOUT: ON / RETURN VALUE: OFF\n";
-    $option = ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => false];
-    var_dump($ft->show($option));
-
-    echo "CASE2: STDOUT: Off / RETURN VALUE: On\n";
-    $option = ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => true];
-    var_dump($ft->show($option));
-
-    echo "CASE3: STDOUT: OFF / RETURN VALUE: OFF\n";
-    $option = ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => false];
-    var_dump($ft->show($option));
+    $ft->show(); // meanOff() at default
+    $ft->meanOn()->show();
+    $ft->meanOff()->show();
     ```
 
 - Result
     ```bash
-    CASE1: STDOUT: ON / RETURN VALUE: OFF
     |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
     |:---:|:---:|:---:|:---:|---:|
     |0 ~ 10|2|0.40|5.0|10.0|
     |10 ~ 20|2|0.40|15.0|30.0|
     |20 ~ 30|1|0.20|25.0|25.0|
     |Total|5|1.00|---|65.0|
-    NULL
-    CASE2: STDOUT: Off / RETURN VALUE: On
-    string(204) "|Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
     |:---:|:---:|:---:|:---:|---:|
     |0 ~ 10|2|0.40|5.0|10.0|
     |10 ~ 20|2|0.40|15.0|30.0|
     |20 ~ 30|1|0.20|25.0|25.0|
     |Total|5|1.00|---|65.0|
-    "
-    CASE3: STDOUT: OFF / RETURN VALUE: OFF
-    NULL
+    |Mean|---|---|---|13.0|
+    |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|---:|
+    |0 ~ 10|2|0.40|5.0|10.0|
+    |10 ~ 20|2|0.40|15.0|30.0|
+    |20 ~ 30|1|0.20|25.0|25.0|
+    |Total|5|1.00|---|65.0|
     ```
 
 ***
@@ -2274,6 +2246,70 @@ Before using this method, you should set Class Range and data.
     <tr><td>20 ~ 30</td><td>1</td><td>0.20</td><td>25.0</td><td>25.0</td></tr>
     <tr><td>Total</td><td>5</td><td>1.00</td><td>---</td><td>65.0</td></tr>
     </table>
+    ```
+
+***
+
+### save
+
+```php
+save($path)
+```
+
+Output Frequency Table into the file specified by `$path`.
+
+The data format is detected by the extension of `$path`.
+
+Supported formats are CSV, TSV, HTML and Markdown.
+
+Before using this method, you should set Class Range and data.
+
+#### Parameters
+
+> $path
+
+- Type: string
+- Value: file path to save data.
+- Supported extension:
+    - `.csv` or `.CSV` : CSV format.
+    - `.tsv` or `.TSV` : TSV format.
+    - `.html` or `.HTML` : HTML format.
+    - `.md` or `.MD` : Markdown format.
+
+#### Return
+
+- Type: integer or `false` or `null`
+- Value:
+    - integer: byte length of data saved.
+    - `false`: failed to save data into the file.
+    - `null`: parameters are invalid.
+
+#### Example
+
+- PHP
+
+    ```php
+    <?php
+    require('../vendor/autoload.php');
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+
+    $ft = new FrequencyTable();
+
+    $ft->setClassRange(10);
+    $ft->setData([0,5,10,15,20]);
+
+    $ft->save('test.csv');
+    ```
+
+- Result: `test.csv`
+    ```
+    "Class","Frequency"
+    "0 ~ 10","2"
+    "10 ~ 20","2"
+    "20 ~ 30","1"
+    "Total","5"
     ```
 
 ***

@@ -60,6 +60,6 @@ foreach($data as $index => $d) {
     echo "- InterQuartileRange: " . $ft->getInterQuartileRange($d) . "\n";
     echo "- QuartileDeviation: " . $ft->getQuartileDeviation($d) . "\n";
     echo "\n";
-    $ft->show();
+    $ft->meanOn()->show();
     echo "\n";
 }
