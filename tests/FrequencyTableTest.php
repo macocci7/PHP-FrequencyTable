@@ -48,6 +48,11 @@ final class FrequencyTableTest extends TestCase
         return $combinations;
     }
 
+    private function clearStorage(): void
+    {
+        array_map('unlink', glob("storage/test*"));
+    }
+
     public function test_constructor_can_create_instance_without_params(): void
     {
         $ft = new FrequencyTable();
@@ -1012,7 +1017,7 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
-    public function test_getData2Show_cannot_get_data_2_show_with_unsettable_data(): void
+    public function test_getData2Show_return_empty_array_with_unsettable_data(): void
     {
         $cases = [
             ['classRange' => null, 'data' => null, 'expect' => [] ],
@@ -1035,11 +1040,11 @@ final class FrequencyTableTest extends TestCase
         foreach ($cases as $index => $case) {
             $ft->setClassRange($case['classRange']);
             $ft->setData($case['data']);
-            $this->assertSame($case['expect'],$ft->getData2Show());
+            $this->assertSame($case['expect'], $ft->getData2Show());
         }
     }
 
-    public function test_getData2Show_can_get_data_2_show_with_settable_data(): void
+    public function test_getData2Show_can_get_data_2_show(): void
     {
         $ft = new FrequencyTable();
         $classRange = 10;
@@ -1056,10 +1061,9 @@ final class FrequencyTableTest extends TestCase
         $this->assertFalse(empty($classes));
         foreach($classes as $index => $class) {
             $s = number_format($class['bottom']) . $this->classSeparator . number_format($class['top']);
-            $this->assertTrue(in_array($s,array_column($data2Show,'Class')));
+            $this->assertTrue(in_array($s, array_column($data2Show,'Class')));
         }
-        $this->assertContains('Total',array_column($data2Show,'Class'));
-        $this->assertContains('Mean',array_column($data2Show,'Class'));
+        $this->assertContains('Total', array_column($data2Show,'Class'));
     }
 
     public function test_getData2Show_can_switch_visibility_of_mean(): void
@@ -1069,13 +1073,15 @@ final class FrequencyTableTest extends TestCase
         $ft->setClassRange($classRange);
         $data = [0,5,10,15,20];
         $ft->setData($data);
-        $data2Show = $ft->getData2Show(['Mean' => true, ]);
-        $this->assertContains('Mean',array_column($data2Show,'Class'));
-        $data2Show = $ft->getData2Show(['Mean' => false, ]);
-        $this->assertFalse(in_array('Mean',array_column($data2Show,'Class')));
+        $ft->meanOn();
+        $data2Show = $ft->getData2Show();
+        $this->assertContains('Mean', array_column($data2Show,'Class'));
+        $ft->meanOff();
+        $data2Show = $ft->getData2Show();
+        $this->assertFalse(in_array('Mean', array_column($data2Show,'Class')));
     }
 
-    public function test_getData4EachClass_can_get_data_4_each_class_correctly(): void
+    public function test_getDataOfEachClass_can_get_data_4_each_class_correctly(): void
     {
         $cases = [
             ['classRange' => null, 'data' => null, 'expect' => [], ],
@@ -1129,7 +1135,7 @@ final class FrequencyTableTest extends TestCase
         foreach ($cases as $index => $case) {
             $ft->setClassRange($case['classRange']);
             $ft->setData($case['data']);
-            $this->assertSame($case['expect'], $ft->getData4EachClass());
+            $this->assertSame($case['expect'], $ft->getDataOfEachClass());
         }
     }
 
@@ -1152,66 +1158,6 @@ final class FrequencyTableTest extends TestCase
                     $this->assertFalse(array_key_exists($key,$filtered[0]));
                 }
             }
-        }
-    }
-
-    public function test_validateShowOption_can_validate(): void
-    {
-        $cases = [
-            ['option' => null, 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => true, 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => false, 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => 0, 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => 1.2, 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => "0", 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => "1.2", 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => [], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => [null], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => [true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => [false], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => [0], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => [1.2], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ["0"], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => false], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => false, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => false], 'expect' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => false, ], ],
-            ['option' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => false], 'expect' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => false, ], ],
-            ['option' => ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => true], 'expect' => ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => false], 'expect' => ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => false, ], ],
-            ['option' => ['Hoge' => true, 'Mean' => true, 'STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true,], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['STDOUT' => true,], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => true,], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => false,], 'expect' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['STDOUT' => false,], 'expect' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => true, ], ],
-            ['option' => ['ReturnValue' => false], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => false, ], ],
-            ['option' => ['Mean' => false, 'STDOUT' => false,], 'expect' => ['Mean' => false, 'STDOUT' => false, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => false, 'ReturnValue' => false], 'expect' => ['Mean' => false, 'STDOUT' => true, 'ReturnValue' => false, ], ],
-            ['option' => ['STDOUT' => false, 'ReturnValue' => false], 'expect' => ['Mean' => true, 'STDOUT' => false, 'ReturnValue' => false, ], ],
-            ['option' => ['Mean' => null, 'STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => null, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => null], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => null, 'STDOUT' => null, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => null, 'STDOUT' => true, 'ReturnValue' => null], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => null, 'STDOUT' => null, 'ReturnValue' => null], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => null, 'ReturnValue' => null], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => 0, 'STDOUT' => true, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => 0, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => 0], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => 0, 'STDOUT' => 0, 'ReturnValue' => true], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => 0, 'STDOUT' => true, 'ReturnValue' => 0], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => 0, 'STDOUT' => 0, 'ReturnValue' => 0], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-            ['option' => ['Mean' => true, 'STDOUT' => 0, 'ReturnValue' => 0], 'expect' => ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ], ],
-        ];
-        $ft = new FrequencyTable();
-
-        foreach($cases as $index => $case) {
-            $this->assertSame($case['expect'],$ft->validateShowOption($case['option']));
         }
     }
 
@@ -1240,27 +1186,13 @@ final class FrequencyTableTest extends TestCase
         $ft->setData([0,5,10,15,20]);
         $needle = $ft->getTableSeparator() . 'Mean' . $ft->getTableSeparator();
 
-        $returnValue = $ft->show(['Mean'=>true]);
+        $ft->meanOn();
+        $returnValue = $ft->show();
         $this->assertTrue(str_contains($returnValue, $needle));
 
-        $returnValue = $ft->show(['Mean'=>false]);
-        $this->assertFalse(str_contains($returnValue, $needle));
-    }
-
-    public function test_show_can_switch_return_value(): void
-    {
-        $ft = new FrequencyTable();
-        $ft->setclassRange(10);
-        $ft->setData([0,5,10,15,20]);
-
+        $ft->meanOff();
         $returnValue = $ft->show();
-        $this->assertIsString($returnValue);
-
-        $returnValue = $ft->show(['ReturnValue' => true]);
-        $this->assertIsString($returnValue);
-        
-        $returnValue = $ft->show(['ReturnValue' => false]);
-        $this->assertNull($returnValue);
+        $this->assertFalse(str_contains($returnValue, $needle));
     }
 
     public function test_parse_return_null_under_invalid_condition(): void
@@ -1389,6 +1321,7 @@ final class FrequencyTableTest extends TestCase
         $ft->setClassRange(10);
         $ft->setData($data);
         $ft->setColumns2Show($columns2Show);
+        $this->clearStorage();
         $this->assertIsInt($ft->csv($path));
         $this->assertTrue(file_exists($path));
         $csv = array_map(fn($value): array => str_getcsv($value, $splitter), file($path, FILE_IGNORE_NEW_LINES));
@@ -1444,6 +1377,7 @@ final class FrequencyTableTest extends TestCase
         $ft->setClassRange(10);
         $ft->setData($data);
         $ft->setColumns2Show($columns2Show);
+        $this->clearStorage();
         $this->assertIsInt($ft->tsv($path));
         $this->assertTrue(file_exists($path));
         $csv = array_map(fn($value): array => str_getcsv($value, $splitter), file($path, FILE_IGNORE_NEW_LINES));
@@ -1485,31 +1419,25 @@ final class FrequencyTableTest extends TestCase
     {
         $data = [0, 5, 10, 15, 20];
         $columns2Show = ['Class', 'Frequency', ];
-        $expect = [
-            ['Class', 'Frequency', ],
-            ['0 ~ 10', '2', ],
-            ['10 ~ 20', '2', ],
-            ['20 ~ 30', '1', ],
-            ['Total', '5',],
-        ];
+        $expect = "<table>
+<tr><td>Class</td><td>Frequency</td></tr>
+<tr><td>0 ~ 10</td><td>2</td></tr>
+<tr><td>10 ~ 20</td><td>2</td></tr>
+<tr><td>20 ~ 30</td><td>1</td></tr>
+<tr><td>Total</td><td>5</td></tr>
+</table>
+";
         $path = 'storage/test.html';
+        if (file_exists($path)) unlink($path);
         $splitter = "</td><td>";
         $ft = new FrequencyTable();
         $ft->setClassRange(10);
         $ft->setData($data);
         $ft->setColumns2Show($columns2Show);
+        $this->clearStorage();
         $this->assertIsInt($ft->html($path));
         $this->assertTrue(file_exists($path));
-        $lines = file($path, FILE_IGNORE_NEW_LINES);
-        array_shift($lines);
-        array_pop($lines);
-        $data = array_map(
-            fn($value): array => explode(
-                '</td><td>', str_replace('</td></tr>', '', str_replace('<tr><td>', '', $value))
-            ),
-            $lines
-        );
-        $this->assertSame($expect, $data);
+        $this->assertSame($expect, file_get_contents($path));
     }
 
     public function test_html_can_return_html(): void
@@ -1529,7 +1457,143 @@ final class FrequencyTableTest extends TestCase
         $ft->setClassRange(10);
         $ft->setData($data);
         $ft->setColumns2Show($columns2Show);
+        $this->clearStorage();
         $html = $ft->html($path);
         $this->assertSame($expect, $html);
+    }
+
+    public function test_markdown_can_return_null_with_invalid_param(): void
+    {
+        $cases = [
+            ['path' => true, ],
+            ['path' => false, ],
+            ['path' => 0, ],
+            ['path' => 1.2, ],
+            ['path' => [], ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach ($cases as $index => $case) {
+            $this->assertNull($ft->markdown($case['path']));
+        }
+    }
+
+    public function test_markdown_can_save_markdown(): void
+    {
+        $data = [0, 5, 10, 15, 20];
+        $columns2Show = ['Class', 'Frequency', ];
+        $expect = "|Class|Frequency|
+|:---:|:---:|
+|0 ~ 10|2|
+|10 ~ 20|2|
+|20 ~ 30|1|
+|Total|5|
+";
+        $path = 'storage/test.md';
+        if (file_exists($path)) unlink($path);
+        $ft = new FrequencyTable();
+        $ft->setClassRange(10);
+        $ft->setData($data);
+        $ft->setColumns2Show($columns2Show);
+        $this->clearStorage();
+        $this->assertIsInt($ft->markdown($path));
+        $this->assertTrue(file_exists($path));
+        $this->assertSame($expect, file_get_contents($path));
+    }
+
+    public function test_markdown_can_return_markdown(): void
+    {
+        $data = [0, 5, 10, 15, 20];
+        $columns2Show = ['Class', 'Frequency', ];
+        $expect = "|Class|Frequency|
+|:---:|:---:|
+|0 ~ 10|2|
+|10 ~ 20|2|
+|20 ~ 30|1|
+|Total|5|
+";
+        $path = null;
+        $ft = new FrequencyTable();
+        $ft->setClassRange(10);
+        $ft->setData($data);
+        $ft->setColumns2Show($columns2Show);
+        $this->assertSame($expect, $ft->markdown($path));
+    }
+
+    public function test_save_can_return_null_with_invalid_parameter(): void
+    {
+        $cases = [
+            ['path' => null, ],
+            ['path' => true, ],
+            ['path' => false, ],
+            ['path' => 0, ],
+            ['path' => 1.2, ],
+            ['path' => [], ],
+            ['path' => ['hoge.md'], ],
+            ['path' => '', ],
+            ['path' => 'hoge.txt', ],
+            ['path' => 'hoge.php', ],
+            ['path' => 'hoge.png', ],
+        ];
+        $ft = new FrequencyTable();
+
+        foreach ($cases as $index => $case) {
+            $this->assertNull($ft->save($case['path']));
+        }
+    }
+
+    public function test_save_can_save_in_specified_format(): void
+    {
+        $cases = [
+            ['path' => 'storage/test.csv', ],
+            ['path' => 'storage/test.CSV', ],
+            ['path' => 'storage/test.Csv', ],
+            ['path' => 'storage/test.CSv', ],
+            ['path' => 'storage/test.CsV', ],
+            ['path' => 'storage/test.cSv', ],
+            ['path' => 'storage/test.cSV', ],
+            ['path' => 'storage/test.csV', ],
+
+            ['path' => 'storage/test.tsv', ],
+            ['path' => 'storage/test.TSV', ],
+            ['path' => 'storage/test.Tsv', ],
+            ['path' => 'storage/test.Tsv', ],
+            ['path' => 'storage/test.TSv', ],
+            ['path' => 'storage/test.TsV', ],
+            ['path' => 'storage/test.tSv', ],
+            ['path' => 'storage/test.tSV', ],
+            ['path' => 'storage/test.tsV', ],
+
+            ['path' => 'storage/test.html', ],
+            ['path' => 'storage/test.HTML', ],
+            ['path' => 'storage/test.Html', ],
+            ['path' => 'storage/test.hTml', ],
+            ['path' => 'storage/test.htMl', ],
+            ['path' => 'storage/test.htmL', ],
+            ['path' => 'storage/test.HTml', ],
+            ['path' => 'storage/test.HtMl', ],
+            ['path' => 'storage/test.HtmL', ],
+            ['path' => 'storage/test.hTMl', ],
+            ['path' => 'storage/test.hTmL', ],
+            ['path' => 'storage/test.htML', ],
+            ['path' => 'storage/test.HTMl', ],
+            ['path' => 'storage/test.HTmL', ],
+            ['path' => 'storage/test.HtML', ],
+            ['path' => 'storage/test.hTML', ],
+
+            ['path' => 'storage/test.md', ],
+            ['path' => 'storage/test.MD', ],
+            ['path' => 'storage/test.Md', ],
+            ['path' => 'storage/test.mD', ],
+        ];
+        $ft = new FrequencyTable();
+        $ft->setClassRange(10);
+        $ft->setData([0,5,10,15,20]);
+
+        foreach ($cases as $index => $case) {
+            $this->clearStorage();
+            $this->assertIsInt($ft->save($case['path']));
+            $this->assertTrue(file_exists($case['path']));
+        }
     }
 }

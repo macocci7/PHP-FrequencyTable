@@ -50,7 +50,7 @@ composer require macocci7/php-frequency-table
 
 You can use FrequencyTable class as follows.
 
-**PHP Code: [Example.php](src/Example.php)**
+**PHP Code: `src/Example.php`**
 
 ```php
 <?php
@@ -59,7 +59,7 @@ require('../vendor/autoload.php');
 use Macocci7\PhpFrequencyTable\FrequencyTable;
 
 $ft = new FrequencyTable(['data'=>[0,5,10,15,20],'classRange'=>10]);
-$ft->show();
+$ft->meanOn()->show();
 ```
 
 **Command to Excute**
@@ -169,7 +169,7 @@ The name of new PHP file is `examples/Example.php`.
     $data = [0,5,10,15,20];
     $ft->setData($data);
 
-    $ft->show();
+    $ft->meanOn()->show();
     ```
 
     Or you can set both the class range and the data when you create an instance of FrequencyTable as follows.
@@ -183,7 +183,7 @@ The name of new PHP file is `examples/Example.php`.
     $data = [0,5,10,15,20];
     $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
 
-    $ft->show();
+    $ft->meanOn()->show();
     ```
     This is more simple. You can choose the way you like.
 
@@ -243,16 +243,18 @@ The name of new PHP file is `examples/Example.php`.
     $data = [0,5,10,15,20];
     $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
 
-    $ft->csv('test.csv');
+    $ft->meanOn()->save('test.csv');
     ```
 
 - Result: `test.csv`
+
     ```
-    "Class","Frequency"
-    "0 ~ 10","2"
-    "10 ~ 20","2"
-    "20 ~ 30","1"
-    "Total","5"
+    "Class","Frequency","RelativeFrequency","ClassValue","ClassValue * Frequency"
+    "0 ~ 10","2","0.40","5.0","10.0"
+    "10 ~ 20","2","0.40","15.0","30.0"
+    "20 ~ 30","1","0.20","25.0","25.0"
+    "Total","5","1.00","---","65.0"
+    "Mean","---","---","---","13.0"
     ```
 
 ### Saving data into TSV
@@ -264,22 +266,20 @@ The name of new PHP file is `examples/Example.php`.
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
+    $data = [0,5,10,15,20];
+    $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
 
-    $ft = new FrequencyTable();
-
-    $ft->setClassRange(10);
-    $ft->setData([0,5,10,15,20]);
-
-    $ft->tsv('test.tsv');
+    $ft->meanOn()->save('test.tsv');
     ```
 
 - Result: `test.tsv`
     ```
-    "Class"	"Frequency"
-    "0 ~ 10"	"2"
-    "10 ~ 20"	"2"
-    "20 ~ 30"	"1"
-    "Total"	"5"
+    "Class"	"Frequency"	"RelativeFrequency"	"ClassValue"	"ClassValue * Frequency"
+    "0 ~ 10"	"2"	"0.40"	"5.0"	"10.0"
+    "10 ~ 20"	"2"	"0.40"	"15.0"	"30.0"
+    "20 ~ 30"	"1"	"0.20"	"25.0"	"25.0"
+    "Total"	"5"	"1.00"	"---"	"65.0"
+    "Mean"	"---"	"---"	"---"	"13.0"
     ```
 
 ### Saving data into HTML
@@ -292,13 +292,10 @@ The name of new PHP file is `examples/Example.php`.
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
+    $data = [0,5,10,15,20];
+    $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
 
-    $ft = new FrequencyTable();
-
-    $ft->setClassRange(10);
-    $ft->setData([0,5,10,15,20]);
-
-    $ft->html('test.html');
+    $ft->meanOn()->save('test.html');
     ```
 
 - Result: `test.html`
@@ -310,7 +307,37 @@ The name of new PHP file is `examples/Example.php`.
     <tr><td>10 ~ 20</td><td>2</td><td>0.40</td><td>15.0</td><td>30.0</td></tr>
     <tr><td>20 ~ 30</td><td>1</td><td>0.20</td><td>25.0</td><td>25.0</td></tr>
     <tr><td>Total</td><td>5</td><td>1.00</td><td>---</td><td>65.0</td></tr>
+    <tr><td>Mean</td><td>---</td><td>---</td><td>---</td><td>13.0</td></tr>
     </table>
+    ```
+
+### Saving data into Markdown
+
+- PHP
+
+    ```php
+    <?php
+    <?php
+    require('../vendor/autoload.php');
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+    $data = [0,5,10,15,20];
+    $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
+
+    $ft->meanOn()->save('test.md');
+    ```
+
+- Result: `test.md`
+
+    ```html
+    |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|---:|
+    |0 ~ 10|2|0.40|5.0|10.0|
+    |10 ~ 20|2|0.40|15.0|30.0|
+    |20 ~ 30|1|0.20|25.0|25.0|
+    |Total|5|1.00|---|65.0|
+    |Mean|---|---|---|13.0|
     ```
 
 ### Retrieving Parsed Data

@@ -50,6 +50,13 @@ class FrequencyTable
         'ClassValue' => ':---:',
         'ClassValue * Frequency' => '---:',
     ];
+    private $supportedFormats = [
+        'md' => 'markdown',
+        'csv' => 'csv',
+        'tsv' => 'tsv',
+        'html' => 'html',
+    ];
+    private $showMean = false;
 
     public function __construct($param = [])
     {
@@ -64,6 +71,18 @@ class FrequencyTable
             $this->setColumns2Show($param['columns2Show']);
         }
         $this->setDefaultTableSeparator();
+    }
+
+    public function meanOn()
+    {
+        $this->showMean = true;
+        return $this;
+    }
+
+    public function meanOff()
+    {
+        $this->showMean = false;
+        return $this;
     }
 
     public function isSettableData($data) {
@@ -323,6 +342,15 @@ class FrequencyTable
         return $this->setTableSeparator($this->defaultTableSeparator);
     }
 
+    public function getTableColumnAligns2Show()
+    {
+        $aligns = [];
+        foreach ($this->getColumns2Show() as $column) {
+            $aligns[$column] = $this->defaultTableColumnAligns[$column];
+        }
+        return $aligns;
+    }
+
     public function getColumns2Show()
     {
         return $this->columns2Show;
@@ -365,31 +393,34 @@ class FrequencyTable
         ];
     }
 
-    public function getData2Show($option = ['Mean' => true, ])
+    public function getMean2Show()
+    {
+        return [
+            'Class' => 'Mean',
+            'Frequency' => '---',
+            'CumulativeFrequency' => '---',
+            'RelativeFrequency' => '---',
+            'CumulativeRelativeFrequency' => '---',
+            'ClassValue' => '---',
+            'ClassValue * Frequency' => number_format($this->getMean(),1,'.',','),
+        ];
+
+    }
+
+    public function getData2Show()
     {
         if (!$this->isSettableData($this->getData())) return [];
-        if (!is_array($option)) return [];
         $data2Show = [];
         $data2Show[] = $this->defaultTableHead;
         $data2Show[] = $this->defaultTableColumnAligns;
-        $data = $this->getData4EachClass();
+        $data = $this->getDataOfEachClass();
         $data2Show = array_merge_recursive($data2Show, $data);
         $data2Show[] = $this->getTableTotal2Show($data);
-        if ($option['Mean']) {
-            $data2Show[] = [
-                'Class' => 'Mean',
-                'Frequency' => '---',
-                'CumulativeFrequency' => '---',
-                'RelativeFrequency' => '---',
-                'CumulativeRelativeFrequency' => '---',
-                'ClassValue' => '---',
-                'ClassValue * Frequency' => number_format($this->getMean(),1,'.',','),
-            ];
-        }
+        if ($this->showMean) $data2Show[] = $this->getMean2Show();
         return $data2Show;
     }
 
-    public function getData4EachClass()
+    public function getDataOfEachClass()
     {
         if (!$this->isSettableData($this->getData())) return [];
         $data = [];
@@ -432,34 +463,20 @@ class FrequencyTable
         return $filtered;
     }
 
-    public function validateShowOption($optionParam)
+    public function show()
     {
-        $option = ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ];
-        if (!is_array($optionParam)) return $option;
-        if (empty($optionParam)) return $option;
-        foreach ($optionParam as $key => $value) {
-            if (array_key_exists($key,$option) && is_bool($value)) {
-                $option[$key] = $value;
-            }
-        }
-        return $option;
-    }
-
-    public function show($optionParam = ['Mean' => true, 'STDOUT' => true, 'ReturnValue' => true, ])
-    {
-        $option = $this->validateShowOption($optionParam);
         $buffer = null;
         if (!$this->isSettableData($this->data)) {
             $buffer .= "no data to show\n";
-            if ($option['STDOUT']) echo $buffer;
-            return $option['ReturnValue'] ? $buffer : null;
+            echo $buffer;
+            return $buffer;
         }
         $separator = $this->getTableSeparator();
-        foreach ($this->filterData2Show($this->getData2Show($option)) as $row) {
+        foreach ($this->filterData2Show($this->getData2Show()) as $row) {
             $buffer .= $separator . implode($separator, $row) . $separator . "\n";
         }
-        if ($option['STDOUT']) echo $buffer;
-        return $option['ReturnValue'] ? $buffer : null;
+        echo $buffer;
+        return $buffer;
     }
 
     public function parse()
@@ -496,15 +513,19 @@ class FrequencyTable
         // no check for $eol : it's at the user's own risk.
         $qm = $quatation ? '"' : '';
         $splitter = $qm . $separator . $qm;
-        $buff = null;
-        $buff .= $qm . implode($splitter, $this->getColumns2Show()) . $qm . $eol;
-        $data4EachClass = $this->filterData2Show($this->getData4EachClass());
+        $buffer = null;
+        $buffer .= $qm . implode($splitter, $this->getColumns2Show()) . $qm . $eol;
+        $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
         foreach ($data4EachClass as $index => $data) {
-            $buff .= $qm . implode($splitter, $data) . $qm . $eol;
+            $buffer .= $qm . implode($splitter, $data) . $qm . $eol;
         }
         $totals = $this->filterData2Show([$this->getTableTotal2Show($data4EachClass)]);
-        $buff .= $qm . implode($splitter, $totals[0]) . $qm . $eol;
-        return empty($path) ? $buff : file_put_contents($path, $buff);
+        $buffer .= $qm . implode($splitter, $totals[0]) . $qm . $eol;
+        if ($this->showMean) {
+            $means = $this->filterData2Show([$this->getMean2Show()]);
+            $buffer .= $qm . implode($splitter, $means[0]) . $qm . $eol;
+        }
+        return empty($path) ? $buffer : file_put_contents($path, $buffer);
     }
 
     public function csv($path = null, $quatation = true, $eol = "\n")
@@ -524,15 +545,50 @@ class FrequencyTable
         $pro = '</td></tr>';
         $eol = "\n";
         $splitter = '</td><td>';
-        $buff = "<table>" . $eol;
-        $buff .= $pre . implode($splitter, $this->getColumns2Show()) . $pro . $eol;
-        $data4EachClass = $this->filterData2Show($this->getData4EachClass());
+        $buffer = "<table>" . $eol;
+        $buffer .= $pre . implode($splitter, $this->getColumns2Show()) . $pro . $eol;
+        $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
         foreach ($data4EachClass as $index => $data) {
-            $buff .= $pre . implode($splitter, $data) . $pro . $eol;
+            $buffer .= $pre . implode($splitter, $data) . $pro . $eol;
         }
         $totals = $this->filterData2Show([$this->getTableTotal2Show($data4EachClass)]);
-        $buff .= $pre . implode($splitter, $totals[0]) . $pro . $eol;
-        $buff .= "</table>" . $eol;
-        return empty($path) ? $buff : file_put_contents($path, $buff);
+        $buffer .= $pre . implode($splitter, $totals[0]) . $pro . $eol;
+        if ($this->showMean) {
+            $means = $this->filterData2Show([$this->getMean2Show()]);
+            $buffer .= $pre . implode($splitter, $means[0]) . $pro . $eol;
+        }
+        $buffer .= "</table>" . $eol;
+        return empty($path) ? $buffer : file_put_contents($path, $buffer);
+    }
+
+    public function markdown($path = null)
+    {
+        if (null !== $path && !is_string($path)) return;
+        $separator = $this->getTableSeparator();
+        $eol = "\n";
+        $buffer = null;
+        $buffer .= $separator . implode($separator, $this->getColumns2Show()) . $separator . $eol;
+        $buffer .= $separator . implode($separator, $this->getTableColumnAligns2Show()) . $separator . $eol;
+        $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
+        foreach ($data4EachClass as $index => $data) {
+            $buffer .= $separator . implode($separator, $data) . $separator . $eol;
+        }
+        $totals = $this->filterData2Show([$this->getTableTotal2Show($data4EachClass)]);
+        $buffer .= $separator . implode($separator, $totals[0]) . $separator . $eol;
+        if ($this->showMean) {
+            $means = $this->filterData2Show([$this->getMean2Show()]);
+            $buffer .= $separator . implode($separator, $means[0]) . $separator . $eol;
+        }
+        return empty($path) ? $buffer : file_put_contents($path, $buffer);
+    }
+
+    public function save($path)
+    {
+        if (!is_string($path)) return;
+        if (strlen($path) === 0) return;
+        $pathParts = pathinfo($path);
+        $extension = strtolower($pathParts['extension']);
+        if (!array_key_exists($extension, $this->supportedFormats)) return;
+        return $this->{$this->supportedFormats[$extension]}($path);
     }
 }

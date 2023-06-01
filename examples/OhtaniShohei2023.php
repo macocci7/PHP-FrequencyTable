@@ -40,6 +40,6 @@ foreach ($dailyData as $key => $data) {
     echo "|InterQuartileRange|" . $ft->getInterQuartileRange($data) . "|\n";
     echo "|QuartileDeviation|" . $ft->getQuartileDeviation($data) . "|\n";
     echo "</details>\n\n";
-    $ft->show();
+    $ft->meanOn()->show();
     echo "\n\n";
 }

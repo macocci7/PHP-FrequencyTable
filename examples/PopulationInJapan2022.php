@@ -80,5 +80,5 @@ foreach($population as $key => $value) {
 }
 echo "</details>\n\n<br />\n\n";
 echo "## Frequency Table\n\n";
-$ft->show();
+$ft->meanOn()->show();
 echo "\n";

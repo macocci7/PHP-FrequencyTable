@@ -7,11 +7,6 @@ use Macocci7\PhpFrequencyTable\FrequencyTable;
 use Macocci7\CsvUtil;
 use Macocci7\Outlier;
 
-$players = [
-    [ 'id' => 660271, 'name' => 'Ohtani, Shohei', ],
-    [ 'id' => 663776, 'name' => 'Sandoval Patrik', ],
-    [ 'id' => 672282, 'name' => 'Detmers, Reid', ],
-];
 $csvUtil = new CsvUtil();
 $csvFileName = 'csv/672282_data.csv';
 
