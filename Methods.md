@@ -2072,7 +2072,7 @@ Before using this method, you should set Class Range and data.
 ### csv
 
 ```php
-csv($path, $quatation = true, $eol = "\n")
+csv($path = null, $quatation = true, $eol = "\n")
 ```
 
 Output Frequency Table into the CSV file specified by `$path`.
@@ -2081,12 +2081,14 @@ Before using this method, you should set Class Range and data.
 
 #### Parameters
 
-> $path
+> $path = null
 
-- Type: string
+- Default: `null`
+- Type: `null` or string
 - Value: file path of the CSV file to save data.
+- Note: if empty($path) is `true`, csv() returns csv without saving csv fine.
 
-> $quatation
+> $quatation = true
 
 - Default: `true`
 - Type: bool
@@ -2094,7 +2096,7 @@ Before using this method, you should set Class Range and data.
     - `true`: each data is quated by double quatation mark.
     - `false`: each data is not quated.
 
-> $eol
+> $eol = "\n"
 
 The character code appended at end of each lines.
 
@@ -2104,8 +2106,9 @@ The character code appended at end of each lines.
 
 #### Return
 
-- Type: integer or `false` or `null`
+- Type: string or integer or `false` or `null`
 - Value:
+    - string: csv (csv file not saved)
     - integer: byte length of data saved.
     - `false`: failed to save data into the file.
     - `null`: parameters are invalid.
@@ -2142,7 +2145,7 @@ The character code appended at end of each lines.
 ### tsv
 
 ```php
-tsv($path, $quatation = true, $eol = "\n")
+tsv($path = null, $quatation = true, $eol = "\n")
 ```
 
 Output Frequency Table into the TSV file specified by `$path`.
@@ -2151,12 +2154,14 @@ Before using this method, you should set Class Range and data.
 
 #### Parameters
 
-> $path
+> $path = null
 
-- Type: string
+- Default: `null`
+- Type: `null` or string
 - Value: file path of the TSV file to save data.
+- Note: if empty($path) is `true`, tsv() returns tsv without saving tsv fine.
 
-> $quatation
+> $quatation = true
 
 - Default: `true`
 - Type: bool
@@ -2164,7 +2169,7 @@ Before using this method, you should set Class Range and data.
     - `true`: each data is quated by double quatation mark.
     - `false`: each data is not quated.
 
-> $eol
+> $eol = "\n"
 
 The character code appended at end of each lines.
 
@@ -2174,8 +2179,9 @@ The character code appended at end of each lines.
 
 #### Return
 
-- Type: integer or `false` or `null`
+- Type: string or integer or `false` or `null`
 - Value:
+    - string: tsv (tsv file not saved)
     - integer: byte length of data saved.
     - `false`: failed to save data into the file.
     - `null`: parameters are invalid.
@@ -2226,8 +2232,9 @@ Before using this method, you should set Class Range and data.
 > $path = null
 
 - Default: `null`
-- Type: string
-- Value: file path of the TSV file to save data.
+- Type: `null` or string
+- Value: file path of the HTML file to save data.
+- Note: if empty($path) is `true`, html() returns tsv without saving html file.
 
 #### Return
 
@@ -2273,4 +2280,4 @@ Before using this method, you should set Class Range and data.
 
 *Document written: 2023/05/20*
 
-*Last Updated: 2023/05/31*
+*Last Updated: 2023/06/01*

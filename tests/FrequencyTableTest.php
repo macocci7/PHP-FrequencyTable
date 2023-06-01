@@ -1372,7 +1372,7 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
-    public function test_csv_can_output_csv(): void
+    public function test_csv_can_save_csv(): void
     {
         $data = [0, 5, 10, 15, 20];
         $columns2Show = ['Class', 'Frequency', ];
@@ -1395,7 +1395,39 @@ final class FrequencyTableTest extends TestCase
         $this->assertSame($expect, $csv);
     }
 
-    public function test_tsv_can_output_tsv(): void
+
+    public function test_csv_can_return_csv(): void
+    {
+        $data = [0, 5, 10, 15, 20];
+        $columns2Show = ['Class', 'Frequency', ];
+        $expect = [
+            ['Class', 'Frequency', ],
+            ['0 ~ 10', '2', ],
+            ['10 ~ 20', '2', ],
+            ['20 ~ 30', '1', ],
+            ['Total', '5',],
+        ];
+        $cases = [
+            ['path' => null, ],
+            ['path' => '', ],
+            ['path' => '0', ],
+        ];
+        $splitter = ',';
+        $eol = "\n";
+        $ft = new FrequencyTable();
+        $ft->setClassRange(10);
+        $ft->setData($data);
+        $ft->setColumns2Show($columns2Show);
+        foreach ($cases as $index => $case) {
+            $return = $ft->csv($case['path']);
+            $this->assertIsString($return);
+            $csv = array_map(fn($value): array => str_getcsv($value, $splitter), explode($eol, $return));
+            array_pop($csv);
+            $this->assertSame($expect, $csv);
+        }
+    }
+
+    public function test_tsv_can_save_tsv(): void
     {
         $data = [0, 5, 10, 15, 20];
         $columns2Show = ['Class', 'Frequency', ];
@@ -1416,6 +1448,37 @@ final class FrequencyTableTest extends TestCase
         $this->assertTrue(file_exists($path));
         $csv = array_map(fn($value): array => str_getcsv($value, $splitter), file($path, FILE_IGNORE_NEW_LINES));
         $this->assertSame($expect, $csv);
+    }
+
+    public function test_csv_can_return_tsv(): void
+    {
+        $data = [0, 5, 10, 15, 20];
+        $columns2Show = ['Class', 'Frequency', ];
+        $expect = [
+            ['Class', 'Frequency', ],
+            ['0 ~ 10', '2', ],
+            ['10 ~ 20', '2', ],
+            ['20 ~ 30', '1', ],
+            ['Total', '5',],
+        ];
+        $cases = [
+            ['path' => null, ],
+            ['path' => '', ],
+            ['path' => '0', ],
+        ];
+        $splitter = "\t";
+        $eol = "\n";
+        $ft = new FrequencyTable();
+        $ft->setClassRange(10);
+        $ft->setData($data);
+        $ft->setColumns2Show($columns2Show);
+        foreach ($cases as $index => $case) {
+            $return = $ft->tsv($case['path']);
+            $this->assertIsString($return);
+            $csv = array_map(fn($value): array => str_getcsv($value, $splitter), explode($eol, $return));
+            array_pop($csv);
+            $this->assertSame($expect, $csv);
+        }
     }
 
     public function test_html_can_save_html(): void
