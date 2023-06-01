@@ -489,8 +489,7 @@ class FrequencyTable
 
     public function xsv($path, $separator, $quatation = true, $eol = "\n")
     {
-        if (!is_string($path)) return;
-        if (strlen($path) === 0) return;
+        if (null !== $path && !is_string($path)) return;
         if (!is_string($separator)) return;
         if (strlen($separator) === 0) return;
         if (!is_bool($quatation)) return;
@@ -505,15 +504,15 @@ class FrequencyTable
         }
         $totals = $this->filterData2Show([$this->getTableTotal2Show($data4EachClass)]);
         $buff .= $qm . implode($splitter, $totals[0]) . $qm . $eol;
-        return file_put_contents($path, $buff);
+        return empty($path) ? $buff : file_put_contents($path, $buff);
     }
 
-    public function csv($path, $quatation = true, $eol = "\n")
+    public function csv($path = null, $quatation = true, $eol = "\n")
     {
         return $this->xsv($path, ',', $quatation, $eol);
     }
 
-    public function tsv($path, $quatation = true, $eol = "\n")
+    public function tsv($path = null, $quatation = true, $eol = "\n")
     {
         return $this->xsv($path, "\t", $quatation, $eol);
     }

@@ -329,9 +329,7 @@ Use `parse()` method. `parse()` method returns Hash Array as follows.
 
     $ft = new FrequencyTable();
     $ft->setClassRange(10);
-
-    $data = [0,5,10,15,20];
-    $ft->setData($data);
+    $ft->setData([0,5,10,15,20]);
 
     print_r($ft->parse());
     ```
@@ -421,9 +419,7 @@ You can use the parsed data like this:
 
     $ft = new FrequencyTable();
     $ft->setClassRange(10);
-
-    $data = [0,5,10,15,20];
-    $ft->setData($data);
+    $ft->setData([0,5,10,15,20]);
 
     $parsed = $ft->parse();
     echo "Data:[" . implode(', ', $parsed['data']) . "]\n";
@@ -483,6 +479,6 @@ Have a happy coding!
 
 *Document written: 2023/05/18*
 
-*Last updated: 2023/05/31*
+*Last updated: 2023/06/01*
 
 Copyright (c) 2023 macocci7
