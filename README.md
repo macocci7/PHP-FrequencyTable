@@ -16,6 +16,7 @@
     - [Saving data into CSV](#saving-data-into-csv)
     - [Saving data into TSV](#saving-data-into-tsv)
     - [Saving data into HTML](#saving-data-into-html)
+    - [Saving data into Markdown](#saving-data-into-markdown)
     - [Retrieving Parsed Data](#retrieving-parsed-data)
 - [Methods](#methods)
 - [Examples](#examples)
