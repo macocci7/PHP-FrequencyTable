@@ -1169,7 +1169,7 @@ final class FrequencyTableTest extends TestCase
         $data = [];
         $ft->setData($data);
         $output = $ft->show();
-        $this->assertStringContainsString("no data to show",$output);
+        $this->assertStringContainsString("no data",$output);
         $data = [0,5,10,15,20];
         $ft->setData($data);
         $output = $ft->show();

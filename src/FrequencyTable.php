@@ -465,18 +465,8 @@ class FrequencyTable
 
     public function show()
     {
-        $buffer = null;
-        if (!$this->isSettableData($this->data)) {
-            $buffer .= "no data to show\n";
-            echo $buffer;
-            return $buffer;
-        }
-        $separator = $this->getTableSeparator();
-        foreach ($this->filterData2Show($this->getData2Show()) as $row) {
-            $buffer .= $separator . implode($separator, $row) . $separator . "\n";
-        }
-        echo $buffer;
-        return $buffer;
+        echo $this->markdown();
+        return $this->markdown();
     }
 
     public function parse()
@@ -516,6 +506,9 @@ class FrequencyTable
         $buffer = null;
         $buffer .= $qm . implode($splitter, $this->getColumns2Show()) . $qm . $eol;
         $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
+        if (empty($data4EachClass)) {
+            return empty($path) ? 'no data' : file_put_contents($path, 'no data');
+        }
         foreach ($data4EachClass as $index => $data) {
             $buffer .= $qm . implode($splitter, $data) . $qm . $eol;
         }
@@ -545,9 +538,12 @@ class FrequencyTable
         $pro = '</td></tr>';
         $eol = "\n";
         $splitter = '</td><td>';
+        $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
+        if (empty($data4EachClass)) {
+            return empty($path) ? 'no data' : file_put_contents($path, 'no data');
+        }
         $buffer = "<table>" . $eol;
         $buffer .= $pre . implode($splitter, $this->getColumns2Show()) . $pro . $eol;
-        $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
         foreach ($data4EachClass as $index => $data) {
             $buffer .= $pre . implode($splitter, $data) . $pro . $eol;
         }
@@ -570,6 +566,9 @@ class FrequencyTable
         $buffer .= $separator . implode($separator, $this->getColumns2Show()) . $separator . $eol;
         $buffer .= $separator . implode($separator, $this->getTableColumnAligns2Show()) . $separator . $eol;
         $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
+        if (empty($data4EachClass)) {
+            return empty($path) ? 'no data' : file_put_contents($path, 'no data');
+        }
         foreach ($data4EachClass as $index => $data) {
             $buffer .= $separator . implode($separator, $data) . $separator . $eol;
         }
