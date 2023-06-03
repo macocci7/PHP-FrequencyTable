@@ -1161,40 +1161,6 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
-    public function test_show_can_work_correctly(): void
-    {
-        $ft = new FrequencyTable();
-        $classRange = 10;
-        $ft->setClassRange($classRange);
-        $data = [];
-        $ft->setData($data);
-        $output = $ft->show();
-        $this->assertStringContainsString("no data",$output);
-        $data = [0,5,10,15,20];
-        $ft->setData($data);
-        $output = $ft->show();
-        foreach ($this->defaultColumns2Show as $column) {
-            $string = $this->defaultTableSeparator . $column . $this->defaultTableSeparator;
-            $this->assertStringContainsString($string,$output);
-        }
-    }
-
-    public function test_show_can_switch_visibility_of_Mean(): void
-    {
-        $ft = new FrequencyTable();
-        $ft->setclassRange(10);
-        $ft->setData([0,5,10,15,20]);
-        $needle = $ft->getTableSeparator() . 'Mean' . $ft->getTableSeparator();
-
-        $ft->meanOn();
-        $returnValue = $ft->show();
-        $this->assertTrue(str_contains($returnValue, $needle));
-
-        $ft->meanOff();
-        $returnValue = $ft->show();
-        $this->assertFalse(str_contains($returnValue, $needle));
-    }
-
     public function test_parse_return_null_under_invalid_condition(): void
     {
         $cases = [

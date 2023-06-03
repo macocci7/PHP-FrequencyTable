@@ -466,7 +466,7 @@ class FrequencyTable
     public function show()
     {
         echo $this->markdown();
-        return $this->markdown();
+        return;
     }
 
     public function parse()
