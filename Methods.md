@@ -1857,8 +1857,7 @@ Prints the Frequency Table in markdown format to standard output.
 
 #### Return
 
-- Type: string
-- Value: Same strings as standard output.
+- Type: `null`
 
 #### Example
 
@@ -2316,4 +2315,4 @@ Before using this method, you should set Class Range and data.
 
 *Document written: 2023/05/20*
 
-*Last Updated: 2023/06/01*
+*Last Updated: 2023/06/03*
