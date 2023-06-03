@@ -490,7 +490,7 @@ class FrequencyTable
             'QuartileDeviation' => $this->getQuartileDeviation($this->getData()),
             'Classes' => $this->getClasses(),
             'Frequencies' => $this->getFrequencies(),
-            'FrequencyTable' => $this->show(['Mean'=>true,'STDOUT'=>false,'ReturnValue'=>true]),
+            'FrequencyTable' => $this->meanOn()->markdown(),
         ];
     }
 
