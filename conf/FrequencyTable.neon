@@ -1,0 +1,41 @@
+# Configuration for Macocci7\PhpFrequencyTable\FrequencyTable
+
+validColumns2Show:
+- 'Class'
+- 'Frequency'
+- 'CumulativeFrequency'
+- 'RelativeFrequency'
+- 'CumulativeRelativeFrequency'
+- 'ClassValue'
+- 'ClassValue * Frequency'
+
+defaultColumns2Show:
+- 'Class'
+- 'Frequency'
+- 'RelativeFrequency'
+- 'ClassValue'
+- 'ClassValue * Frequency'
+
+defaultTableHead:
+    'Class': 'Class'
+    'Frequency': 'Frequency'
+    'CumulativeFrequency': 'CumulativeFrequency'
+    'RelativeFrequency': 'RelativeFrequency'
+    'CumulativeRelativeFrequency': 'CumulativeRelativeFrequency'
+    'ClassValue': 'ClassValue'
+    'ClassValue * Frequency': 'ClassValue * Frequency'
+
+defaultTableColumnAligns:
+    'Class': ':---:'
+    'Frequency': ':---:'
+    'CumulativeFrequency': ':---:'
+    'RelativeFrequency': ':---:'
+    'CumulativeRelativeFrequency': ':---:'
+    'ClassValue': ':---:'
+    'ClassValue * Frequency': '---:'
+
+supportedFormats:
+    'md': 'markdown'
+    'csv': 'csv'
+    'tsv': 'tsv'
+    'html': 'html'

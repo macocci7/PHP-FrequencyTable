@@ -2,86 +2,94 @@
 
 namespace Macocci7\PhpFrequencyTable;
 
+use Macocci7\PhpFrequencyTable\Helper\Config;
+
 /**
  * Creates A Frequency Distribution Table
  * @author  macocci7 <macocci7@yahoo.co.jp>
  * @license MIT
  * @SuppressWarnings(PHPMD.TooManyMethods)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.ElseExpression)
  */
 class FrequencyTable
 {
-    private $data = null;
-    private $classRange = null;
-    private $total = null;
-    private $defaultTableSeparator = '|';
-    private $classSeparator = ' ~ ';
-    private $tableSeparator = null;
-    private $validColumns2Show = [
-        'Class',
-        'Frequency',
-        'CumulativeFrequency',
-        'RelativeFrequency',
-        'CumulativeRelativeFrequency',
-        'ClassValue',
-        'ClassValue * Frequency',
-    ];
-    private $defaultColumns2Show = [
-        'Class',
-        'Frequency',
-        'RelativeFrequency',
-        'ClassValue',
-        'ClassValue * Frequency',
-    ];
-    private $columns2Show = [];
-    private $defaultTableHead = [
-        'Class' => 'Class',
-        'Frequency' => 'Frequency',
-        'CumulativeFrequency' => 'CumulativeFrequency',
-        'RelativeFrequency' => 'RelativeFrequency',
-        'CumulativeRelativeFrequency' => 'CumulativeRelativeFrequency',
-        'ClassValue' => 'ClassValue',
-        'ClassValue * Frequency' => 'ClassValue * Frequency',
-    ];
-    private $defaultTableColumnAligns = [
-        'Class' => ':---:',
-        'Frequency' => ':---:',
-        'CumulativeFrequency' => ':---:',
-        'RelativeFrequency' => ':---:',
-        'CumulativeRelativeFrequency' => ':---:',
-        'ClassValue' => ':---:',
-        'ClassValue * Frequency' => '---:',
-    ];
-    private $supportedFormats = [
-        'md' => 'markdown',
-        'csv' => 'csv',
-        'tsv' => 'tsv',
-        'html' => 'html',
-    ];
-    private $showMean = false;
+    private mixed $data = null;
+    private mixed $classRange = null;
+    private mixed $total = null;
+    private string $defaultTableSeparator = '|';
+    private string $classSeparator = ' ~ ';
+    private mixed $tableSeparator = null;
+    /**
+     * @var string[]    $validColumns2Show
+     */
+    private array $validColumns2Show;
+    /**
+     * @var string[]    $defaultColumns2Show
+     */
+    private array $defaultColumns2Show;
+    /**
+     * @var string[]    $columns2Show
+     */
+    private array $columns2Show = [];
+    /**
+     * @var string[]    $defaultTableHead
+     */
+    private array $defaultTableHead;
+    /**
+     * @var string[]    $defaultTableColumnAligns
+     */
+    private array $defaultTableColumnAligns;
+    /**
+     * @var string[]    $supportedFormats
+     */
+    private array $supportedFormats;
+    private bool $showMean = false;
 
     /**
      * constructor
+     * @param   mixed   $param = []
      */
-    public function __construct(array $param = [])
+    public function __construct(mixed $param = [])
     {
-        if (array_key_exists('classRange', $param)) {
+        $this->loadConf();
+        if (array_key_exists('classRange', $param)) { // @phpstan-ignore-line
             $this->setClassRange($param['classRange']);
         }
-        if (array_key_exists('data', $param)) {
+        if (array_key_exists('data', $param)) { // @phpstan-ignore-line
             $this->setData($param['data']);
         }
         $this->setColumns2Show($this->defaultColumns2Show);
-        if (array_key_exists('columns2Show', $param)) {
+        if (array_key_exists('columns2Show', $param)) { // @phpstan-ignore-line
             $this->setColumns2Show($param['columns2Show']);
         }
         $this->setDefaultTableSeparator();
     }
 
     /**
+     * loads config.
+     * @return  void
+     */
+    private function loadConf()
+    {
+        Config::load();
+        $props = [
+            'validColumns2Show',
+            'defaultColumns2Show',
+            'defaultTableHead',
+            'defaultTableColumnAligns',
+            'supportedFormats',
+        ];
+        foreach ($props as $prop) {
+            $this->{$prop} = Config::get($prop); // @phpstan-ignore-line
+        }
+    }
+
+    /**
      * sets visibility of mean on
-     * @param
      * @return  self
      */
     public function meanOn()
@@ -92,7 +100,6 @@ class FrequencyTable
 
     /**
      * sets visibility of mean off
-     * @param
      * @return  self
      */
     public function meanOff()
@@ -103,10 +110,10 @@ class FrequencyTable
 
     /**
      * judges if the param is number or not
-     * @param   mixed
+     * @param   mixed   $value
      * @return  bool
      */
-    public function isNumber($value)
+    public function isNumber(mixed $value)
     {
         return is_int($value) || is_float($value);
     }
@@ -134,48 +141,51 @@ class FrequencyTable
 
     /**
      * sets data
-     * @param   array   $data   default = null
+     * @param   mixed   $data   default = null
      * @return  self
      */
-    public function setData(array $data)
+    public function setData(mixed $data)
     {
-        if (!$this->isSettableData($data)) {
-            throw new \Exception("Invalid data set.");
+        if ($this->isSettableData($data)) {
+            $this->data = $data;
+            $this->setTotal($this->getFrequencies());
+        } else {
+            $this->data = null;
+            $this->total = null;
         }
-        $this->data = $data;
-        $this->setTotal($this->getFrequencies());
         return $this;
     }
 
     /**
      * returns data
-     * @param   string  $key
-     * @return  array|int|float
+     * @param   int|string  $key = null
+     * @return  mixed
      */
-    public function getData(string $key = null)
+    public function getData(int|string $key = null)
     {
+        // @phpstan-ignore-next-line
         return is_null($key) ? $this->data : ($this->data[$key] ?? null);
     }
 
     /**
      * returns data range
-     * @param   array   $data
-     * @return  int|float
+     * @param   mixed   $data
+     * @return  int|float|null
      */
-    public function getDataRange(array $data)
+    public function getDataRange(mixed $data)
     {
         if (!$this->isSettableData($data)) {
-            throw new \Exception("Invalid class range.");
+            return null;
         }
         return $this->getMax($data) - $this->getMin($data);
     }
 
     /**
      * judges if the param is valid class range or not
-     * @param   int|float
+     * @param   mixed   $classRange
      * @return  bool
      */
-    public function isSettableClassRange($classRange)
+    public function isSettableClassRange(mixed $classRange)
     {
         if (!$this->isNumber($classRange)) {
             return false;
@@ -185,22 +195,22 @@ class FrequencyTable
 
     /**
      * sets class range
-     * @param   int|float
+     * @param   mixed   $classRange
      * @return  self
      */
-    public function setClassRange($classRange = null)
+    public function setClassRange(mixed $classRange = null)
     {
-        if (!$this->isSettableClassRange($classRange)) {
-            throw new \Exception("Invalid class range.");
+        if ($this->isSettableClassRange($classRange)) {
+            $this->classRange = $classRange;
+        } else {
+            $this->classRange = null;
         }
-        $this->classRange = $classRange;
         return $this;
     }
 
     /**
      * returns class range
-     * @param
-     * @return  int|float
+     * @return  mixed
      */
     public function getClassRange()
     {
@@ -209,13 +219,12 @@ class FrequencyTable
 
     /**
      * returns frequencies
-     * @param
-     * @return  array
+     * @return  array<int|null>
      */
     public function getFrequencies()
     {
         $frequencies = [];
-        foreach ($this->getClasses($this->data, $this->classRange) as $class) {
+        foreach ($this->getClasses() as $class) {
             $frequencies[] = $this->getFrequency($this->data, $class);
         }
         return $frequencies;
@@ -223,8 +232,7 @@ class FrequencyTable
 
     /**
      * returns classes
-     * @param
-     * @return  array
+     * @return  list<array<string, int|float>>
      */
     public function getClasses()
     {
@@ -234,8 +242,8 @@ class FrequencyTable
         ) {
             return [];
         }
-        $min = min($this->data);
-        $max = max($this->data);
+        $min = min($this->data); // @phpstan-ignore-line
+        $max = max($this->data); // @phpstan-ignore-line
         $bottomStart = ((int) ($min / $this->classRange)) * $this->classRange;
         $topEnd = (1 + (int) ($max / $this->classRange)) * $this->classRange;
         $class = [];
@@ -250,11 +258,14 @@ class FrequencyTable
 
     /**
      * judges if the param is valid class or not
-     * @param   array   $class
+     * @param   mixed   $class
      * @return  bool
      */
-    public function isSettableClass(array $class)
+    public function isSettableClass(mixed $class)
     {
+        if (!is_array($class)) {
+            return false;
+        }
         if (empty($class)) {
             return false;
         }
@@ -264,10 +275,10 @@ class FrequencyTable
         ) {
             return false;
         }
-        if (!$this->isNumber($class['bottom'])) {
-            return false;
-        }
-        if (!$this->isNumber($class['top'])) {
+        if (
+            !$this->isNumber($class['bottom'])
+            || !$this->isNumber($class['top'])
+        ) {
             return false;
         }
         if (!($class['bottom'] < $class['top'])) {
@@ -278,18 +289,21 @@ class FrequencyTable
 
     /**
      * returns frequency of the specified class
-     * @param   array   $data
-     * @param   int|float   $class
-     * @return  int
+     * @param   mixed   $data
+     * @param   mixed   $class
+     * @return  int|null
      */
-    public function getFrequency(array $data, $class)
+    public function getFrequency(mixed $data, mixed $class)
     {
-        if (!$this->isSettableData($data) || !$this->isSettableClass($class)) {
-            throw new \Exception("Invalid data or class.");
+        if (
+            !$this->isSettableData($data)
+            || !$this->isSettableClass($class)
+        ) {
+            return null;
         }
         $count = 0;
-        foreach ($data as $d) {
-            if ($d >= $class['bottom'] && $d < $class['top']) {
+        foreach ($data as $d) { // @phpstan-ignore-line
+            if ($d >= $class['bottom'] && $d < $class['top']) { // @phpstan-ignore-line
                 $count++;
             }
         }
@@ -298,64 +312,65 @@ class FrequencyTable
 
     /**
      * returns cumulative frequency of the specified (array) index
-     * @param   array   $frequencies
-     * @param   int     $index
-     * @return  int
+     * @param   mixed   $frequencies
+     * @param   mixed   $index
+     * @return  int|null
      */
-    public function getCumulativeFrequency(array $frequencies, int $index)
+    public function getCumulativeFrequency(mixed $frequencies, mixed $index)
     {
-        if (!$this->isSettableData($frequencies)) {
-            throw new \Exception("Invalid frequencies.");
+        if (
+            !$this->isSettableData($frequencies)
+            || !is_int($index)
+        ) {
+            return null;
         }
-        if ($index < 0 || $index >= count($frequencies)) {
-            throw new \Exception("Invalid index specified.");
+        if (
+            $index < 0
+            || $index >= count($frequencies) // @phpstan-ignore-line
+        ) {
+            return null;
         }
-        return array_sum(array_slice($frequencies, 0, $index + 1));
+        return array_sum(array_slice($frequencies, 0, $index + 1)); // @phpstan-ignore-line
     }
 
     /**
      * returns min value of the specified array
-     * @param   array   $data
-     * @return  int|float
+     * @param   mixed   $data
+     * @return  int|float|null
      */
-    public function getMin(array $data)
+    public function getMin(mixed $data)
     {
-        if (!$this->settableData($data)) {
-            throw new \Exception("Invalid data specified.");
-        }
-        return min($data);
+        return $this->isSettableData($data) ? min($data) : null; // @phpstan-ignore-line
     }
 
     /**
      * returns max value of the specified array
-     * @param   array   $data
-     * @return  int|float
+     * @param   mixed   $data
+     * @return  int|float|null
      */
-    public function getMax(array $data)
+    public function getMax(mixed $data)
     {
-        if ($this->isSettableData($data)) {
-            throw new \Exception("Invalid data specified.");
-        }
-        return max($data);
+        return $this->isSettableData($data) ? max($data) : null; // @phpstan-ignore-line
     }
 
     /**
      * sets total of the specified data
-     * @param   array   $data
+     * @param   mixed   $data
      * @return  self
      */
-    public function setTotal(array $data)
+    public function setTotal(mixed $data)
     {
-        if (!$this->isSettableData($data)) {
-            throw new \Exception("Invalid data specified.");
+        if ($this->isSettableData($data)) {
+            $this->total = array_sum($data); // @phpstan-ignore-line
+        } else {
+            $this->total = null;
         }
-        $this->total = array_sum($data);
         return $this;
     }
 
     /**
      * returns total
-     * @return  int|float
+     * @return  mixed
      */
     public function getTotal()
     {
@@ -367,49 +382,49 @@ class FrequencyTable
 
     /**
      * returns class value
-     * @param   array   $class
-     * @return  int|float
+     * @param   mixed   $class
+     * @return  int|float|null
      */
-    public function getClassValue(array $class)
+    public function getClassValue(mixed $class)
     {
         if (!$this->isSettableClass($class)) {
-            throw new \Exception("Invalid class specified.");
+            return null;
         }
-        return ($class['bottom'] + $class['top']) / 2;
+        return ($class['bottom'] + $class['top']) / 2; // @phpstan-ignore-line
     }
 
     /**
      * returns relative frequency
-     * @param   int $frequency
-     * @return  float
+     * @param   mixed   $frequency
+     * @return  int|float|null
      */
-    public function getRelativeFrequency(int $frequency)
+    public function getRelativeFrequency(mixed $frequency)
     {
-        if (!$this->getTotal()) {   // in case: null or zero
-            throw new \Exception("Total is not set.");
+        if (!$this->getTotal() || !(is_int($frequency))) {
+            return null;
         }
         if ($frequency < 0 || $frequency > $this->getTotal()) {
-            throw new \Exception("Invalid frequency specified.");
+            return null;
         }
         return $frequency / $this->getTotal();
     }
 
     /**
      * returns cumulative relative frequency
-     * @param   array   $frequencies
-     * @param   int     $index
-     * @return  float
+     * @param   mixed   $frequencies
+     * @param   mixed   $index
+     * @return  int|float|null
      */
-    public function getCumulativeRelativeFrequency(array $frequencies, int $index)
+    public function getCumulativeRelativeFrequency(mixed $frequencies, mixed $index)
     {
-        if (!$this->isSettableData($frequencies)) {
-            throw new \Exception("Invalid frequencies specified.");
+        if (!$this->isSettableData($frequencies) || !is_int($index)) {
+            return null;
         }
-        if ($index < 0 || $index >= count($frequencies)) {
-            throw new \Exception("Invalid array index specified.");
+        if ($index < 0 || $index >= count($frequencies)) { // @phpstan-ignore-line
+            return null;
         }
         $rf = [];
-        foreach (array_slice($frequencies, 0, $index + 1) as $frequency) {
+        foreach (array_slice($frequencies, 0, $index + 1) as $frequency) { // @phpstan-ignore-line
             $rf[] = $this->getRelativeFrequency($frequency);
         }
         return array_sum($rf);
@@ -417,13 +432,12 @@ class FrequencyTable
 
     /**
      * returns mean value
-     * @param
-     * @return  int|float
+     * @return  int|float|null
      */
     public function getMean()
     {
         if (!$this->isSettableData($this->getData()) || !$this->getTotal()) {
-            throw new \Exception("Invalid data or total not set.");
+            return null;
         }
         $fc = [];
         $classes = $this->getClasses();
@@ -435,14 +449,13 @@ class FrequencyTable
 
     /**
      * returns mode
-     * @param
-     * @return  int
+     * @return  int|float|null
      */
     public function getMode()
     {
         $frequencies = $this->getFrequencies();
         if (0 === count($frequencies)) {
-            return;
+            return null;
         }
         $classes = $this->getClasses();
         $index = array_search(max($frequencies), $frequencies);
@@ -451,59 +464,59 @@ class FrequencyTable
 
     /**
      * returns median
-     * @param   array   $param
+     * @param   mixed   $param
+     * @return  int|float|null
      */
-    public function getMedian(array $param)
+    public function getMedian(mixed $param)
     {
         if (!$this->isSettableData($param)) {
-            throw new \Exception("Invalid data specified.");
+            return null;
         }
-        $data = [...$param];
+        $data = array_merge($param); // @phpstan-ignore-line
         $count = count($data);
         sort($data);
         if (1 === $count % 2) {
-            return $data[(int) (($count + 1) / 2) - 1];
+            return $data[(int) (($count + 1) / 2) - 1]; // @phpstan-ignore-line
         }
         return ($data[(int) ($count / 2) - 1] + $data[(int) ($count / 2)]) / 2;
     }
 
     /**
      * returns the class the median belongs
-     * @param
-     * @return  array
+     * @return  array<string, int|float>|null
      */
     public function getMedianClass()
     {
         if (!$this->isSettableData($this->getData())) {
-            throw new \Exception("Invalid data set.");
+            return null;
         }
         $median = $this->getMedian($this->getData());
         foreach ($this->getClasses() as $index => $class) {
             if ($median >= $class['bottom'] && $median < $class['top']) {
-                return ['index' => $index, ...$class];
+                return array_merge(['index' => $index], $class);
             }
         }
-        return [];
+        return null;
     }
 
     /**
      * returns the first quartile
-     * @param   array   $data
-     * @return  int|float
+     * @param   mixed   $data
+     * @return  int|float|null
      */
-    public function getFirstQuartile(array $data)
+    public function getFirstQuartile(mixed $data)
     {
         if (!$this->isSettableData($data)) {
-            throw new \Exception("Invalid data set.");
+            return null;
         }
-        $a = [...$data];
+        $a = array_merge($data); // @phpstan-ignore-line
         sort($a);
         $count = count($a);
         if (1 === $count) {
-            return $data[0];
+            return $data[0]; // @phpstan-ignore-line
         }
         $chunkLength = (0 === $count % 2)
-                     ? (int) $count / 2         // in case even
+                     ? (int) ($count / 2)       // in case even
                      : (int) (($count - 1) / 2) // in case odd
                      ;
         $forward = array_slice($a, 0, $chunkLength);
@@ -512,22 +525,22 @@ class FrequencyTable
 
     /**
      * returns the third quartile
-     * @param   array   $data
-     * @return  int|float
+     * @param   mixed   $data
+     * @return  int|float|null
      */
-    public function getThirdQuartile(array $data)
+    public function getThirdQuartile(mixed $data)
     {
         if (!$this->isSettableData($data)) {
-            throw new \Exception("Invalid data set.");
+            return null;
         }
-        $a = [...$data];
+        $a = array_merge($data); // @phpstan-ignore-line
         sort($a);
         $count = count($a);
         if (1 === $count) {
-            return $data[0];
+            return $data[0]; // @phpstan-ignore-line
         }
         $offset = (0 === $count % 2)
-                  ? (int) $count / 2            // in case even
+                  ? (int) ($count / 2)          // in case even
                   : (int) (($count + 1) / 2)    // in case odd
                   ;
         $backward = array_slice($a, $offset);
@@ -536,45 +549,46 @@ class FrequencyTable
 
     /**
      * returns the inter quartile range
-     * @param   array   $data
-     * @return  int|float
+     * @param   mixed   $data
+     * @return  int|float|null
      */
-    public function getInterQuartileRange(array $data)
+    public function getInterQuartileRange(mixed $data)
     {
         if (!$this->isSettableData($data)) {
-            throw new \Exception("Invalid data set.");
+            return null;
         }
         return $this->getThirdQuartile($data) - $this->getFirstQuartile($data);
     }
 
     /**
      * returns the quartile deviation
-     * @param   array   $data
-     * @return  int|float
+     * @param   mixed   $data
+     * @return  int|float|null
      */
-    public function getQuartileDeviation(array $data)
+    public function getQuartileDeviation(mixed $data)
     {
         if (!$this->isSettableData($data)) {
-            throw new \Exception("Invalid data set.");
+            return null;
         }
         return $this->getInterQuartileRange($data) / 2;
     }
 
     /**
      * sets the table separator to show frequency table
-     * @param   string  $separator
+     * @param   mixed   $separator
      * @return  self
      */
-    public function setTableSeparator(string $separator)
+    public function setTableSeparator(mixed $separator)
     {
-        $this->tableSeparator = $separator;
+        if (is_string($separator)) {
+            $this->tableSeparator = $separator;
+        }
         return $this;
     }
 
     /**
      * returns the current table separator
-     * @param
-     * @return  string
+     * @return  mixed
      */
     public function getTableSeparator()
     {
@@ -583,7 +597,6 @@ class FrequencyTable
 
     /**
      * sets the default table separator
-     * @param
      * @return  self
      */
     public function setDefaultTableSeparator()
@@ -594,8 +607,7 @@ class FrequencyTable
 
     /**
      * returns table column aligns to show
-     * @param
-     * @return  array
+     * @return  array<int|string, string>
      */
     public function getTableColumnAligns2Show()
     {
@@ -608,8 +620,7 @@ class FrequencyTable
 
     /**
      * returns columns to show
-     * @param
-     * @return  array
+     * @return  string[]
      */
     public function getColumns2Show()
     {
@@ -618,8 +629,7 @@ class FrequencyTable
 
     /**
      * returns valid columns to show
-     * @param
-     * @return  array
+     * @return  string[]
      */
     public function getValidColumns2Show()
     {
@@ -628,11 +638,14 @@ class FrequencyTable
 
     /**
      * judges if the param is valid for columns to show or not
-     * @param   array   $columns
+     * @param   mixed   $columns
      * @return  bool
      */
-    public function isSettableColumns2Show(array $columns)
+    public function isSettableColumns2Show(mixed $columns)
     {
+        if (!is_array($columns)) {
+            return false;
+        }
         if (empty($columns)) {
             return false;
         }
@@ -646,47 +659,43 @@ class FrequencyTable
 
     /**
      * sets columns to show
-     * @param   array   $columns
+     * @param   mixed   $columns
      * @return  self
      */
-    public function setColumns2Show(array $columns)
+    public function setColumns2Show(mixed $columns)
     {
-        if (!$this->isSettableColumns2Show($columns)) {
-            throw new \Exception("Invalid columns set.");
+        if ($this->isSettableColumns2Show($columns)) {
+            $this->columns2Show = $columns; // @phpstan-ignore-line
         }
-        $this->columns2Show = $columns;
         return $this;
     }
 
     /**
      * returns totals in the table to show
-     * @param   array   $data
-     * @return  array
+     * @param   mixed   $data
+     * @return  array<string, mixed>
      */
-    public function getTableTotal2Show(array $data)
+    public function getTableTotal2Show(mixed $data)
     {
-        if (!$this->isSettableData($data)) {
-            throw new \Exception("Invalid data set.");
-        }
         return [
             'Class' => 'Total',
             'Frequency' => $this->getTotal(),
             'CumulativeFrequency' => $this->getTotal(),
             'RelativeFrequency' => number_format(
-                array_sum(array_column($data, 'RelativeFrequency')),
+                array_sum(array_column($data, 'RelativeFrequency')), // @phpstan-ignore-line
                 2,
                 '.',
                 ','
             ),
             'CumulativeRelativeFrequency' => number_format(
-                array_sum(array_column($data, 'RelativeFrequency')),
+                array_sum(array_column($data, 'RelativeFrequency')), // @phpstan-ignore-line
                 2,
                 '.',
                 ','
             ),
             'ClassValue' => '---',
             'ClassValue * Frequency' => number_format(
-                array_sum(array_column($data, 'ClassValue * Frequency')),
+                array_sum(array_column($data, 'ClassValue * Frequency')), // @phpstan-ignore-line
                 1,
                 '.',
                 ','
@@ -696,8 +705,7 @@ class FrequencyTable
 
     /**
      * returns mean row in the table to show
-     * @param
-     * @return  array
+     * @return  array<string, string|int|float>
      */
     public function getMean2Show()
     {
@@ -709,7 +717,7 @@ class FrequencyTable
             'CumulativeRelativeFrequency' => '---',
             'ClassValue' => '---',
             'ClassValue * Frequency' => number_format(
-                $this->getMean(),
+                (float) $this->getMean(),
                 1,
                 '.',
                 ','
@@ -719,13 +727,12 @@ class FrequencyTable
 
     /**
      * returns table data to show
-     * @param
-     * @return  array
+     * @return  list<string|int|float>
      */
     public function getData2Show()
     {
         if (!$this->isSettableData($this->getData())) {
-            throw new \Exception("Invalid data set.");
+            return [];
         }
         $data2Show = [];
         $data2Show[] = $this->defaultTableHead;
@@ -741,13 +748,12 @@ class FrequencyTable
 
     /**
      * returns the data of each class
-     * @param
-     * @return  array
+     * @return  list<array<string, int|string|null>>
      */
     public function getDataOfEachClass()
     {
         if (!$this->isSettableData($this->getData())) {
-            throw new \Exception("Invalid data set.");
+            return [];
         }
         $data = [];
         $classes = $this->getClasses();
@@ -766,15 +772,15 @@ class FrequencyTable
                     $frequencies,
                     $index
                 ),
-                'RelativeFrequency' => number_format($rf[$index], 2, '.', ','),
+                'RelativeFrequency' => number_format((float) $rf[$index], 2, '.', ','),
                 'CumulativeRelativeFrequency' => number_format(
-                    $this->getCumulativeRelativeFrequency($frequencies, $index),
+                    (float) $this->getCumulativeRelativeFrequency($frequencies, $index),
                     2,
                     '.',
                     ','
                 ),
                 'ClassValue' => number_format(
-                    $this->getClassValue($classes[$index]),
+                    (float) $this->getClassValue($classes[$index]),
                     1,
                     '.',
                     ','
@@ -792,8 +798,8 @@ class FrequencyTable
 
     /**
      * filters data to show
-     * @param   array   $data
-     * @return  array
+     * @param   list<array<string, mixed>>    $data
+     * @return  list<array<string, mixed>>
      */
     public function filterData2Show(array $data)
     {
@@ -813,7 +819,6 @@ class FrequencyTable
 
     /**
      * puts out the frequency table in markdown format to STDOUT
-     * @param
      * @return  self
      */
     public function show()
@@ -824,16 +829,15 @@ class FrequencyTable
 
     /**
      * returns parsed data
-     * @param
-     * @return  array
+     * @return  null|array<string, mixed>
      */
     public function parse()
     {
         if (!$this->isSettableClassRange($this->getClassRange())) {
-            throw new \Exception("Invalid class range set.");
+            return null;
         }
         if (!$this->isSettableData($this->getData())) {
-            throw new \Exception("Invalid data set.");
+            return null;
         }
         return [
             'classRange' => $this->getClassRange(),
@@ -842,7 +846,7 @@ class FrequencyTable
             'Min' => $this->getMin($this->getData()),
             'DataRange' => $this->getDataRange($this->getData()),
             'Mode' => $this->getMode(),
-            'Total' => $this->getTotal($this->getFrequencies()),
+            'Total' => $this->getTotal(),
             'Mean' => $this->getMean(),
             'Median' => $this->getMedian($this->getData()),
             'MedianClass' => $this->getMedianClass(),
@@ -857,32 +861,28 @@ class FrequencyTable
     }
 
     /**
-     * saves the frequency table into xsv format
-     * @param   string  $path
-     * @param   string  $separator
-     * @param   bool    $quatation = true
-     * @param   string  $eol = "\n"
+     * saves or returns the frequency table in xsv format
+     * @param   string|null $path
+     * @param   string      $separator
+     * @param   bool        $quatation = true
+     * @param   string      $eol = "\n"
      * @return  null|string|int|bool
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function xsv(
-        string $path,
+        string|null $path,
         string $separator,
         bool $quatation = true,
         string $eol = "\n"
     ) {
-        if (strlen($separator) === 0) {
-            return;
+        if (empty($separator)) {
+            return null;
         }
-        // no check for $eol : it's at the user's own risk.
         $qm = $quatation ? '"' : '';
         $splitter = $qm . $separator . $qm;
         $buffer = null;
         $buffer .= $qm . implode($splitter, $this->getColumns2Show()) . $qm . $eol;
         $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
-        if (empty($data4EachClass)) {
-            return empty($path) ? 'no data' : file_put_contents($path, 'no data');
-        }
         foreach ($data4EachClass as $data) {
             $buffer .= $qm . implode($splitter, $data) . $qm . $eol;
         }
@@ -896,26 +896,44 @@ class FrequencyTable
     }
 
     /**
+     * saves or returns the frequency table in csv format
+     * @param   string|null   $path = null
+     * @param   bool   $quatation = true
+     * @param   string  $eol = "\n"
+     * @return  null|string|int|bool
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function csv($path = null, $quatation = true, $eol = "\n")
-    {
+    public function csv(
+        string|null $path = null,
+        bool $quatation = true,
+        string $eol = "\n"
+    ) {
         return $this->xsv($path, ',', $quatation, $eol);
     }
 
     /**
+     * saves or returns the frequency table in tsv format
+     * @param   string|null   $path = null
+     * @param   bool   $quatation = true
+     * @param   string  $eol = "\n"
+     * @return  null|string|int|bool
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
-    public function tsv($path = null, $quatation = true, $eol = "\n")
-    {
+    public function tsv(
+        string|null $path = null,
+        bool $quatation = true,
+        string $eol = "\n"
+    ) {
         return $this->xsv($path, "\t", $quatation, $eol);
     }
 
-    public function html($path = null)
+    /**
+     * saves or returns the frequency table in html format
+     * @param   string|null   $path = null
+     * @return  null|string|int|bool
+     */
+    public function html(string|null $path = null)
     {
-        if (null !== $path && !is_string($path)) {
-            return;
-        }
         $pre = '<tr><td>';
         $pro = '</td></tr>';
         $eol = "\n";
@@ -939,44 +957,54 @@ class FrequencyTable
         return empty($path) ? $buffer : file_put_contents($path, $buffer);
     }
 
-    public function markdown($path = null)
+    /**
+     * saves or returns the frequency table in markdown format
+     * @param   string|null   $path = null
+     * @return  null|string|int|bool
+     */
+    public function markdown(string|null $path = null)
     {
-        if (null !== $path && !is_string($path)) {
-            return;
-        }
         $separator = $this->getTableSeparator();
         $eol = "\n";
         $buffer = null;
+        // @phpstan-ignore-next-line
         $buffer .= $separator . implode($separator, $this->getColumns2Show()) . $separator . $eol;
+        // @phpstan-ignore-next-line
         $buffer .= $separator . implode($separator, $this->getTableColumnAligns2Show()) . $separator . $eol;
         $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
         if (empty($data4EachClass)) {
             return empty($path) ? 'no data' : file_put_contents($path, 'no data');
         }
         foreach ($data4EachClass as $data) {
+            // @phpstan-ignore-next-line
             $buffer .= $separator . implode($separator, $data) . $separator . $eol;
         }
         $totals = $this->filterData2Show([$this->getTableTotal2Show($data4EachClass)]);
+        // @phpstan-ignore-next-line
         $buffer .= $separator . implode($separator, $totals[0]) . $separator . $eol;
         if ($this->showMean) {
             $means = $this->filterData2Show([$this->getMean2Show()]);
+            // @phpstan-ignore-next-line
             $buffer .= $separator . implode($separator, $means[0]) . $separator . $eol;
         }
         return empty($path) ? $buffer : file_put_contents($path, $buffer);
     }
 
-    public function save($path)
+    /**
+     * saves the frequency table into a file
+     * @param   string  $path
+     * @return  int|bool
+     */
+    public function save(string $path)
     {
-        if (!is_string($path)) {
-            return;
-        }
         if (strlen($path) === 0) {
-            return;
+            return false;
         }
         $pathParts = pathinfo($path);
+        // @phpstan-ignore-next-line
         $extension = strtolower($pathParts['extension']);
         if (!array_key_exists($extension, $this->supportedFormats)) {
-            return;
+            return false;
         }
         return $this->{$this->supportedFormats[$extension]}($path);
     }
