@@ -39,6 +39,18 @@ final class FrequencyTableTest extends TestCase
     private static $defaultTableSeparator = '|';
     private $classSeparator = ' ~ ';
 
+    public static function setUpBeforeClass(): void
+    {
+        if (!file_exists('storage')) {
+            mkdir('storage');
+        }
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        rmdir('storage');
+    }
+
     private function getAllCombinations(array $paramItems)
     {
         if (empty($paramItems)) {
@@ -1484,6 +1496,7 @@ final class FrequencyTableTest extends TestCase
         $this->assertTrue(file_exists($path));
         $csv = array_map(fn($value): array => str_getcsv($value, $splitter), file($path, FILE_IGNORE_NEW_LINES));
         $this->assertSame($expect, $csv);
+        $this->clearStorage();
     }
 
 
@@ -1540,6 +1553,7 @@ final class FrequencyTableTest extends TestCase
         $this->assertTrue(file_exists($path));
         $csv = array_map(fn($value): array => str_getcsv($value, $splitter), file($path, FILE_IGNORE_NEW_LINES));
         $this->assertSame($expect, $csv);
+        $this->clearStorage();
     }
 
     public function test_csv_can_return_tsv(): void
@@ -1597,6 +1611,7 @@ final class FrequencyTableTest extends TestCase
         $this->assertIsInt($ft->html($path));
         $this->assertTrue(file_exists($path));
         $this->assertSame($expect, file_get_contents($path));
+        $this->clearStorage();
     }
 
     public function test_html_can_return_html(): void
@@ -1619,6 +1634,7 @@ final class FrequencyTableTest extends TestCase
         $this->clearStorage();
         $html = $ft->html($path);
         $this->assertSame($expect, $html);
+        $this->clearStorage();
     }
 
     public function test_markdown_can_save_markdown(): void
@@ -1644,6 +1660,7 @@ final class FrequencyTableTest extends TestCase
         $this->assertIsInt($ft->markdown($path));
         $this->assertTrue(file_exists($path));
         $this->assertSame($expect, file_get_contents($path));
+        $this->clearStorage();
     }
 
     public function test_markdown_can_return_markdown(): void
@@ -1741,5 +1758,6 @@ final class FrequencyTableTest extends TestCase
         $this->clearStorage();
         $this->assertIsInt($ft->save($path));
         $this->assertTrue(file_exists($path));
+        $this->clearStorage();
     }
 }
