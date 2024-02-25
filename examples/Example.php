@@ -8,4 +8,4 @@ $ft = new FrequencyTable([
     'data' => [ 0, 5, 10, 15, 20, ],
     'classRange' => 10,
 ]);
-$ft->meanOn()->save('Example.md');
+echo $ft->meanOn()->markdown();
