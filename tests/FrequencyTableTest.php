@@ -8,6 +8,7 @@ require('vendor/autoload.php');
 
 use PHPUnit\Framework\TestCase;
 use Macocci7\PhpFrequencyTable\FrequencyTable;
+use Nette\Neon\Neon;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyMethods)
@@ -37,7 +38,6 @@ final class FrequencyTableTest extends TestCase
         'ClassValue * Frequency',
     ];
     private static $defaultTableSeparator = '|';
-    private $classSeparator = ' ~ ';
 
     public static function setUpBeforeClass(): void
     {
@@ -129,6 +129,25 @@ final class FrequencyTableTest extends TestCase
         $ft = new FrequencyTable(['columns2Show' => $columns2Show]);
         $this->assertSame($columns2Show, $ft->getColumns2Show());
         $this->assertFalse(in_array($pop, $ft->getColumns2Show()));
+    }
+
+    public function test_langs_can_return_supported_langs_correctly(): void
+    {
+        $ft = new FrequencyTable();
+        $confPath = __DIR__ . '/../conf/FrequencyTable.neon';
+        $confLangs = array_keys(Neon::decodeFile($confPath)['supportedLangs']);
+        $this->assertSame($confLangs, $ft->langs());
+    }
+
+    public function test_lang_can_work_correctly(): void
+    {
+        $ft = new FrequencyTable();
+        $confPath = __DIR__ . '/../conf/FrequencyTable.neon';
+        $conf = Neon::decodeFile($confPath);
+        $this->assertSame($conf['lang'], $ft->lang());
+        foreach (array_keys($conf['supportedLangs']) as $lang) {
+            $this->assertSame($lang, $ft->lang($lang)->lang());
+        }
     }
 
     public static function provide_isNumber_can_judge_correctly(): array
@@ -1219,74 +1238,6 @@ final class FrequencyTableTest extends TestCase
         $this->assertSame($expect['columns'], $ft->getColumns2Show());
     }
 
-    public static function provide_getData2Show_return_empty_array_with_unsettable_data(): array
-    {
-        return [
-            [ 'classRange' => null, 'data' => null, 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => null, 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => true, 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => false, 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => 0, 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => 1.2, 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => 'hoge', 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => [], 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => [null], 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => [true], 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => [false], 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => ['hoge'], 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => [[]], 'expect' => [], ],
-            [ 'classRange' => 10, 'data' => [[0]], 'expect' => [], ],
-        ];
-    }
-
-    /**
-     * @dataProvider provide_getData2Show_return_empty_array_with_unsettable_data
-     */
-    public function test_getData2Show_return_empty_array_with_unsettable_data(int|null $classRange, mixed $data, array $expect): void
-    {
-        $ft = new FrequencyTable();
-        $ft->setClassRange($classRange);
-        $ft->setData($data);
-        $this->assertSame($expect, $ft->getData2Show());
-    }
-
-    public function test_getData2Show_can_get_data_2_show(): void
-    {
-        $ft = new FrequencyTable();
-        $classRange = 10;
-        $ft->setClassRange($classRange);
-        $data = [0,5,10,15,20];
-        $ft->setData($data);
-        $data2Show = $ft->getData2Show();
-        $this->assertIsArray($data2Show);
-        $this->assertTrue(!empty($data2Show));
-        foreach ($ft->getColumns2Show() as $column) {
-            $this->assertTrue(in_array($column, $data2Show[0]));
-        }
-        $classes = $ft->getClasses();
-        $this->assertFalse(empty($classes));
-        foreach ($classes as $class) {
-            $s = number_format($class['bottom']) . $this->classSeparator . number_format($class['top']);
-            $this->assertTrue(in_array($s, array_column($data2Show, 'Class')));
-        }
-        $this->assertContains('Total', array_column($data2Show, 'Class'));
-    }
-
-    public function test_getData2Show_can_switch_visibility_of_mean(): void
-    {
-        $ft = new FrequencyTable();
-        $classRange = 10;
-        $ft->setClassRange($classRange);
-        $data = [ 0, 5, 10, 15, 20, ];
-        $ft->setData($data);
-        $ft->meanOn();
-        $data2Show = $ft->getData2Show();
-        $this->assertContains('Mean', array_column($data2Show, 'Class'));
-        $ft->meanOff();
-        $data2Show = $ft->getData2Show();
-        $this->assertFalse(in_array('Mean', array_column($data2Show, 'Class')));
-    }
-
     public static function provide_getDataOfEachClass_can_get_data_4_each_class_correctly(): array
     {
         return [
@@ -1298,10 +1249,10 @@ final class FrequencyTableTest extends TestCase
                         'Class' => '0 ~ 10',
                         'Frequency' => 1,
                         'CumulativeFrequency' => 1,
-                        'RelativeFrequency' => '1.00',
-                        'CumulativeRelativeFrequency' => '1.00',
-                        'ClassValue' => '5.0',
-                        'ClassValue * Frequency' => '5.0',
+                        'RelativeFrequency' => 1,
+                        'CumulativeRelativeFrequency' => 1,
+                        'ClassValue' => 5,
+                        'ClassValue * Frequency' => 5,
                     ],
                 ],
             ],
@@ -1310,28 +1261,28 @@ final class FrequencyTableTest extends TestCase
                         'Class' => '0 ~ 10',
                         'Frequency' => 2,
                         'CumulativeFrequency' => 2,
-                        'RelativeFrequency' => '0.40',
-                        'CumulativeRelativeFrequency' => '0.40',
-                        'ClassValue' => '5.0',
-                        'ClassValue * Frequency' => '10.0',
+                        'RelativeFrequency' => 0.4,
+                        'CumulativeRelativeFrequency' => 0.4,
+                        'ClassValue' => 5,
+                        'ClassValue * Frequency' => 10,
                     ],
                     [
                         'Class' => '10 ~ 20',
                         'Frequency' => 2,
                         'CumulativeFrequency' => 4,
-                        'RelativeFrequency' => '0.40',
-                        'CumulativeRelativeFrequency' => '0.80',
-                        'ClassValue' => '15.0',
-                        'ClassValue * Frequency' => '30.0',
+                        'RelativeFrequency' => 0.4,
+                        'CumulativeRelativeFrequency' => 0.8,
+                        'ClassValue' => 15,
+                        'ClassValue * Frequency' => 30,
                     ],
                     [
                         'Class' => '20 ~ 30',
                         'Frequency' => 1,
                         'CumulativeFrequency' => 5,
-                        'RelativeFrequency' => '0.20',
-                        'CumulativeRelativeFrequency' => '1.00',
-                        'ClassValue' => '25.0',
-                        'ClassValue * Frequency' => '25.0',
+                        'RelativeFrequency' => 0.2,
+                        'CumulativeRelativeFrequency' => 1.0,
+                        'ClassValue' => 25,
+                        'ClassValue * Frequency' => 25,
                     ],
                 ],
             ],
@@ -1373,7 +1324,7 @@ final class FrequencyTableTest extends TestCase
                 continue;
             }
             $ft->setColumns2Show($combination);
-            $filtered = $ft->filterData2Show($ft->getData2Show());
+            $filtered = $ft->filterData2Show($ft->getDataOfEachClass());
             foreach ($columns2Show as $key) {
                 if (in_array($key, $combination)) {
                     $this->assertTrue(array_key_exists($key, $filtered[0]));

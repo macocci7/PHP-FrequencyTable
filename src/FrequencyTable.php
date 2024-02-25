@@ -36,16 +36,14 @@ class FrequencyTable
      */
     private array $columns2Show = [];
     /**
-     * @var string[]    $defaultTableHead
-     */
-    private array $defaultTableHead;
-    /**
      * @var string[]    $defaultTableColumnAligns
      */
     private array $defaultTableColumnAligns;
     /**
      * @var string[]    $supportedFormats
      */
+    private string $lang;
+    private array $supportedLangs;
     private array $supportedFormats;
     private bool $showMean = false;
 
@@ -79,13 +77,39 @@ class FrequencyTable
         $props = [
             'validColumns2Show',
             'defaultColumns2Show',
-            'defaultTableHead',
             'defaultTableColumnAligns',
+            'lang',
+            'supportedLangs',
             'supportedFormats',
         ];
         foreach ($props as $prop) {
             $this->{$prop} = Config::get($prop); // @phpstan-ignore-line
         }
+    }
+
+    /**
+     * returns supported langs
+     * @return  string[]
+     */
+    public function langs()
+    {
+        return array_keys($this->supportedLangs);
+    }
+
+    /**
+     * sets lang or returns current lang
+     * @param   string  $lang = null
+     * @return  self|string
+     */
+    public function lang(string $lang = null)
+    {
+        if (is_null($lang)) {
+            return $this->lang;
+        }
+        if (isset($this->supportedLangs[$lang])) {
+            $this->lang = $lang;
+        }
+        return $this;
     }
 
     /**
@@ -574,6 +598,20 @@ class FrequencyTable
     }
 
     /**
+     * returns table head
+     * @return  string[]
+     */
+    public function getTableHead()
+    {
+        $conf = $this->supportedLangs[$this->lang()];
+        $heads = [];
+        foreach ($this->getColumns2Show() as $k => $c) {
+            $heads[] = $conf[$c] ?? $c;
+        }
+        return $heads;
+    }
+
+    /**
      * sets the table separator to show frequency table
      * @param   mixed   $separator
      * @return  self
@@ -678,77 +716,38 @@ class FrequencyTable
     public function getTableTotal2Show(mixed $data)
     {
         return [
-            'Class' => 'Total',
+            'Class' => $this->supportedLangs[$this->lang()]['Total'] ?? 'Total',
             'Frequency' => $this->getTotal(),
             'CumulativeFrequency' => $this->getTotal(),
-            'RelativeFrequency' => number_format(
-                array_sum(array_column($data, 'RelativeFrequency')), // @phpstan-ignore-line
-                2,
-                '.',
-                ','
-            ),
-            'CumulativeRelativeFrequency' => number_format(
-                array_sum(array_column($data, 'RelativeFrequency')), // @phpstan-ignore-line
-                2,
-                '.',
-                ','
-            ),
+            'RelativeFrequency' => array_sum(array_column($data, 'RelativeFrequency')), // @phpstan-ignore-line
+            // @phpstan-ignore-next-line
+            'CumulativeRelativeFrequency' => array_sum(array_column($data, 'RelativeFrequency')),
             'ClassValue' => '---',
-            'ClassValue * Frequency' => number_format(
-                array_sum(array_column($data, 'ClassValue * Frequency')), // @phpstan-ignore-line
-                1,
-                '.',
-                ','
-            ),
+            // @phpstan-ignore-next-line
+            'ClassValue * Frequency' => array_sum(array_column($data, 'ClassValue * Frequency')),
         ];
     }
 
     /**
      * returns mean row in the table to show
-     * @return  array<string, string|int|float>
+     * @return  array<string, string|int|float|null>
      */
     public function getMean2Show()
     {
         return [
-            'Class' => 'Mean',
+            'Class' => $this->supportedLangs[$this->lang()]['Mean'] ?? 'Mean',
             'Frequency' => '---',
             'CumulativeFrequency' => '---',
             'RelativeFrequency' => '---',
             'CumulativeRelativeFrequency' => '---',
             'ClassValue' => '---',
-            'ClassValue * Frequency' => number_format(
-                (float) $this->getMean(),
-                1,
-                '.',
-                ','
-            ),
+            'ClassValue * Frequency' => $this->getMean(),
         ];
     }
 
     /**
-     * returns table data to show
-     * @return  list<string|int|float>
-     */
-    public function getData2Show()
-    {
-        if (!$this->isSettableData($this->getData())) {
-            return [];
-        }
-        $data2Show = [];
-        $data2Show[] = $this->defaultTableHead;
-        $data2Show[] = $this->defaultTableColumnAligns;
-        $data = $this->getDataOfEachClass();
-        $data2Show = array_merge_recursive($data2Show, $data);
-        $data2Show[] = $this->getTableTotal2Show($data);
-        if ($this->showMean) {
-            $data2Show[] = $this->getMean2Show();
-        }
-        return $data2Show;
-    }
-
-    /**
      * returns the data of each class
-     * @return  list<array<string, int|string|null>>
+     * @return  list<array<string, int|float|string|null>>
      */
     public function getDataOfEachClass()
     {
@@ -772,25 +771,13 @@ class FrequencyTable
                     $frequencies,
                     $index
                 ),
-                'RelativeFrequency' => number_format((float) $rf[$index], 2, '.', ','),
-                'CumulativeRelativeFrequency' => number_format(
-                    (float) $this->getCumulativeRelativeFrequency($frequencies, $index),
-                    2,
-                    '.',
-                    ','
+                'RelativeFrequency' => $rf[$index],
+                'CumulativeRelativeFrequency' => $this->getCumulativeRelativeFrequency(
+                    $frequencies,
+                    $index
                 ),
-                'ClassValue' => number_format(
-                    (float) $this->getClassValue($classes[$index]),
-                    1,
-                    '.',
-                    ','
-                ),
-                'ClassValue * Frequency' => number_format(
-                    $fc[$index],
-                    1,
-                    '.',
-                    ','
-                ),
+                'ClassValue' => $this->getClassValue($classes[$index]),
+                'ClassValue * Frequency' => $fc[$index],
             ];
         }
         return $data;
@@ -818,13 +805,26 @@ class FrequencyTable
     }
 
     /**
-     * puts out the frequency table in markdown format to STDOUT
-     * @return  self
+     * formats data to show
+     * @param   list<array<string, int|float|string|null>>   $data
+     * @return  list<array<string, int|float|string|null>>
      */
-    public function show()
+    public function formatData2Show(array $data)
     {
-        echo $this->markdown();
-        return $this;
+        $f = Config::get('columnNumberFormat');
+        foreach ($data as $i => $d) {
+            foreach ($d as $k => $v) {
+                if (isset($f[$k]) && is_numeric($v)) { // @phpstan-ignore-line
+                    $data[$i][$k] = number_format(
+                        (float) $v,
+                        $f[$k]['decimals'] ?? 0, // @phpstan-ignore-line
+                        $f[$k]['decimal_separator'] ?? '', // @phpstan-ignore-line
+                        $f[$k]['thousands_separator'] ?? '' // @phpstan-ignore-line
+                    );
+                }
+            }
+        }
+        return $data;
     }
 
     /**
@@ -881,15 +881,21 @@ class FrequencyTable
         $qm = $quatation ? '"' : '';
         $splitter = $qm . $separator . $qm;
         $buffer = null;
-        $buffer .= $qm . implode($splitter, $this->getColumns2Show()) . $qm . $eol;
+        $buffer .= $qm . implode($splitter, $this->getTableHead()) . $qm . $eol;
         $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
-        foreach ($data4EachClass as $data) {
+        foreach ($this->formatData2Show($data4EachClass) as $data) { // @phpstan-ignore-line
             $buffer .= $qm . implode($splitter, $data) . $qm . $eol;
         }
-        $totals = $this->filterData2Show([$this->getTableTotal2Show($data4EachClass)]);
+        $totals = $this->formatData2Show(
+            $this->filterData2Show( // @phpstan-ignore-line
+                [$this->getTableTotal2Show($data4EachClass)]
+            )
+        );
         $buffer .= $qm . implode($splitter, $totals[0]) . $qm . $eol;
         if ($this->showMean) {
-            $means = $this->filterData2Show([$this->getMean2Show()]);
+            $means = $this->formatData2Show(
+                $this->filterData2Show([$this->getMean2Show()]) // @phpstan-ignore-line
+            );
             $buffer .= $qm . implode($splitter, $means[0]) . $qm . $eol;
         }
         return empty($path) ? $buffer : file_put_contents($path, $buffer);
@@ -943,14 +949,20 @@ class FrequencyTable
             return empty($path) ? 'no data' : file_put_contents($path, 'no data');
         }
         $buffer = "<table>" . $eol;
-        $buffer .= $pre . implode($splitter, $this->getColumns2Show()) . $pro . $eol;
-        foreach ($data4EachClass as $data) {
+        $buffer .= $pre . implode($splitter, $this->getTableHead()) . $pro . $eol;
+        foreach ($this->formatData2Show($data4EachClass) as $data) { // @phpstan-ignore-line
             $buffer .= $pre . implode($splitter, $data) . $pro . $eol;
         }
-        $totals = $this->filterData2Show([$this->getTableTotal2Show($data4EachClass)]);
+        $totals = $this->formatData2Show(
+            $this->filterData2Show( // @phpstan-ignore-line
+                [$this->getTableTotal2Show($data4EachClass)]
+            )
+        );
         $buffer .= $pre . implode($splitter, $totals[0]) . $pro . $eol;
         if ($this->showMean) {
-            $means = $this->filterData2Show([$this->getMean2Show()]);
+            $means = $this->formatData2Show(
+                $this->filterData2Show([$this->getMean2Show()]) // @phpstan-ignore-line
+            );
             $buffer .= $pre . implode($splitter, $means[0]) . $pro . $eol;
         }
         $buffer .= "</table>" . $eol;
@@ -968,22 +980,28 @@ class FrequencyTable
         $eol = "\n";
         $buffer = null;
         // @phpstan-ignore-next-line
-        $buffer .= $separator . implode($separator, $this->getColumns2Show()) . $separator . $eol;
+        $buffer .= $separator . implode($separator, $this->getTableHead()) . $separator . $eol;
         // @phpstan-ignore-next-line
         $buffer .= $separator . implode($separator, $this->getTableColumnAligns2Show()) . $separator . $eol;
         $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
         if (empty($data4EachClass)) {
             return empty($path) ? 'no data' : file_put_contents($path, 'no data');
         }
-        foreach ($data4EachClass as $data) {
+        foreach ($this->formatData2Show($data4EachClass) as $data) { // @phpstan-ignore-line
             // @phpstan-ignore-next-line
             $buffer .= $separator . implode($separator, $data) . $separator . $eol;
         }
-        $totals = $this->filterData2Show([$this->getTableTotal2Show($data4EachClass)]);
+        $totals = $this->formatData2Show(
+            $this->filterData2Show( // @phpstan-ignore-line
+                [$this->getTableTotal2Show($data4EachClass)]
+            )
+        );
         // @phpstan-ignore-next-line
         $buffer .= $separator . implode($separator, $totals[0]) . $separator . $eol;
         if ($this->showMean) {
-            $means = $this->filterData2Show([$this->getMean2Show()]);
+            $means = $this->formatData2Show(
+                $this->filterData2Show([$this->getMean2Show()]) // @phpstan-ignore-line
+            );
             // @phpstan-ignore-next-line
             $buffer .= $separator . implode($separator, $means[0]) . $separator . $eol;
         }

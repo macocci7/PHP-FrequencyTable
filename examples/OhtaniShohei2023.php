@@ -8,6 +8,7 @@ use Macocci7\CsvUtil;
 
 $ft = new FrequencyTable();
 $ft->setClassRange(5);
+$ft->lang('ja');
 
 $csvUtil = new CsvUtil();
 $dailyData = $csvUtil->getDailyData('csv/660271_data.csv');
@@ -40,6 +41,6 @@ foreach ($dailyData as $key => $data) {
     echo "|InterQuartileRange|" . $ft->getInterQuartileRange($data) . "|\n";
     echo "|QuartileDeviation|" . $ft->getQuartileDeviation($data) . "|\n";
     echo "</details>\n\n";
-    $ft->meanOn()->show();
+    echo $ft->meanOn()->markdown();
     echo "\n\n";
 }
