@@ -46,11 +46,21 @@ composer require macocci7/php-frequency-table
 
 ## 5. Usage
 
+    - [5.1. Basic Usage](#51-basic-usage)
+    - [5.2. Changing Data and Class Range](#52-changing-data-and-class-range)
+    - [5.3. Changing Columns for Output](#53-changing-columns-for-output)
+    - [5.4. Changing Language](#54-changing-language)
+    - [5.5. Saving data into CSV](#55-saving-data-into-csv)
+    - [5.6. Saving data into TSV](#56-saving-data-into-tsv)
+    - [5.7. Saving data into HTML](#57-saving-data-into-html)
+    - [5.8. Saving data into Markdown](#58-saving-data-into-markdown)
+    - [5.9. Retrieving Parsed Data](#59-retrieving-parsed-data)
+
 ### 5.1. Basic Usage
 
 You can use FrequencyTable class as follows.
 
-- PHP: [examples/Example.php](examples/Example.php)
+- PHP: [examples/BasicUsage.php](examples/BasicUsage.php)
 
     ```php
     <?php
@@ -66,7 +76,7 @@ You can use FrequencyTable class as follows.
     echo $ft->meanOn()->markdown();
    ```
 
-- Output:
+- Output: [examples/BasicUsage.md](examples/BasicUsage.md)
 
     ```bash
     |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
@@ -78,7 +88,7 @@ You can use FrequencyTable class as follows.
     |Mean|---|---|---|13.0|
     ```
 
-- View:
+- View: [examples/BasicUsage.md](examples/BasicUsage.md)
 
     |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
     |:---:|:---:|:---:|:---:|---:|
@@ -111,7 +121,7 @@ You can use FrequencyTable class as follows.
 
 You can change data and class range after instantiation.
 
-- PHP:
+- PHP: [examples/ChangeDataClassRange.php](examples/ChangeDataClassRange.php)
 
     ```php
     <?php
@@ -142,7 +152,7 @@ You can change data and class range after instantiation.
     }
     ```
 
-- Output:
+- Output: [examples/ChangeDataClassRange.md](examples/ChangeDataClassRange.md)
 
     ```bash
     # Frequency Tables
@@ -172,7 +182,7 @@ You can change data and class range after instantiation.
     |Mean|---|---|---|65.6|
     ```
 
-- View:
+- View: [examples/ChangeDataClassRange.md](examples/ChangeDataClassRange.md)
 
     # Frequency Tables
 
@@ -201,10 +211,12 @@ You can change data and class range after instantiation.
     |Mean|---|---|---|65.6|
 
 - Details:
+    - Set Class Range: `setClassRange()`
+    - Set Data: `setData()`
 
 ### 5.3. Changing Columns for Output
 
-- PHP:
+- PHP: [examples/ChangeColumns.php](examples/ChangeColumns.php)
 
     ```php
     <?php
@@ -234,7 +246,7 @@ You can change data and class range after instantiation.
     echo $ft->setColumns2Show($columns)->meanOn()->markdown() . "\n\n";
     ```
 
-- Output:
+- Output: [examples/ChangeColumns.md](examples/ChangeColumns.md)
 
     ```bash
     # Changing Columns
@@ -276,7 +288,7 @@ You can change data and class range after instantiation.
     |Mean|---|---|---|---|---|25.0|
     ```
 
-- View:
+- View: [examples/ChangeColumns.md](examples/ChangeColumns.md)
 
     # Changing Columns
 
@@ -317,12 +329,15 @@ You can change data and class range after instantiation.
     |Mean|---|---|---|---|---|25.0|
 
 - Details:
+    - Get Acceptable Columns: `getValidColumns2Show()`
+    - Get Current Columns: `getColumns2Show()`
+    - Set Columns: `setColumns2Show()`
 
 ### 5.4. Changing Language
 
 English and Japanese are supported. (English as default)
 
-- PHP:
+- PHP: [examples/ChangeLang.php](examples/ChangeLang.php)
 
     ```php
     <?php
@@ -344,7 +359,7 @@ English and Japanese are supported. (English as default)
     }
     ```
 
-- Output:
+- Output: [examples/ChangeLang.md](examples/ChangeLang.md)
 
     ```bash
     # Supported Languages
@@ -373,7 +388,7 @@ English and Japanese are supported. (English as default)
     |平均|---|---|---|---|---|19.3|
     ```
 
-- View:
+- View: [examples/ChangeLang.md](examples/ChangeLang.md)
 
     # Supported Languages
 
@@ -401,6 +416,11 @@ English and Japanese are supported. (English as default)
     |平均|---|---|---|---|---|19.3|
 
 - Details:
+    - Get Supported Langs: `langs()`
+    - Get Current Lang: `lang()`
+    - Set Lang:
+        - English(default): `lang('eng')`
+        - Japanese: `lang('ja')`
 
 ### 5.5. Saving data into CSV
 
@@ -412,8 +432,10 @@ English and Japanese are supported. (English as default)
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
-    $data = [0,5,10,15,20];
-    $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
+    $ft = new FrequencyTable([
+        'data' => [ 0, 5, 10, 15, 20, ],
+        'classRange' => 10,
+    ]);
 
     $ft->meanOn()->save('test.csv');
     ```
@@ -429,6 +451,42 @@ English and Japanese are supported. (English as default)
     "Mean","---","---","---","13.0"
     ```
 
+- Details:
+    - Save into CSV: There're 2 options.
+        1. `save(PATH)`: `PATH` must have `.csv` extension.
+        2. `csv()`:  params as follows
+            ```php
+            csv(
+                string|null $path = null,
+                bool $quatation = true,
+                string $eol = "\n"
+            )
+            ```
+            - `$path`: File Path.
+                - Bytes of csv file will be returned as type of int.
+                - `false` will be returned when saving fails.
+                - When `null` is given, csv will be returned as type of string.
+            - `$quatation`: When `true` is given, each values will be quated with  `"`.
+            - `$eol`: The end of each line will end with `$eol`.
+                - `"\n"`: `LF` (Line Feed)
+                - `"\r"`: `CR` (Carrige Return)
+                - `"\r\n"`: `CRLF`(Carrige Return + Line Feed)
+
+            For example:
+            ```php
+            echo $ft->csv(
+                quatation: true,
+                eol: "\r\n",
+            );
+            ```
+            results in
+            ```bash
+            "Class","Frequency","RelativeFrequency","ClassValue","ClassValue * Frequency"
+            "0 ~ 10","2","0.40","5.0","10.0"
+            "10 ~ 20","2","0.40","15.0","30.0"
+            "20 ~ 30","1","0.20","25.0","25.0"
+            "Total","5","1.00","---","65.0"
+            ```
 ### 5.6. Saving data into TSV
 
 - PHP
@@ -677,6 +735,6 @@ Learn more: [Methods](Methods.md)
 
 *Document written: 2023/05/18*
 
-*Last updated: 2024/02/25*
+*Last updated: 2024/02/26*
 
 Copyright (c) 2023-2024 macocci7
