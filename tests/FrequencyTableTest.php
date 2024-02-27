@@ -1409,17 +1409,17 @@ final class FrequencyTableTest extends TestCase
     public static function provide_xsv_can_return_null_with_invalid_parameters(): array
     {
         return [
-            [ 'path' => '', 'separator' => '', 'quatation' => true, ],
-            [ 'path' => '', 'separator' => '', 'quatation' => false, ],
-            [ 'path' => 'path', 'separator' => '', 'quatation' => true, ],
-            [ 'path' => 'path', 'separator' => '', 'quatation' => false, ],
+            [ 'path' => '', 'separator' => '', 'quatation' => '"', ],
+            [ 'path' => '', 'separator' => '', 'quatation' => "'", ],
+            [ 'path' => 'path', 'separator' => '', 'quatation' => '"', ],
+            [ 'path' => 'path', 'separator' => '', 'quatation' => "'", ],
         ];
     }
 
     /**
      * @dataProvider provide_xsv_can_return_null_with_invalid_parameters
      */
-    public function test_xsv_can_return_null_with_invalid_parameters(mixed $path, string|null $separator, mixed $quatation): void
+    public function test_xsv_can_return_null_with_invalid_parameters(mixed $path, string|null $separator, string $quatation): void
     {
         $ft = new FrequencyTable();
         $this->assertNull($ft->xsv($path, $separator, $quatation));

@@ -8,6 +8,8 @@ You can create Frequency Tables easily just by setting data in array and Class R
 
 You can get or save them in some formats, Markdown Table, CSV, TSV and HTML.
 
+English(default) and Japanese are supported.
+
 You can also get parsed data as hash array of PHP.
 
 Let's create an instance of FrequencyTable and operate it!
@@ -46,15 +48,15 @@ composer require macocci7/php-frequency-table
 
 ## 5. Usage
 
-    - [5.1. Basic Usage](#51-basic-usage)
-    - [5.2. Changing Data and Class Range](#52-changing-data-and-class-range)
-    - [5.3. Changing Columns for Output](#53-changing-columns-for-output)
-    - [5.4. Changing Language](#54-changing-language)
-    - [5.5. Saving data into CSV](#55-saving-data-into-csv)
-    - [5.6. Saving data into TSV](#56-saving-data-into-tsv)
-    - [5.7. Saving data into HTML](#57-saving-data-into-html)
-    - [5.8. Saving data into Markdown](#58-saving-data-into-markdown)
-    - [5.9. Retrieving Parsed Data](#59-retrieving-parsed-data)
+- [5.1. Basic Usage](#51-basic-usage)
+- [5.2. Changing Data and Class Range](#52-changing-data-and-class-range)
+- [5.3. Changing Columns for Output](#53-changing-columns-for-output)
+- [5.4. Changing Language](#54-changing-language)
+- [5.5. Saving data into CSV](#55-saving-data-into-csv)
+- [5.6. Saving data into TSV](#56-saving-data-into-tsv)
+- [5.7. Saving data into HTML](#57-saving-data-into-html)
+- [5.8. Saving data into Markdown](#58-saving-data-into-markdown)
+- [5.9. Retrieving Parsed Data](#59-retrieving-parsed-data)
 
 ### 5.1. Basic Usage
 
@@ -428,6 +430,7 @@ English and Japanese are supported. (English as default)
 
     ```php
     <?php
+
     require('../vendor/autoload.php');
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
@@ -452,13 +455,13 @@ English and Japanese are supported. (English as default)
     ```
 
 - Details:
-    - Save into CSV: There're 2 options.
+    - There're 2 options for saving CSV.
         1. `save(PATH)`: `PATH` must have `.csv` extension.
         2. `csv()`:  params as follows
             ```php
             csv(
                 string|null $path = null,
-                bool $quatation = true,
+                string $quotation = '"',
                 string $eol = "\n"
             )
             ```
@@ -466,7 +469,9 @@ English and Japanese are supported. (English as default)
                 - Bytes of csv file will be returned as type of int.
                 - `false` will be returned when saving fails.
                 - When `null` is given, csv will be returned as type of string.
-            - `$quatation`: When `true` is given, each values will be quated with  `"`.
+            - `$quotation`: each values will be quoted with `$quotation`. 
+                - double quot(default): specify `'"'`
+                - single quot: specify `"'"`
             - `$eol`: The end of each line will end with `$eol`.
                 - `"\n"`: `LF` (Line Feed)
                 - `"\r"`: `CR` (Carrige Return)
@@ -475,29 +480,33 @@ English and Japanese are supported. (English as default)
             For example:
             ```php
             echo $ft->csv(
-                quatation: true,
+                quotation: "'",
                 eol: "\r\n",
             );
             ```
             results in
             ```bash
-            "Class","Frequency","RelativeFrequency","ClassValue","ClassValue * Frequency"
-            "0 ~ 10","2","0.40","5.0","10.0"
-            "10 ~ 20","2","0.40","15.0","30.0"
-            "20 ~ 30","1","0.20","25.0","25.0"
-            "Total","5","1.00","---","65.0"
+            'Class','Frequency','RelativeFrequency','ClassValue','ClassValue * Frequency'
+            '0 ~ 10','2','0.40','5.0','10.0'
+            '10 ~ 20','2','0.40','15.0','30.0'
+            '20 ~ 30','1','0.20','25.0','25.0'
+            'Total','5','1.00','---','65.0'
             ```
+
 ### 5.6. Saving data into TSV
 
 - PHP
     ```php
     <?php
+
     require('../vendor/autoload.php');
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
-    $data = [0,5,10,15,20];
-    $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
+    $ft = new FrequencyTable([
+        'data' => [ 0, 5, 10, 15, 20, ],
+        'classRange' => 10,
+    ]);
 
     $ft->meanOn()->save('test.tsv');
     ```
@@ -512,18 +521,60 @@ English and Japanese are supported. (English as default)
     "Mean"	"---"	"---"	"---"	"13.0"
     ```
 
+- Details:
+    - There're 2 options for saving TSV
+        1. `save(PATH)`: `PATH` must have `.tsv` extension.
+        2. `tsv()`: params as follows
+            ```php
+            tsv(
+                string|null $path = null,
+                string $quotation = '"',
+                string $eol = "\n"
+            )
+            ```
+            - `$path`: File Path.
+                - Bytes of tsv file will be returned as type of int.
+                - `false` will be returned when saving fails.
+                - When `null` is given, tsv will be returned as type of string.
+            - `$quotation`: each values will be quoted with `$quotation`. 
+                - double quot(default): specify `'"'`
+                - single quot: specify `"'"`
+            - `$eol`: The end of each line will end with `$eol`.
+                - `"\n"`: `LF` (Line Feed)
+                - `"\r"`: `CR` (Carrige Return)
+                - `"\r\n"`: `CRLF`(Carrige Return + Line Feed)
+
+            For example:
+            ```php
+            echo $ft->tsv(
+                quotation: "'",
+                eol: "\r\n",
+            );
+            ```
+            results in
+            ```bash
+            'Class' 'Frequency'     'RelativeFrequency'     'ClassValue'    'ClassValue * Frequency'
+            '0 ~ 10'        '2'     '0.40'  '5.0'   '10.0'
+            '10 ~ 20'       '2'     '0.40'  '15.0'  '30.0'
+            '20 ~ 30'       '1'     '0.20'  '25.0'  '25.0'
+            'Total' '5'     '1.00'  '---'   '65.0'
+            ```
+
 ### 5.7. Saving data into HTML
 
 - PHP
 
     ```php
     <?php
+
     require('../vendor/autoload.php');
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
-    $data = [0,5,10,15,20];
-    $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
+    $ft = new FrequencyTable([
+        'data' => [ 0, 5, 10, 15, 20, ],
+        'classRange' => 10,
+    ]);
 
     $ft->meanOn()->save('test.html');
     ```
@@ -540,6 +591,17 @@ English and Japanese are supported. (English as default)
     <tr><td>Mean</td><td>---</td><td>---</td><td>---</td><td>13.0</td></tr>
     </table>
     ```
+- Details:
+    - There're 2 options for saving html:
+        1. `save(PATH)`: `PATH` must have `.html` extension.
+        2. `html(PATH)`: param as follows
+            ```php
+            html(string|null $path = null)
+            ```
+            - `$path`: File Path.
+                - Bytes of html file will be returned as type of int.
+                - `false` will be returned when saving fails.
+                - When `null` is given, html will be returned as type of string.
 
 ### 5.8. Saving data into Markdown
 
@@ -547,13 +609,15 @@ English and Japanese are supported. (English as default)
 
     ```php
     <?php
-    <?php
+
     require('../vendor/autoload.php');
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
-    $data = [0,5,10,15,20];
-    $ft = new FrequencyTable(['data' => $data, 'classRange' => 10]);
+    $ft = new FrequencyTable([
+        'data' => [ 0, 5, 10, 15, 20, ],
+        'classRange' => 10,
+    ]);
 
     $ft->meanOn()->save('test.md');
     ```
@@ -570,6 +634,18 @@ English and Japanese are supported. (English as default)
     |Mean|---|---|---|13.0|
     ```
 
+- Details:
+    - There're 2 options for saving markdown
+        1. `save(PATH)`: `PATH` must have `.md` extension.
+        2. `markdown()`: param as follows.\
+            ```php
+            markdown(string|null $path = null)
+            ```
+            - `$path`: File Path.
+                - Bytes of markdown file will be returned as type of int.
+                - `false` will be returned when saving fails.
+                - When `null` is given, markdown will be returned as type of string.
+
 ### 5.9. Retrieving Parsed Data
 
 You can also retrieve parsed data without showing Frequency Table.
@@ -580,13 +656,15 @@ Use `parse()` method. `parse()` method returns Hash Array as follows.
 
     ```php
     <?php
+
     require('../vendor/autoload.php');
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
-    $ft = new FrequencyTable();
-    $ft->setClassRange(10);
-    $ft->setData([0,5,10,15,20]);
+    $ft = new FrequencyTable([
+        'data' => [ 0, 5, 10, 15, 20, ],
+        'classRange' => 10,
+    ]);
 
     print_r($ft->parse());
     ```

@@ -864,7 +864,7 @@ class FrequencyTable
      * saves or returns the frequency table in xsv format
      * @param   string|null $path
      * @param   string      $separator
-     * @param   bool        $quatation = true
+     * @param   string      $quotation = '"'
      * @param   string      $eol = "\n"
      * @return  null|string|int|bool
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
@@ -872,13 +872,13 @@ class FrequencyTable
     public function xsv(
         string|null $path,
         string $separator,
-        bool $quatation = true,
+        string $quotation = '"',
         string $eol = "\n"
     ) {
         if (empty($separator)) {
             return null;
         }
-        $qm = $quatation ? '"' : '';
+        $qm = $quotation;
         $splitter = $qm . $separator . $qm;
         $buffer = null;
         $buffer .= $qm . implode($splitter, $this->getTableHead()) . $qm . $eol;
@@ -903,34 +903,34 @@ class FrequencyTable
 
     /**
      * saves or returns the frequency table in csv format
-     * @param   string|null   $path = null
-     * @param   bool   $quatation = true
-     * @param   string  $eol = "\n"
+     * @param   string|null     $path = null
+     * @param   string          $quotation = '"'
+     * @param   string          $eol = "\n"
      * @return  null|string|int|bool
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function csv(
         string|null $path = null,
-        bool $quatation = true,
+        string $quotation = '"',
         string $eol = "\n"
     ) {
-        return $this->xsv($path, ',', $quatation, $eol);
+        return $this->xsv($path, ',', $quotation, $eol);
     }
 
     /**
      * saves or returns the frequency table in tsv format
-     * @param   string|null   $path = null
-     * @param   bool   $quatation = true
-     * @param   string  $eol = "\n"
+     * @param   string|null     $path = null
+     * @param   string          $quotation = '"'
+     * @param   string          $eol = "\n"
      * @return  null|string|int|bool
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function tsv(
         string|null $path = null,
-        bool $quatation = true,
+        string $quotation = '"',
         string $eol = "\n"
     ) {
-        return $this->xsv($path, "\t", $quatation, $eol);
+        return $this->xsv($path, "\t", $quotation, $eol);
     }
 
     /**
