@@ -591,6 +591,78 @@ English and Japanese are supported. (English as default)
     <tr><td>Mean</td><td>---</td><td>---</td><td>---</td><td>13.0</td></tr>
     </table>
     ```
+
+- View:
+    - with css like this:
+        ```css
+        <style>
+            table {
+                border-collapse: separate;
+                border-spacing: 0;
+                border: 2px #666666 solid;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+            table tr:nth-child(odd) td {
+                background-color: #eeeeee;
+            }
+            table th {
+                border-right: 1px #666666 solid;
+                background-color: #0099dd;
+                padding: 6px;
+                white-space: nowrap;
+                font-weight: bold;
+                color: #ffffff;
+            }
+            table td {
+                border-right: 1px #666666 solid;
+                background-color: #ffffff;
+                padding: 6px;
+                white-space: nowrap;
+                color: #333333;
+                text-align: center;
+            }
+        </style>
+        ```
+    - html view:
+        <table class="frequency-table">
+        <tr><th>Class</th><th>Frequency</th><th>RelativeFrequency</th><th>ClassValue</th><th>ClassValue * Frequency</th></tr>
+        <tr><td>0 ~ 10</td><td>2</td><td>0.40</td><td>5.0</td><td>10.0</td></tr>
+        <tr><td>10 ~ 20</td><td>2</td><td>0.40</td><td>15.0</td><td>30.0</td></tr>
+        <tr><td>20 ~ 30</td><td>1</td><td>0.20</td><td>25.0</td><td>25.0</td></tr>
+        <tr><td>Total</td><td>5</td><td>1.00</td><td>---</td><td>65.0</td></tr>
+        <tr><td>Mean</td><td>---</td><td>---</td><td>---</td><td>13.0</td></tr>
+        </table>
+
+        <style>
+            .frequency-table {
+                border-collapse: separate;
+                border-spacing: 0;
+                border: 2px #666666 solid;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+            .frequency-table tr:nth-child(odd) td {
+                background-color: #eeeeee;
+            }
+            .frequency-table th {
+                border-right: 1px #666666 solid;
+                background-color: #0099dd;
+                padding: 6px;
+                white-space: nowrap;
+                font-weight: bold;
+                color: #ffffff;
+            }
+            .frequency-table td {
+                border-right: 1px #666666 solid;
+                background-color: #ffffff;
+                padding: 6px;
+                white-space: nowrap;
+                color: #333333;
+                text-align: center;
+            }
+        </style>
+
 - Details:
     - There're 2 options for saving html:
         1. `save(PATH)`: `PATH` must have `.html` extension.
@@ -633,6 +705,16 @@ English and Japanese are supported. (English as default)
     |Total|5|1.00|---|65.0|
     |Mean|---|---|---|13.0|
     ```
+
+- View: `test.md`
+
+    |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|---:|
+    |0 ~ 10|2|0.40|5.0|10.0|
+    |10 ~ 20|2|0.40|15.0|30.0|
+    |20 ~ 30|1|0.20|25.0|25.0|
+    |Total|5|1.00|---|65.0|
+    |Mean|---|---|---|13.0|
 
 - Details:
     - There're 2 options for saving markdown

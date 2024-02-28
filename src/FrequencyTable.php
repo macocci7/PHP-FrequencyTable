@@ -940,16 +940,19 @@ class FrequencyTable
      */
     public function html(string|null $path = null)
     {
-        $pre = '<tr><td>';
-        $pro = '</td></tr>';
         $eol = "\n";
-        $splitter = '</td><td>';
         $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
         if (empty($data4EachClass)) {
             return empty($path) ? 'no data' : file_put_contents($path, 'no data');
         }
         $buffer = "<table>" . $eol;
+        $pre = '<tr><th>';
+        $pro = '</th></tr>';
+        $splitter = '</th><th>';
         $buffer .= $pre . implode($splitter, $this->getTableHead()) . $pro . $eol;
+        $pre = '<tr><td>';
+        $pro = '</td></tr>';
+        $splitter = '</td><td>';
         foreach ($this->formatData2Show($data4EachClass) as $data) { // @phpstan-ignore-line
             $buffer .= $pre . implode($splitter, $data) . $pro . $eol;
         }
