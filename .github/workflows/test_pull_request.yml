@@ -83,7 +83,7 @@ jobs:
         run: composer install --no-interaction
 
       - name: PHP Lint
-        run: ./vendor/bin/parallel-lint src tests example
+        run: ./vendor/bin/parallel-lint src tests examples
 
       - name: Neon Lint
         run: ./vendor/nette/neon/bin/neon-lint conf
@@ -91,7 +91,7 @@ jobs:
       - name: PHP MD
         run: |
           ./vendor/bin/phpmd --version
-          ./vendor/bin/phpmd ./src/ ./example/ ./tests/ text phpmd.xml
+          ./vendor/bin/phpmd ./src/ ./examples/ ./tests/ text phpmd.xml
 
       - name: PHP Code Sniffer
         run: |
@@ -142,7 +142,7 @@ jobs:
         run: composer require phpunit/phpunit:^9.6 phploc/phploc:* sebastian/version:* --with-all-dependencies
 
       - name: PHP Lint
-        run: ./vendor/bin/parallel-lint src tests example
+        run: ./vendor/bin/parallel-lint src tests examples
 
       - name: Unit tests
         run: |
