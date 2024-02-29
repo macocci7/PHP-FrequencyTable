@@ -8,8 +8,8 @@ $data = [
     //null, // This results in Exception
     [], // empty
     [50],   // 1 element
-    [90, 20, 80, 30, 70, 40, 60],    // 7 elements
-    [100, 10, 65, 40, 55, 90, 72, 84],   // 8 elements
+    [ 90, 20, 80, 30, 70, 40, 60, ],    // 7 elements
+    [ 100, 10, 65, 40, 55, 90, 72, 84, ],   // 8 elements
     // HASH ARRAY
     [
         'Maria' => 168.2,
@@ -35,11 +35,11 @@ $ft = new FrequencyTable([
     'classRange' => $classRange,
 ]);
 echo "# Results: Using FrequencyTable\n\n";
-foreach($data as $index => $d) {
+foreach ($data as $index => $d) {
     $ft->setData($d);
     asort($d);
     echo "## CASE:" . $index . ":\n";
-    echo "- Data: [" . implode(',',$d) . "]\n";
+    echo "- Data: [" . implode(',', $d) . "]\n";
     echo "- ClassRange: " . $ft->getClassRange() . "\n";
     echo "- Max: " . $ft->getMax($d) . "\n";
     echo "- Min: " . $ft->getMin($d) . "\n";
@@ -51,7 +51,7 @@ foreach($data as $index => $d) {
     $classText = "";
     if ($class) {
         $n = $class['index'] + 1;
-        $classText = $n . (1===$n?'st':(2===$n?'nd':(3===$n?'rd':'th'))) . " class ["
+        $classText = $n . ( 1 === $n ? 'st' : ( 2 === $n ? 'nd' : ( 3 === $n ? 'rd' : 'th' ) ) ) . " class ["
                    . $class['bottom'] . " ~ " . $class['top'] . "]";
     }
     echo "- The Class Median Belogns is " . $classText . "\n";
@@ -60,6 +60,6 @@ foreach($data as $index => $d) {
     echo "- InterQuartileRange: " . $ft->getInterQuartileRange($d) . "\n";
     echo "- QuartileDeviation: " . $ft->getQuartileDeviation($d) . "\n";
     echo "\n";
-    $ft->meanOn()->show();
+    echo $ft->meanOn()->markdown();
     echo "\n";
 }

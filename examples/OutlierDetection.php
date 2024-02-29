@@ -1,4 +1,5 @@
 <?php
+
 require('../vendor/autoload.php');
 require('./class/CsvUtil.php');
 require('./class/Outlier.php');
@@ -42,7 +43,7 @@ if (!$dailyData) {
 
 echo "## Dates\n\n";
 
-foreach(array_keys($dailyData) as $key) {
+foreach (array_keys($dailyData) as $key) {
     echo "- [" . $key . "](#" . $key . ")\n";
 }
 foreach ($dailyData as $date => $data) {
@@ -52,26 +53,26 @@ foreach ($dailyData as $date => $data) {
     echo "<details><summary>Data</summary>\n\n";
     echo "|#|release_speed|\n";
     echo "|---|---|\n";
-    foreach($parsed['data'] as $index => $value) {
-        echo "|".($index+1)."|".$value."|\n";
+    foreach ($parsed['data'] as $index => $value) {
+        echo "|" . ($index + 1) . "|" . $value . "|\n";
     }
     echo "</details>\n\n";
     echo "<details><summary>Properties</summary>\n\n";
     echo "|Property|Value|\n";
     echo "|---|---|\n";
-    foreach($propertyKeys as $key) {
+    foreach ($propertyKeys as $key) {
         echo "|" . $key . "|" . $parsed[$key] . "|\n";
     }
-    echo "|UCL|". $ol->getUcl($parsed) ."|\n";
-    echo "|LCL|". $ol->getLcl($parsed) ."|\n";
+    echo "|UCL|" . $ol->getUcl($parsed) . "|\n";
+    echo "|LCL|" . $ol->getLcl($parsed) . "|\n";
     echo "</details>\n\n";
     $outliers = $ol->getOutliers($data);
     if ($outliers) {
         echo "<details><summary>Outliers</summary>\n\n";
         echo "|#|Value|\n";
         echo "|---|---|\n";
-        foreach($outliers as $index => $value) {
-            echo "|".($index+1)."|".$value."|\n";
+        foreach ($outliers as $index => $value) {
+            echo "|" . ($index + 1) . "|" . $value . "|\n";
         }
         echo "</details>\n\n";
     } else {
