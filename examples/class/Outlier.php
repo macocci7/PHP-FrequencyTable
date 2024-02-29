@@ -2,7 +2,7 @@
 
 namespace Macocci7;
 
-use Macocci7\PHPFrequencyTable\FrequencyTable;
+use Macocci7\PhpFrequencyTable\FrequencyTable;
 
 /**
  * class for treating outliers

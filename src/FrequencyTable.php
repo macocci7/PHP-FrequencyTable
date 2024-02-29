@@ -39,11 +39,14 @@ class FrequencyTable
      * @var string[]    $defaultTableColumnAligns
      */
     private array $defaultTableColumnAligns;
+    private string $lang;
+    /**
+     * @var array<string, array<string, string>>
+     */
+    private array $supportedLangs;
     /**
      * @var string[]    $supportedFormats
      */
-    private string $lang;
-    private array $supportedLangs;
     private array $supportedFormats;
     private bool $showMean = false;
 
@@ -603,9 +606,9 @@ class FrequencyTable
      */
     public function getTableHead()
     {
-        $conf = $this->supportedLangs[$this->lang()];
+        $conf = $this->supportedLangs[$this->lang()]; // @phpstan-ignore-line
         $heads = [];
-        foreach ($this->getColumns2Show() as $k => $c) {
+        foreach ($this->getColumns2Show() as $c) {
             $heads[] = $conf[$c] ?? $c;
         }
         return $heads;
@@ -716,7 +719,7 @@ class FrequencyTable
     public function getTableTotal2Show(mixed $data)
     {
         return [
-            'Class' => $this->supportedLangs[$this->lang()]['Total'] ?? 'Total',
+            'Class' => $this->supportedLangs[$this->lang()]['Total'] ?? 'Total', // @phpstan-ignore-line
             'Frequency' => $this->getTotal(),
             'CumulativeFrequency' => $this->getTotal(),
             'RelativeFrequency' => array_sum(array_column($data, 'RelativeFrequency')), // @phpstan-ignore-line
@@ -735,6 +738,7 @@ class FrequencyTable
     public function getMean2Show()
     {
         return [
+            // @phpstan-ignore-next-line
             'Class' => $this->supportedLangs[$this->lang()]['Mean'] ?? 'Mean',
             'Frequency' => '---',
             'CumulativeFrequency' => '---',
@@ -809,7 +813,7 @@ class FrequencyTable
      * @param   list<array<string, int|float|string|null>>   $data
      * @return  list<array<string, int|float|string|null>>
      */
-    public function formatData2Show(array $data)
+    private function formatData2Show(array $data)
     {
         $f = Config::get('columnNumberFormat');
         foreach ($data as $i => $d) {
@@ -825,6 +829,31 @@ class FrequencyTable
             }
         }
         return $data;
+    }
+
+    /**
+     * returns table data
+     * @return mixed
+     */
+    public function getTableData()
+    {
+        return [
+            'tableHead' => $this->getTableHead(),
+            'classData' => $this->formatData2Show(
+                // @phpstan-ignore-next-line
+                $this->filterData2Show($this->getDataOfEachClass())
+            ),
+            'total' => $this->formatData2Show(
+                // @phpstan-ignore-next-line
+                $this->filterData2Show(
+                    [$this->getTableTotal2Show($this->getDataOfEachClass())]
+                )
+            )[0],
+            'mean' => $this->formatData2Show(
+                // @phpstan-ignore-next-line
+                $this->filterData2Show([$this->getMean2Show()])
+            )[0],
+        ];
     }
 
     /**
@@ -856,7 +885,7 @@ class FrequencyTable
             'QuartileDeviation' => $this->getQuartileDeviation($this->getData()),
             'Classes' => $this->getClasses(),
             'Frequencies' => $this->getFrequencies(),
-            'FrequencyTable' => $this->meanOn()->markdown(),
+            'FrequencyTable' => $this->getTableData(),
         ];
     }
 

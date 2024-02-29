@@ -17,6 +17,7 @@ use Nette\Neon\Neon;
  * @SuppressWarnings(PHPMD.ExcessivePublicCount)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessiveClassLength)
+ * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
  * @SuppressWarnings(PHPMD.ElseExpression)
  */
 final class FrequencyTableTest extends TestCase
@@ -1335,6 +1336,145 @@ final class FrequencyTableTest extends TestCase
         }
     }
 
+    public static function provide_getTableData_can_return_table_data_correctly(): array
+    {
+        return [
+            "case1" => [
+                'classRange' => 10,
+                'data' => [ 5, 10, 15, 20, 24, 28, 30,],
+                'expect' => [
+                    'tableHead' => [
+                        'Class',
+                        'Frequency',
+                        'RelativeFrequency',
+                        'ClassValue',
+                        'ClassValue * Frequency',
+                    ],
+                    'classData' => [
+                        [
+                            'Class' => '0 ~ 10',
+                            'Frequency' => '1',
+                            'RelativeFrequency' => '0.14',
+                            'ClassValue' => '5.0',
+                            'ClassValue * Frequency' => '5.0',
+                        ],
+                        [
+                            'Class' => '10 ~ 20',
+                            'Frequency' => '2',
+                            'RelativeFrequency' => '0.29',
+                            'ClassValue' => '15.0',
+                            'ClassValue * Frequency' => '30.0',
+                        ],
+                        [
+                            'Class' => '20 ~ 30',
+                            'Frequency' => '3',
+                            'RelativeFrequency' => '0.43',
+                            'ClassValue' => '25.0',
+                            'ClassValue * Frequency' => '75.0',
+                        ],
+                        [
+                            'Class' => '30 ~ 40',
+                            'Frequency' => '1',
+                            'RelativeFrequency' => '0.14',
+                            'ClassValue' => '35.0',
+                            'ClassValue * Frequency' => '35.0',
+                        ],
+                    ],
+                    'total' => [
+                        'Class' => 'Total',
+                        'Frequency' => '7',
+                        'RelativeFrequency' => '1.00',
+                        'ClassValue' => '---',
+                        'ClassValue * Frequency' => '145.0',
+                    ],
+                    'mean' => [
+                        'Class' => 'Mean',
+                        'Frequency' => '---',
+                        'RelativeFrequency' => '---',
+                        'ClassValue' => '---',
+                        'ClassValue * Frequency' => '20.7',
+                    ],
+                ],
+            ],
+            "case2" => [
+                'classRange' => 10,
+                'data' => [ 5, 15, 20, 24, 28, 30, 35, 40, ],
+                'expect' => [
+                    'tableHead' => [
+                        'Class',
+                        'Frequency',
+                        'RelativeFrequency',
+                        'ClassValue',
+                        'ClassValue * Frequency',
+                    ],
+                    'classData' => [
+                        [
+                            'Class' => '0 ~ 10',
+                            'Frequency' => '1',
+                            'RelativeFrequency' => '0.13',
+                            'ClassValue' => '5.0',
+                            'ClassValue * Frequency' => '5.0',
+                        ],
+                        [
+                            'Class' => '10 ~ 20',
+                            'Frequency' => '1',
+                            'RelativeFrequency' => '0.13',
+                            'ClassValue' => '15.0',
+                            'ClassValue * Frequency' => '15.0',
+                        ],
+                        [
+                            'Class' => '20 ~ 30',
+                            'Frequency' => '3',
+                            'RelativeFrequency' => '0.38',
+                            'ClassValue' => '25.0',
+                            'ClassValue * Frequency' => '75.0',
+                        ],
+                        [
+                            'Class' => '30 ~ 40',
+                            'Frequency' => '2',
+                            'RelativeFrequency' => '0.25',
+                            'ClassValue' => '35.0',
+                            'ClassValue * Frequency' => '70.0',
+                        ],
+                        [
+                            'Class' => '40 ~ 50',
+                            'Frequency' => '1',
+                            'RelativeFrequency' => '0.13',
+                            'ClassValue' => '45.0',
+                            'ClassValue * Frequency' => '45.0',
+                        ],
+                    ],
+                    'total' => [
+                        'Class' => 'Total',
+                        'Frequency' => '8',
+                        'RelativeFrequency' => '1.00',
+                        'ClassValue' => '---',
+                        'ClassValue * Frequency' => '210.0',
+                    ],
+                    'mean' => [
+                        'Class' => 'Mean',
+                        'Frequency' => '---',
+                        'RelativeFrequency' => '---',
+                        'ClassValue' => '---',
+                        'ClassValue * Frequency' => '26.3',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provide_getTableData_can_return_table_data_correctly
+     */
+    public function test_getTableData_can_return_table_data_correctly(int $classRange, array $data, array $expect): void
+    {
+        $ft = new FrequencyTable([
+            'classRange' => $classRange,
+            'data' => $data,
+        ]);
+        $this->assertSame($expect, $ft->getTableData());
+    }
+
     public static function provide_parse_return_null_under_invalid_condition(): array
     {
         return [
@@ -1401,7 +1541,52 @@ final class FrequencyTableTest extends TestCase
                 [ 'bottom' => 20, 'top' => 30, ],
             ],
             'Frequencies' => [ 2, 2, 1, ],
-            'FrequencyTable' => $ft->meanOn()->markdown(),
+            'FrequencyTable' => [
+                'tableHead' => [
+                    'Class',
+                    'Frequency',
+                    'RelativeFrequency',
+                    'ClassValue',
+                    'ClassValue * Frequency',
+                ],
+                'classData' => [
+                    [
+                        'Class' => '0 ~ 10',
+                        'Frequency' => '2',
+                        'RelativeFrequency' => '0.40',
+                        'ClassValue' => '5.0',
+                        'ClassValue * Frequency' => '10.0',
+                    ],
+                    [
+                        'Class' => '10 ~ 20',
+                        'Frequency' => '2',
+                        'RelativeFrequency' => '0.40',
+                        'ClassValue' => '15.0',
+                        'ClassValue * Frequency' => '30.0',
+                    ],
+                    [
+                        'Class' => '20 ~ 30',
+                        'Frequency' => '1',
+                        'RelativeFrequency' => '0.20',
+                        'ClassValue' => '25.0',
+                        'ClassValue * Frequency' => '25.0',
+                    ],
+                ],
+                'total' => [
+                    'Class' => 'Total',
+                    'Frequency' => '5',
+                    'RelativeFrequency' => '1.00',
+                    'ClassValue' => '---',
+                    'ClassValue * Frequency' => '65.0',
+                ],
+                'mean' => [
+                    'Class' => 'Mean',
+                    'Frequency' => '---',
+                    'RelativeFrequency' => '---',
+                    'ClassValue' => '---',
+                    'ClassValue * Frequency' => '13.0',
+                ],
+            ],
         ];
         $this->assertSame($expect, $ft->parse());
     }
@@ -1543,7 +1728,7 @@ final class FrequencyTableTest extends TestCase
         $data = [ 0, 5, 10, 15, 20, ];
         $columns2Show = ['Class', 'Frequency', ];
         $expect = "<table>
-<tr><td>Class</td><td>Frequency</td></tr>
+<tr><th>Class</th><th>Frequency</th></tr>
 <tr><td>0 ~ 10</td><td>2</td></tr>
 <tr><td>10 ~ 20</td><td>2</td></tr>
 <tr><td>20 ~ 30</td><td>1</td></tr>
@@ -1570,7 +1755,7 @@ final class FrequencyTableTest extends TestCase
         $data = [ 0, 5, 10, 15, 20, ];
         $columns2Show = ['Class', 'Frequency', ];
         $expect = "<table>
-<tr><td>Class</td><td>Frequency</td></tr>
+<tr><th>Class</th><th>Frequency</th></tr>
 <tr><td>0 ~ 10</td><td>2</td></tr>
 <tr><td>10 ~ 20</td><td>2</td></tr>
 <tr><td>20 ~ 30</td><td>1</td></tr>

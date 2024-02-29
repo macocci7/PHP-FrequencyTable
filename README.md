@@ -31,9 +31,8 @@ Let's create an instance of FrequencyTable and operate it!
     - [5.7. Saving data into HTML](#57-saving-data-into-html)
     - [5.8. Saving data into Markdown](#58-saving-data-into-markdown)
     - [5.9. Retrieving Parsed Data](#59-retrieving-parsed-data)
-- [6. Methods](#6-methods)
-- [7. Examples](#7-examples)
-- [8. LICENSE](#8-license)
+- [6. Examples](#6-examples)
+- [7. LICENSE](#7-license)
 
 ## 3. Requirements
 
@@ -625,43 +624,8 @@ English and Japanese are supported. (English as default)
         </style>
         ```
     - html view:
-        <table class="frequency-table">
-        <tr><th>Class</th><th>Frequency</th><th>RelativeFrequency</th><th>ClassValue</th><th>ClassValue * Frequency</th></tr>
-        <tr><td>0 ~ 10</td><td>2</td><td>0.40</td><td>5.0</td><td>10.0</td></tr>
-        <tr><td>10 ~ 20</td><td>2</td><td>0.40</td><td>15.0</td><td>30.0</td></tr>
-        <tr><td>20 ~ 30</td><td>1</td><td>0.20</td><td>25.0</td><td>25.0</td></tr>
-        <tr><td>Total</td><td>5</td><td>1.00</td><td>---</td><td>65.0</td></tr>
-        <tr><td>Mean</td><td>---</td><td>---</td><td>---</td><td>13.0</td></tr>
-        </table>
 
-        <style>
-            .frequency-table {
-                border-collapse: separate;
-                border-spacing: 0;
-                border: 2px #666666 solid;
-                border-radius: 12px;
-                overflow: hidden;
-            }
-            .frequency-table tr:nth-child(odd) td {
-                background-color: #eeeeee;
-            }
-            .frequency-table th {
-                border-right: 1px #666666 solid;
-                background-color: #0099dd;
-                padding: 6px;
-                white-space: nowrap;
-                font-weight: bold;
-                color: #ffffff;
-            }
-            .frequency-table td {
-                border-right: 1px #666666 solid;
-                background-color: #ffffff;
-                padding: 6px;
-                white-space: nowrap;
-                color: #333333;
-                text-align: center;
-            }
-        </style>
+        ![test.html](img/test.html.png)
 
 - Details:
     - There're 2 options for saving html:
@@ -813,13 +777,67 @@ Use `parse()` method. `parse()` method returns Hash Array as follows.
                 [2] => 1
             )
 
-        [FrequencyTable] => |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
-    |:---:|:---:|:---:|:---:|---:|
-    |0 ~ 10|2|0.40|5.0|10.0|
-    |10 ~ 20|2|0.40|15.0|30.0|
-    |20 ~ 30|1|0.20|25.0|25.0|
-    |Total|5|1.00|---|65.0|
-    |Mean|---|---|---|13.0|
+        [FrequencyTable] => Array
+            (
+                [tableHead] => Array
+                    (
+                        [0] => Class
+                        [1] => Frequency
+                        [2] => RelativeFrequency
+                        [3] => ClassValue
+                        [4] => ClassValue * Frequency
+                    )
+
+                [classData] => Array
+                    (
+                        [0] => Array
+                            (
+                                [Class] => 0 ~ 10
+                                [Frequency] => 2
+                                [RelativeFrequency] => 0.40
+                                [ClassValue] => 5.0
+                                [ClassValue * Frequency] => 10.0
+                            )
+
+                        [1] => Array
+                            (
+                                [Class] => 10 ~ 20
+                                [Frequency] => 2
+                                [RelativeFrequency] => 0.40
+                                [ClassValue] => 15.0
+                                [ClassValue * Frequency] => 30.0
+                            )
+
+                        [2] => Array
+                            (
+                                [Class] => 20 ~ 30
+                                [Frequency] => 1
+                                [RelativeFrequency] => 0.20
+                                [ClassValue] => 25.0
+                                [ClassValue * Frequency] => 25.0
+                            )
+
+                    )
+
+                [total] => Array
+                    (
+                        [Class] => Total
+                        [Frequency] => 5
+                        [RelativeFrequency] => 1.00
+                        [ClassValue] => ---
+                        [ClassValue * Frequency] => 65.0
+                    )
+
+                [mean] => Array
+                    (
+                        [Class] => Mean
+                        [Frequency] => ---
+                        [RelativeFrequency] => ---
+                        [ClassValue] => ---
+                        [ClassValue * Frequency] => 13.0
+                    )
+
+            )
 
     )
     ```
@@ -830,13 +848,15 @@ You can use the parsed data like this:
 
     ```php
     <?php
+
     require('../vendor/autoload.php');
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
-    $ft = new FrequencyTable();
-    $ft->setClassRange(10);
-    $ft->setData([0,5,10,15,20]);
+    $ft = new FrequencyTable([
+        'classRange' => 10,
+        'data' => [ 0, 5, 10, 15, 20, ],
+    ]);
 
     $parsed = $ft->parse();
     echo "Data:[" . implode(', ', $parsed['data']) . "]\n";
@@ -871,11 +891,7 @@ You can use the parsed data like this:
     QD:7.5
     ```
 
-## 6. Methods
-
-Learn more: [Methods](Methods.md)
-
-## 7. Examples
+## 6. Examples
 
 - [Example.php](examples/Example.php) >> results in [Example.md](examples/Example.md)
 - [ChangeDataClassRange.php](examples/ChangeDataClassRange.php) >> results in [ChangeDataClassRange.md](examples/ChangeDataClassRange.md)
@@ -887,7 +903,7 @@ Learn more: [Methods](Methods.md)
 - [OutlierDetection.php](examples/OutlierDetection.php) >> results in [OutlierDetection.md](examples/OutlierDetection.md)
 - [FrequencyTableTest.php](tests/FrequencyTableTest.php) : all usage is written in this code.
 
-## 8. LICENSE
+## 7. LICENSE
 
 [MIT](LICENSE)
 
@@ -895,6 +911,6 @@ Learn more: [Methods](Methods.md)
 
 *Document written: 2023/05/18*
 
-*Last updated: 2024/02/26*
+*Last updated: 2024/02/29*
 
 Copyright (c) 2023-2024 macocci7

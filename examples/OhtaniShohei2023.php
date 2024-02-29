@@ -8,7 +8,6 @@ use Macocci7\CsvUtil;
 
 $ft = new FrequencyTable();
 $ft->setClassRange(5);
-$ft->lang('ja');
 
 $csvUtil = new CsvUtil();
 $dailyData = $csvUtil->getDailyData('csv/660271_data.csv');
