@@ -22,7 +22,8 @@
         "phpmd/phpmd": "^2.15",
         "phpunit/phpunit": "9.6",
         "phploc/phploc": "^7.0",
-        "php-parallel-lint/php-parallel-lint": "1.3"
+        "php-parallel-lint/php-parallel-lint": "1.3",
+        "macocci7/php-combination": "^1.0"
     },
     "require": {
         "nette/neon": "^3.4"
