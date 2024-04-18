@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # Script to Test and Lint
-# - for the repository: macocci7/php-photo-gps
+# - for the repository: macocci7/php-frequency-table
 # requirement:
 # - phpenv/phpenv
 # - PHP versions defined in ../PHP_VERSIONS installed

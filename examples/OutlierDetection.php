@@ -1,8 +1,8 @@
 <?php
 
-require('../vendor/autoload.php');
-require('./class/CsvUtil.php');
-require('./class/Outlier.php');
+require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/class/CsvUtil.php';
+require_once __DIR__ . '/class/Outlier.php';
 
 use Macocci7\PhpFrequencyTable\FrequencyTable;
 use Macocci7\CsvUtil;
