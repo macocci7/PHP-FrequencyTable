@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # Script to Test and Lint
-# - for the repository: macocci7/php-photo-gps
+# - for the repository: macocci7/php-frequency-table
 # requirement:
 # - phpenv/phpenv
 # - PHP versions defined in ../PHP_VERSIONS installed
@@ -55,7 +55,7 @@ test_and_lint() {
     echo "-----------------------------------------------------------"
     echo "[PHP $1][phpunit]"
     ./vendor/bin/phpunit ./tests/ \
-                         --color auto
+                         --color=auto
     echo "-----------------------------------------------------------"
 }
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Macocci7\PhpFrequencyTable;
 
-require('vendor/autoload.php');
-
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Macocci7\PhpCombination\Combination;
 use Macocci7\PhpFrequencyTable\FrequencyTable;
 use Nette\Neon\Neon;
 
@@ -18,7 +18,6 @@ use Nette\Neon\Neon;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.ExcessiveClassLength)
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
- * @SuppressWarnings(PHPMD.ElseExpression)
  */
 final class FrequencyTableTest extends TestCase
 {
@@ -50,32 +49,6 @@ final class FrequencyTableTest extends TestCase
     public static function tearDownAfterClass(): void
     {
         rmdir('storage');
-    }
-
-    private function getAllCombinations(array $paramItems)
-    {
-        if (empty($paramItems)) {
-            return [];
-        }
-        $items = array_values($paramItems);
-        $count = count($items);
-        $numberOfAllPatterns = 2 ** $count;
-        $bitPatterns = [];
-        $format = '%0' . $count . 'b';
-        for ($i = 0; $i < $numberOfAllPatterns; $i++) {
-            $bitPatterns[] = sprintf($format, $i);
-        }
-        $combinations = [];
-        foreach ($bitPatterns as $bits) {
-            $combination = [];
-            foreach (str_split($bits) as $index => $bit) {
-                if ((bool) $bit) {
-                    $combination[] = $items[$index];
-                }
-            }
-            $combinations[] = $combination;
-        }
-        return $combinations;
     }
 
     private function clearStorage(): void
@@ -121,9 +94,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_constructor_can_set_columns2Show
-     */
+    #[DataProvider('provide_constructor_can_set_columns2Show')]
     public function test_constructor_can_set_columns2Show(array $columns2Show): void
     {
         $pop = array_pop($columns2Show);
@@ -164,9 +135,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_isNumber_can_judge_correctly
-     */
+    #[DataProvider('provide_isNumber_can_judge_correctly')]
     public function test_isNumber_can_judge_correctly(mixed $param, bool $expect): void
     {
         $ft = new FrequencyTable();
@@ -209,9 +178,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_isSettableData_can_judge_correctly
-     */
+    #[DataProvider('provide_isSettableData_can_judge_correctly')]
     public function test_isSettableData_can_judge_correctly(mixed $data, bool $expected): void
     {
         $ft = new FrequencyTable();
@@ -236,9 +203,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_setData_can_set_correct_data
-     */
+    #[DataProvider('provide_setData_can_set_correct_data')]
     public function test_setData_can_set_correct_data(array $data): void
     {
         $ft = new FrequencyTable();
@@ -265,9 +230,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_setData_can_set_null_by_invalid_data
-     */
+    #[DataProvider('provide_setData_can_set_null_by_invalid_data')]
     public function test_setData_can_set_null_by_invalid_data(mixed $data): void
     {
         $ft = new FrequencyTable();
@@ -337,9 +300,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getDataRange_can_get_data_range_correctly
-     */
+    #[DataProvider('provide_getDataRange_can_get_data_range_correctly')]
     public function test_getDataRange_can_get_data_range_correctly(mixed $data, null|int|float $expect): void
     {
         $ft = new FrequencyTable();
@@ -371,9 +332,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_isSettableClassRange_can_judge_correctly
-     */
+    #[DataProvider('provide_isSettableClassRange_can_judge_correctly')]
     public function test_isSettableClassRange_can_judge_correctly(mixed $classRange, bool $expect): void
     {
         $ft = new FrequencyTable();
@@ -408,9 +367,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_setClassRange_can_set_valid_classRange
-     */
+    #[DataProvider('provide_setClassRange_can_set_valid_classRange')]
     public function test_setClassRange_can_set_valid_classRange(mixed $classRange, array $expect): void
     {
         $ft = new FrequencyTable();
@@ -434,9 +391,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getFrequencies_can_get_frequencies_correctly
-     */
+    #[DataProvider('provide_getFrequencies_can_get_frequencies_correctly')]
     public function test_getFrequencies_can_get_frequencies_correctly(int|null $classRange, array|null $data, array $expect): void
     {
         $ft = new FrequencyTable();
@@ -508,9 +463,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getClasses_can_get_classes_correctly
-     */
+    #[DataProvider('provide_getClasses_can_get_classes_correctly')]
     public function test_getClasses_can_get_classes_correctly(int|null $classRange, array|null $data, array $expect): void
     {
         $ft = new FrequencyTable();
@@ -572,9 +525,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_isSettableClass_can_judge_correctly
-     */
+    #[DataProvider('provide_isSettableClass_can_judge_correctly')]
     public function test_isSettableClass_can_judge_correctly(mixed $class, bool $expect): void
     {
         $ft = new FrequencyTable();
@@ -604,9 +555,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getFrequency_can_get_frequency_correctly
-     */
+    #[DataProvider('provide_getFrequency_can_get_frequency_correctly')]
     public function test_getFrequency_can_get_frequency_correctly(mixed $data, mixed $class, int|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -658,9 +607,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getCumulativeFrequency_can_get_cumulative_frequency_correctly
-     */
+    #[DataProvider('provide_getCumulativeFrequency_can_get_cumulative_frequency_correctly')]
     public function test_getCumulativeFrequency_can_get_cumulative_frequency_correctly(mixed $frequencies, mixed $index, int|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -681,9 +628,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getMin_can_get_correctly
-     */
+    #[DataProvider('provide_getMin_can_get_correctly')]
     public function test_getMin_can_get_correctly(mixed $data, int|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -705,9 +650,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getMax_can_get_correctly
-     */
+    #[DataProvider('provide_getMax_can_get_correctly')]
     public function test_getMax_can_get_correctly(mixed $data, int|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -731,9 +674,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_setTotal_and_getTotal_can_work_correctly
-     */
+    #[DataProvider('provide_setTotal_and_getTotal_can_work_correctly')]
     public function test_setTotal_and_getTotal_can_work_correctly(int $classRange, array|null $data, mixed $setTotal, array $expect): void
     {
         $ft = new FrequencyTable();
@@ -772,9 +713,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getClassValue_can_get_class_value_correctly
-     */
+    #[DataProvider('provide_getClassValue_can_get_class_value_correctly')]
     public function test_getClassValue_can_get_class_value_correctly(mixed $class, int|float|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -806,9 +745,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getRelativeFrequency_can_get_relative_frequency_correctly
-     */
+    #[DataProvider('provide_getRelativeFrequency_can_get_relative_frequency_correctly')]
     public function test_getRelativeFrequency_can_get_relative_frequency_correctly(array|null $frequencies, mixed $frequency, int|float|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -860,9 +797,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getCumulativeRelativeFrequency_can_get_cumulative_relative_frequency_correctly
-     */
+    #[DataProvider('provide_getCumulativeRelativeFrequency_can_get_cumulative_relative_frequency_correctly')]
     public function test_getCumulativeRelativeFrequency_can_get_cumulative_relative_frequency_correctly(mixed $frequencies, mixed $index, int|float|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -881,9 +816,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getMean_can_get_mean_correctly
-     */
+    #[DataProvider('provide_getMean_can_get_mean_correctly')]
     public function test_getMean_can_get_mean_correctly(int $classRange, array|null $data, int|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -917,9 +850,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getMode_can_get_mode_correctly
-     */
+    #[DataProvider('provide_getMode_can_get_mode_correctly')]
     public function test_getMode_can_get_mode_correctly(mixed $classRange, mixed $data, int|float|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -949,9 +880,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getMedian_can_get_median_correctly
-     */
+    #[DataProvider('provide_getMedian_can_get_median_correctly')]
     public function test_getMedian_can_get_median_correctly(mixed $data, int|float|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -969,9 +898,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getMedianClass_can_get_median_class
-     */
+    #[DataProvider('provide_getMedianClass_can_get_median_class')]
     public function test_getMedianClass_can_get_median_class(int|null $classRange, array|null $data, array|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -1000,9 +927,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getFirstQuartile_can_get_first_quartile_correctly
-     */
+    #[DataProvider('provide_getFirstQuartile_can_get_first_quartile_correctly')]
     public function test_getFirstQuartile_can_get_first_quartile_correctly(mixed $data, int|float|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -1029,9 +954,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getThirdQuartile_can_get_third_quartile_correctly
-     */
+    #[DataProvider('provide_getThirdQuartile_can_get_third_quartile_correctly')]
     public function test_getThirdQuartile_can_get_third_quartile_correctly(mixed $data, int|float|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -1061,9 +984,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getInterQuartileRange_can_get_inter_quartile_range_correctly
-     */
+    #[DataProvider('provide_getInterQuartileRange_can_get_inter_quartile_range_correctly')]
     public function test_getInterQuartileRange_can_get_inter_quartile_range_correctly(mixed $data, int|float|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -1098,9 +1019,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getQuartileDeviation_can_get_quartile_deviation_correctly
-     */
+    #[DataProvider('provide_getQuartileDeviation_can_get_quartile_deviation_correctly')]
     public function test_getQuartileDeviation_can_get_quartile_deviation_correctly(mixed $data, int|float|null $expect): void
     {
         $ft = new FrequencyTable();
@@ -1122,13 +1041,10 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_setTableSeparator_and_getTableSeparator_can_work_correctly
-     */
+    #[DataProvider('provide_setTableSeparator_and_getTableSeparator_can_work_correctly')]
     public function test_setTableSeparator_and_getTableSeparator_can_work_correctly(mixed $separator, array $expect): void
     {
         $ft = new FrequencyTable();
-        //$ft->setTableSeparator($defaultSeparator);
         $ft->setTableSeparator($separator);
         $this->assertSame($expect['separator'], $ft->getTableSeparator());
     }
@@ -1140,9 +1056,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_setDefaultTableSeparator_can_set_default_table_separator
-     */
+    #[DataProvider('provide_setDefaultTableSeparator_can_set_default_table_separator')]
     public function test_setDefaultTableSeparator_can_set_default_table_separator(string $defaultTableSeparator): void
     {
         $ft = new FrequencyTable();
@@ -1180,9 +1094,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_isSettableColumns2Show_can_judge_columns_2_show_correctly
-     */
+    #[DataProvider('provide_isSettableColumns2Show_can_judge_columns_2_show_correctly')]
     public function test_isSettableColumns2Show_can_judge_columns_2_show_correctly(mixed $columns, bool $expect): void
     {
         $ft = new FrequencyTable();
@@ -1196,9 +1108,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getValidColumns2Show_can_get_valid_columns_2_show
-     */
+    #[DataProvider('provide_getValidColumns2Show_can_get_valid_columns_2_show')]
     public function test_getValidColumns2Show_can_get_valid_columns_2_show(array $columns2Show): void
     {
         $ft = new FrequencyTable();
@@ -1228,9 +1138,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_setColumns2Show_can_set_columns_2_show_correctly
-     */
+    #[DataProvider('provide_setColumns2Show_can_set_columns_2_show_correctly')]
     public function test_setColumns2Show_can_set_columns_2_show_correctly(mixed $columns, array $expect): void
     {
         $ft = new FrequencyTable();
@@ -1290,9 +1198,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getDataOfEachClass_can_get_data_4_each_class_correctly
-     */
+    #[DataProvider('provide_getDataOfEachClass_can_get_data_4_each_class_correctly')]
     public function test_getDataOfEachClass_can_get_data_4_each_class_correctly(int|null $classRange, array|null $data, array $expect): void
     {
         $ft = new FrequencyTable();
@@ -1309,9 +1215,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_filterData2Show_can_filter_data_2_show_correctly
-     */
+    #[DataProvider('provide_filterData2Show_can_filter_data_2_show_correctly')]
     public function test_filterData2Show_can_filter_data_2_show_correctly(array $columns2Show): void
     {
         $ft = new FrequencyTable();
@@ -1319,8 +1223,8 @@ final class FrequencyTableTest extends TestCase
         $ft->setClassRange($classRange);
         $data = [ 0, 5, 10, 15, 20, ];
         $ft->setData($data);
-        $combinations = $this->getAllCombinations($columns2Show);
-        foreach ($combinations as $combination) {
+        $c = new Combination();
+        foreach ($c->all($columns2Show) as $combination) {
             if (empty($combination)) {
                 continue;
             }
@@ -1463,9 +1367,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_getTableData_can_return_table_data_correctly
-     */
+    #[DataProvider('provide_getTableData_can_return_table_data_correctly')]
     public function test_getTableData_can_return_table_data_correctly(int $classRange, array $data, array $expect): void
     {
         $ft = new FrequencyTable([
@@ -1503,9 +1405,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_parse_return_null_under_invalid_condition
-     */
+    #[DataProvider('provide_parse_return_null_under_invalid_condition')]
     public function test_parse_return_null_under_invalid_condition(mixed $classRange, mixed $data): void
     {
         $ft = new FrequencyTable();
@@ -1601,9 +1501,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_xsv_can_return_null_with_invalid_parameters
-     */
+    #[DataProvider('provide_xsv_can_return_null_with_invalid_parameters')]
     public function test_xsv_can_return_null_with_invalid_parameters(mixed $path, string|null $separator, string $quatation): void
     {
         $ft = new FrequencyTable();
@@ -1828,9 +1726,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_save_can_return_false_with_invalid_parameter
-     */
+    #[DataProvider('provide_save_can_return_false_with_invalid_parameter')]
     public function test_save_can_return_false_with_invalid_parameter(mixed $path): void
     {
         $ft = new FrequencyTable();
@@ -1883,9 +1779,7 @@ final class FrequencyTableTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provide_save_can_save_in_specified_format
-     */
+    #[DataProvider('provide_save_can_save_in_specified_format')]
     public function test_save_can_save_in_specified_format(string $path): void
     {
         $ft = new FrequencyTable();

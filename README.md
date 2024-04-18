@@ -12,8 +12,6 @@ English(default) and Japanese are supported.
 
 You can also get parsed data as hash array of PHP.
 
-Let's create an instance of FrequencyTable and operate it!
-
 <a href="#the-most-simple-usage"><img src="img/FrequencyTableExample.png" width="400"></a>
 
 ## 2. Contents
@@ -36,7 +34,7 @@ Let's create an instance of FrequencyTable and operate it!
 
 ## 3. Requirements
 
-- PHP 8.0.30 or later
+- PHP 8.1 or later
 - Composer
 
 ## 4. Installation
@@ -66,7 +64,7 @@ You can use FrequencyTable class as follows.
     ```php
     <?php
 
-    require('../vendor/autoload.php');
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
@@ -101,7 +99,7 @@ You can use FrequencyTable class as follows.
 
 - Details:
 
-    - Import autoloader: `require_once('../vendor/autoload.php');`
+    - Import autoloader: `require_once __DIR__ . '/../vendor/autoload.php';`
     - Declare: `use Macocci7\PhpFrequencyTable\FrequencyTable;`
     - Instantiate: `new FrequencyTable()`
         - Option Params: `data`, `classRange`, `columns2Show`
@@ -127,7 +125,7 @@ You can change data and class range after instantiation.
     ```php
     <?php
 
-    require_once('../vendor/autoload.php');
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
@@ -222,7 +220,7 @@ You can change data and class range after instantiation.
     ```php
     <?php
 
-    require_once('../vendor/autoload.php');
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
@@ -343,7 +341,7 @@ English and Japanese are supported. (English as default)
     ```php
     <?php
 
-    require_once('../vendor/autoload.php');
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
@@ -430,7 +428,7 @@ English and Japanese are supported. (English as default)
     ```php
     <?php
 
-    require('../vendor/autoload.php');
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
@@ -498,7 +496,7 @@ English and Japanese are supported. (English as default)
     ```php
     <?php
 
-    require('../vendor/autoload.php');
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
@@ -566,7 +564,7 @@ English and Japanese are supported. (English as default)
     ```php
     <?php
 
-    require('../vendor/autoload.php');
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
@@ -646,7 +644,7 @@ English and Japanese are supported. (English as default)
     ```php
     <?php
 
-    require('../vendor/autoload.php');
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
@@ -703,7 +701,7 @@ Use `parse()` method. `parse()` method returns Hash Array as follows.
     ```php
     <?php
 
-    require('../vendor/autoload.php');
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
@@ -849,7 +847,7 @@ You can use the parsed data like this:
     ```php
     <?php
 
-    require('../vendor/autoload.php');
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use Macocci7\PhpFrequencyTable\FrequencyTable;
 
@@ -909,8 +907,8 @@ You can use the parsed data like this:
 
 ***
 
-*Document written: 2023/05/18*
+*Document Written: 2023/05/18*
 
-*Last updated: 2024/02/29*
+*Last Updated: 2024/04/18*
 
 Copyright (c) 2023-2024 macocci7
