@@ -36,7 +36,7 @@ Let's create an instance of FrequencyTable and operate it!
 
 ## 3. Requirements
 
-- PHP 8.0.30 or later
+- PHP 8.1 or later
 - Composer
 
 ## 4. Installation
