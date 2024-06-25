@@ -48,8 +48,8 @@ trait SubtotalTrait
         $relativeSubtotals = [];
         $total = array_sum($this->getData());
         foreach ($this->getSubtotals() as $subtotal) {
-            $relativeSubtotals[] = $this->isNumber($total) && $total !== 0
-                ? $subtotal / $total
+            $relativeSubtotals[] = $this->isNumber($total)
+                ? ($total === 0 ? 0 : $subtotal / $total)
                 : null;
         }
         return $relativeSubtotals;
