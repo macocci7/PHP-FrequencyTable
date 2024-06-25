@@ -907,6 +907,28 @@ final class FrequencyTableTest extends TestCase
         $this->assertSame($expect, $ft->getMedianClass());
     }
 
+    public static function provide_getSubtotals_can_return_subtotals_correctly(): array
+    {
+        return [
+            [ 'data' => [], 'classRange' => 10, 'expect' => [], ],
+            [ 'data' => [10], 'classRange' => 10, 'expect' => [10], ],
+            [ 'data' => [5, 6, ], 'classRange' => 10, 'expect' => [11], ],
+            [ 'data' => [5, 10, ], 'classRange' => 10, 'expect' => [5, 10, ], ],
+            [ 'data' => [5, 6, 10, 15, ], 'classRange' => 10, 'expect' => [11, 25, ], ],
+            [ 'data' => [5, 9, 13, 15, 17, 23, 29, ], 'classRange' => 10, 'expect' => [14, 45, 52, ], ],
+            [ 'data' => [null], 'classRange' => 10, 'expect' => [], ],
+            [ 'data' => [0], 'classRange' => 10, 'expect' => [0], ],
+            [ 'data' => [1, null, true, false, '0', []], 'classRange' => 10, 'expect' => [], ],
+        ];
+    }
+
+    #[DataProvider('provide_getSubtotals_can_return_subtotals_correctly')]
+    public function test_getSubtotals_can_return_subtotals_correctly(array $data, int|float $classRange, array $expect): void
+    {
+        $ft = new FrequencyTable(['data' => $data, 'classRange' => $classRange]);
+        $this->assertSame($expect, $ft->getSubtotals());
+    }
+
     public static function provide_getFirstQuartile_can_get_first_quartile_correctly(): array
     {
         return [

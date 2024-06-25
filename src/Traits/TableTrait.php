@@ -72,6 +72,9 @@ trait TableTrait
             'ClassValue' => '---',
             // @phpstan-ignore-next-line
             'ClassValue * Frequency' => array_sum(array_column($data, 'ClassValue * Frequency')),
+            'Subtotal' => array_sum(array_column($data, 'Subtotal')),
+            'RelativeSubtotal' => array_sum(array_column($data, 'RelativeSubtotal')),
+            'CumulativeRelativeSubtotal' => array_sum(array_column($data, 'RelativeSubtotal')),
         ];
     }
 
@@ -90,6 +93,9 @@ trait TableTrait
             'CumulativeRelativeFrequency' => '---',
             'ClassValue' => '---',
             'ClassValue * Frequency' => $this->getMean(),
+            'Subtotal' => array_sum($this->getData()) / count($this->getData()),
+            'RelativeSubtotal' => '---',
+            'CumulativeRelativeSubtotal' => '---',
         ];
     }
 
@@ -105,6 +111,9 @@ trait TableTrait
         $data = [];
         $classes = $this->getClasses();
         $frequencies = $this->getFrequencies();
+        $subtotals = $this->getSubtotals();
+        $relativeSubtotals = $this->getRelativeSubtotals();
+        $cumulativeRelativeSubtotals = $this->getCumulativeRelativeSubtotals();
         $fc = [];
         $rf = [];
         foreach ($frequencies as $index => $frequency) {
@@ -126,6 +135,9 @@ trait TableTrait
                 ),
                 'ClassValue' => $this->getClassValue($classes[$index]),
                 'ClassValue * Frequency' => $fc[$index],
+                'Subtotal' => $subtotals[$index],
+                'RelativeSubtotal' => $relativeSubtotals[$index],
+                'CumulativeRelativeSubtotal' => $cumulativeRelativeSubtotals[$index],
             ];
         }
         return $data;

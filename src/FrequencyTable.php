@@ -19,6 +19,7 @@ class FrequencyTable
     use Traits\AttributesTrait;
     use Traits\TableTrait;
     use Traits\DataFormatsTrait;
+    use Traits\SubtotalTrait;
 
     /**
      * @var string[]    $supportedFormats
@@ -94,6 +95,7 @@ class FrequencyTable
             'QuartileDeviation' => $this->getQuartileDeviation($this->getData()),
             'Classes' => $this->getClasses(),
             'Frequencies' => $this->getFrequencies(),
+            'Subtotals' => $this->getSubtotals(),
             'FrequencyTable' => $this->getTableData(),
         ];
     }
