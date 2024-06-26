@@ -113,6 +113,9 @@ You can use FrequencyTable class as follows.
                 - 'CumulativeRelativeFrequency'
                 - 'ClassValue'
                 - 'ClassValue * Frequency'
+                - 'Subtotal'
+                - 'RelativeSubtotal'
+                - 'CumulativeRelativeSubtotal'
     - Mean Row: `meanOff()` as default, add by `meanOn()`.
     - Get Frequency Table: by `markdown()` in markdown format.
 
@@ -276,15 +279,15 @@ You can change data and class range after instantiation.
 
     ## Case3:
 
-    |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|
-    |:---:|:---:|:---:|:---:|:---:|:---:|---:|
-    |0 ~ 10|1|1|0.10|0.10|5.0|5.0|
-    |10 ~ 20|2|3|0.20|0.30|15.0|30.0|
-    |20 ~ 30|4|7|0.40|0.70|25.0|100.0|
-    |30 ~ 40|2|9|0.20|0.90|35.0|70.0|
-    |40 ~ 50|1|10|0.10|1.00|45.0|45.0|
-    |Total|10|10|1.00|1.00|---|250.0|
-    |Mean|---|---|---|---|---|25.0|
+    |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|Subtotal|RelativeSubtotal|CumulativeRelativeSubtotal|
+    |:---:|:---:|:---:|:---:|:---:|:---:|---:|---:|---:|---:|
+    |0 ~ 10|1|1|0.10|0.10|5.0|5.0|5.00|0.02|0.02|
+    |10 ~ 20|2|3|0.20|0.30|15.0|30.0|25.00|0.11|0.13|
+    |20 ~ 30|4|7|0.40|0.70|25.0|100.0|100.00|0.43|0.55|
+    |30 ~ 40|2|9|0.20|0.90|35.0|70.0|65.00|0.28|0.83|
+    |40 ~ 50|1|10|0.10|1.00|45.0|45.0|40.00|0.17|1.00|
+    |Total|10|10|1.00|1.00|---|250.0|235.00|1.00|1.00|
+    |Mean|---|---|---|---|---|25.0|23.50|---|---|
     ```
 
 - View: [examples/ChangeColumns.md](examples/ChangeColumns.md)
@@ -317,15 +320,15 @@ You can change data and class range after instantiation.
 
     ## Case3:
 
-    |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|
-    |:---:|:---:|:---:|:---:|:---:|:---:|---:|
-    |0 ~ 10|1|1|0.10|0.10|5.0|5.0|
-    |10 ~ 20|2|3|0.20|0.30|15.0|30.0|
-    |20 ~ 30|4|7|0.40|0.70|25.0|100.0|
-    |30 ~ 40|2|9|0.20|0.90|35.0|70.0|
-    |40 ~ 50|1|10|0.10|1.00|45.0|45.0|
-    |Total|10|10|1.00|1.00|---|250.0|
-    |Mean|---|---|---|---|---|25.0|
+    |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|Subtotal|RelativeSubtotal|CumulativeRelativeSubtotal|
+    |:---:|:---:|:---:|:---:|:---:|:---:|---:|---:|---:|---:|
+    |0 ~ 10|1|1|0.10|0.10|5.0|5.0|5.00|0.02|0.02|
+    |10 ~ 20|2|3|0.20|0.30|15.0|30.0|25.00|0.11|0.13|
+    |20 ~ 30|4|7|0.40|0.70|25.0|100.0|100.00|0.43|0.55|
+    |30 ~ 40|2|9|0.20|0.90|35.0|70.0|65.00|0.28|0.83|
+    |40 ~ 50|1|10|0.10|1.00|45.0|45.0|40.00|0.17|1.00|
+    |Total|10|10|1.00|1.00|---|250.0|235.00|1.00|1.00|
+    |Mean|---|---|---|---|---|25.0|23.50|---|---|
 
 - Details:
     - Get Acceptable Columns: `getValidColumns2Show()`
@@ -365,26 +368,26 @@ English and Japanese are supported. (English as default)
 
     ## Language:[eng]
 
-    |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|
-    |:---:|:---:|:---:|:---:|:---:|:---:|---:|
-    |0 ~ 10|1|1|0.14|0.14|5.0|5.0|
-    |10 ~ 20|3|4|0.43|0.57|15.0|45.0|
-    |20 ~ 30|2|6|0.29|0.86|25.0|50.0|
-    |30 ~ 40|1|7|0.14|1.00|35.0|35.0|
-    |Total|7|7|1.00|1.00|---|135.0|
-    |Mean|---|---|---|---|---|19.3|
+    |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|Subtotal|RelativeSubtotal|CumulativeRelativeSubtotal|
+    |:---:|:---:|:---:|:---:|:---:|:---:|---:|---:|---:|---:|
+    |0 ~ 10|1|1|0.14|0.14|5.0|5.0|5.00|0.04|0.04|
+    |10 ~ 20|3|4|0.43|0.57|15.0|45.0|37.00|0.32|0.36|
+    |20 ~ 30|2|6|0.29|0.86|25.0|50.0|45.00|0.38|0.74|
+    |30 ~ 40|1|7|0.14|1.00|35.0|35.0|30.00|0.26|1.00|
+    |Total|7|7|1.00|1.00|---|135.0|117.00|1.00|1.00|
+    |Mean|---|---|---|---|---|19.3|16.71|---|---|
 
 
     ## Language:[ja]
 
-    |階級|度数|累積度数|相対度数|累積相対度数|階級値|階級値 × 度数|
-    |:---:|:---:|:---:|:---:|:---:|:---:|---:|
-    |0 ~ 10|1|1|0.14|0.14|5.0|5.0|
-    |10 ~ 20|3|4|0.43|0.57|15.0|45.0|
-    |20 ~ 30|2|6|0.29|0.86|25.0|50.0|
-    |30 ~ 40|1|7|0.14|1.00|35.0|35.0|
-    |合計|7|7|1.00|1.00|---|135.0|
-    |平均|---|---|---|---|---|19.3|
+    |階級|度数|累積度数|相対度数|累積相対度数|階級値|階級値 × 度数|小計|相対小計|累積相対小計|
+    |:---:|:---:|:---:|:---:|:---:|:---:|---:|---:|---:|---:|
+    |0 ~ 10|1|1|0.14|0.14|5.0|5.0|5.00|0.04|0.04|
+    |10 ~ 20|3|4|0.43|0.57|15.0|45.0|37.00|0.32|0.36|
+    |20 ~ 30|2|6|0.29|0.86|25.0|50.0|45.00|0.38|0.74|
+    |30 ~ 40|1|7|0.14|1.00|35.0|35.0|30.00|0.26|1.00|
+    |合計|7|7|1.00|1.00|---|135.0|117.00|1.00|1.00|
+    |平均|---|---|---|---|---|19.3|16.71|---|---|
     ```
 
 - View: [examples/ChangeLang.md](examples/ChangeLang.md)
@@ -393,26 +396,26 @@ English and Japanese are supported. (English as default)
 
     ## Language:[eng]
 
-    |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|
-    |:---:|:---:|:---:|:---:|:---:|:---:|---:|
-    |0 ~ 10|1|1|0.14|0.14|5.0|5.0|
-    |10 ~ 20|3|4|0.43|0.57|15.0|45.0|
-    |20 ~ 30|2|6|0.29|0.86|25.0|50.0|
-    |30 ~ 40|1|7|0.14|1.00|35.0|35.0|
-    |Total|7|7|1.00|1.00|---|135.0|
-    |Mean|---|---|---|---|---|19.3|
+    |Class|Frequency|CumulativeFrequency|RelativeFrequency|CumulativeRelativeFrequency|ClassValue|ClassValue * Frequency|Subtotal|RelativeSubtotal|CumulativeRelativeSubtotal|
+    |:---:|:---:|:---:|:---:|:---:|:---:|---:|---:|---:|---:|
+    |0 ~ 10|1|1|0.14|0.14|5.0|5.0|5.00|0.04|0.04|
+    |10 ~ 20|3|4|0.43|0.57|15.0|45.0|37.00|0.32|0.36|
+    |20 ~ 30|2|6|0.29|0.86|25.0|50.0|45.00|0.38|0.74|
+    |30 ~ 40|1|7|0.14|1.00|35.0|35.0|30.00|0.26|1.00|
+    |Total|7|7|1.00|1.00|---|135.0|117.00|1.00|1.00|
+    |Mean|---|---|---|---|---|19.3|16.71|---|---|
 
 
     ## Language:[ja]
 
-    |階級|度数|累積度数|相対度数|累積相対度数|階級値|階級値 × 度数|
-    |:---:|:---:|:---:|:---:|:---:|:---:|---:|
-    |0 ~ 10|1|1|0.14|0.14|5.0|5.0|
-    |10 ~ 20|3|4|0.43|0.57|15.0|45.0|
-    |20 ~ 30|2|6|0.29|0.86|25.0|50.0|
-    |30 ~ 40|1|7|0.14|1.00|35.0|35.0|
-    |合計|7|7|1.00|1.00|---|135.0|
-    |平均|---|---|---|---|---|19.3|
+    |階級|度数|累積度数|相対度数|累積相対度数|階級値|階級値 × 度数|小計|相対小計|累積相対小計|
+    |:---:|:---:|:---:|:---:|:---:|:---:|---:|---:|---:|---:|
+    |0 ~ 10|1|1|0.14|0.14|5.0|5.0|5.00|0.04|0.04|
+    |10 ~ 20|3|4|0.43|0.57|15.0|45.0|37.00|0.32|0.36|
+    |20 ~ 30|2|6|0.29|0.86|25.0|50.0|45.00|0.38|0.74|
+    |30 ~ 40|1|7|0.14|1.00|35.0|35.0|30.00|0.26|1.00|
+    |合計|7|7|1.00|1.00|---|135.0|117.00|1.00|1.00|
+    |平均|---|---|---|---|---|19.3|16.71|---|---|
 
 - Details:
     - Get Supported Langs: `langs()`
@@ -775,6 +778,13 @@ Use `parse()` method. `parse()` method returns Hash Array as follows.
                 [2] => 1
             )
 
+        [Subtotals] => Array
+            (
+                [0] => 5
+                [1] => 25
+                [2] => 20
+            )
+
         [FrequencyTable] => Array
             (
                 [tableHead] => Array
@@ -899,6 +909,7 @@ You can use the parsed data like this:
 - [PopulationInJapan2022.php](examples/PopulationInJapan2022.php) >> results in [PopulationInJapan2022.md](examples/PopulationInJapan2022.md)
 - [OhtaniShohei2023.php](examples/OhtaniShohei2023.php) >> results in [OhtaniShohei2023.md](examples/OhtaniShohei2023.md)
 - [OutlierDetection.php](examples/OutlierDetection.php) >> results in [OutlierDetection.md](examples/OutlierDetection.md)
+- [RetrieveParsedData.php](examples/RetrieveParsedData.php) >> results in [RetrieveParsedData.txt](examples/RetrieveParsedData.txt)
 - [FrequencyTableTest.php](tests/FrequencyTableTest.php) : all usage is written in this code.
 
 ## 7. LICENSE
@@ -909,6 +920,6 @@ You can use the parsed data like this:
 
 *Document Written: 2023/05/18*
 
-*Last Updated: 2024/04/18*
+*Last Updated: 2024/06/26*
 
 Copyright (c) 2023-2024 macocci7

@@ -7,7 +7,7 @@ trait SubtotalTrait
     /**
      * returns all subtotals of each class
      *
-     * @return  array<int, array<int, int|float|null>>
+     * @return  array<int, int|float|null>
      */
     public function getSubtotals()
     {
@@ -21,7 +21,7 @@ trait SubtotalTrait
     /**
      * returns subtotal of the class
      *
-     * @param   array<'top': int|float, 'bottom': int|float>    $class
+     * @param   array<string, int|float>    $class
      * @return  int|float|null
      */
     protected function getSubtotal(array $class)

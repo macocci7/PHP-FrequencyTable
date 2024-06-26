@@ -57,10 +57,10 @@ trait TableTrait
 
     /**
      * returns totals in the table to show
-     * @param   mixed   $data
-     * @return  array<string, mixed>
+     * @param   list<array<string, int|float|string|null>>  $data
+     * @return  array<string, float|int|string|null>
      */
-    public function getTableTotal2Show(mixed $data)
+    public function getTableTotal2Show(array $data)
     {
         return [
             'Class' => $this->supportedLangs[$this->lang()]['Total'] ?? 'Total', // @phpstan-ignore-line
@@ -145,8 +145,8 @@ trait TableTrait
 
     /**
      * filters data to show
-     * @param   list<array<string, mixed>>    $data
-     * @return  list<array<string, mixed>>
+     * @param   list<array<string, int|float|string|null>>  $data
+     * @return  list<array<string, int|float|string|null>>
      */
     public function filterData2Show(array $data)
     {
