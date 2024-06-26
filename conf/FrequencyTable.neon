@@ -8,6 +8,9 @@ validColumns2Show:
 - 'CumulativeRelativeFrequency'
 - 'ClassValue'
 - 'ClassValue * Frequency'
+- 'Subtotal'
+- 'RelativeSubtotal'
+- 'CumulativeRelativeSubtotal'
 
 defaultColumns2Show:
 - 'Class'
@@ -24,6 +27,9 @@ defaultTableColumnAligns:
     'CumulativeRelativeFrequency': ':---:'
     'ClassValue': ':---:'
     'ClassValue * Frequency': '---:'
+    'Subtotal': '---:'
+    'RelativeSubtotal': '---:'
+    'CumulativeRelativeSubtotal': '---:'
 
 lang: 'eng'
 
@@ -36,6 +42,9 @@ supportedLangs:
         'CumulativeRelativeFrequency': 'CumulativeRelativeFrequency'
         'ClassValue': 'ClassValue'
         'ClassValue * Frequency': 'ClassValue * Frequency'
+        'Subtotal': 'Subtotal'
+        'RelativeSubtotal': 'RelativeSubtotal'
+        'CumulativeRelativeSubtotal': 'CumulativeRelativeSubtotal'
         'Total': 'Total'
         'Mean': 'Mean'
         'classRange': 'classRange'
@@ -62,6 +71,9 @@ supportedLangs:
         'CumulativeRelativeFrequency': '累積相対度数'
         'ClassValue': '階級値'
         'ClassValue * Frequency': '階級値 × 度数'
+        'Subtotal': '小計'
+        'RelativeSubtotal': '相対小計'
+        'CumulativeRelativeSubtotal': '累積相対小計'
         'Total': '合計'
         'Mean': '平均'
         'classRange': '階級幅'
@@ -109,5 +121,17 @@ columnNumberFormat:
         thousands_separator: ','
     'ClassValue * Frequency':
         decimals: 1
+        decimal_separator: '.'
+        thousands_separator: ','
+    'Subtotal':
+        decimals: 2
+        decimal_separator: '.'
+        thousands_separator: ','
+    'RelativeSubtotal':
+        decimals: 2
+        decimal_separator: '.'
+        thousands_separator: ','
+    'CumulativeRelativeSubtotal':
+        decimals: 2
         decimal_separator: '.'
         thousands_separator: ','

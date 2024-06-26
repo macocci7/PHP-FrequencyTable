@@ -57,10 +57,10 @@ trait TableTrait
 
     /**
      * returns totals in the table to show
-     * @param   mixed   $data
-     * @return  array<string, mixed>
+     * @param   list<array<string, int|float|string|null>>  $data
+     * @return  array<string, float|int|string|null>
      */
-    public function getTableTotal2Show(mixed $data)
+    public function getTableTotal2Show(array $data)
     {
         return [
             'Class' => $this->supportedLangs[$this->lang()]['Total'] ?? 'Total', // @phpstan-ignore-line
@@ -72,6 +72,9 @@ trait TableTrait
             'ClassValue' => '---',
             // @phpstan-ignore-next-line
             'ClassValue * Frequency' => array_sum(array_column($data, 'ClassValue * Frequency')),
+            'Subtotal' => array_sum(array_column($data, 'Subtotal')),
+            'RelativeSubtotal' => array_sum(array_column($data, 'RelativeSubtotal')),
+            'CumulativeRelativeSubtotal' => array_sum(array_column($data, 'RelativeSubtotal')),
         ];
     }
 
@@ -90,6 +93,9 @@ trait TableTrait
             'CumulativeRelativeFrequency' => '---',
             'ClassValue' => '---',
             'ClassValue * Frequency' => $this->getMean(),
+            'Subtotal' => array_sum($this->getData()) / count($this->getData()),
+            'RelativeSubtotal' => '---',
+            'CumulativeRelativeSubtotal' => '---',
         ];
     }
 
@@ -105,6 +111,9 @@ trait TableTrait
         $data = [];
         $classes = $this->getClasses();
         $frequencies = $this->getFrequencies();
+        $subtotals = $this->getSubtotals();
+        $relativeSubtotals = $this->getRelativeSubtotals();
+        $cumulativeRelativeSubtotals = $this->getCumulativeRelativeSubtotals();
         $fc = [];
         $rf = [];
         foreach ($frequencies as $index => $frequency) {
@@ -126,6 +135,9 @@ trait TableTrait
                 ),
                 'ClassValue' => $this->getClassValue($classes[$index]),
                 'ClassValue * Frequency' => $fc[$index],
+                'Subtotal' => $subtotals[$index],
+                'RelativeSubtotal' => $relativeSubtotals[$index],
+                'CumulativeRelativeSubtotal' => $cumulativeRelativeSubtotals[$index],
             ];
         }
         return $data;
@@ -133,8 +145,8 @@ trait TableTrait
 
     /**
      * filters data to show
-     * @param   list<array<string, mixed>>    $data
-     * @return  list<array<string, mixed>>
+     * @param   list<array<string, int|float|string|null>>  $data
+     * @return  list<array<string, int|float|string|null>>
      */
     public function filterData2Show(array $data)
     {

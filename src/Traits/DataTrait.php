@@ -10,7 +10,7 @@ trait DataTrait
     protected mixed $data = null;
 
     /**
-     * @var mixed   $total
+     * @var int|float|null  $total
      */
     protected mixed $total = null;
 
@@ -34,7 +34,7 @@ trait DataTrait
     /**
      * returns data
      * @param   int|string  $key = null
-     * @return  mixed
+     * @return  array<int|string, int|float>
      */
     public function getData(int|string $key = null)
     {
@@ -92,7 +92,7 @@ trait DataTrait
 
     /**
      * returns total
-     * @return  mixed
+     * @return  int|float|null
      */
     public function getTotal()
     {

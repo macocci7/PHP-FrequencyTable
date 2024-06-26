@@ -29,6 +29,9 @@ final class FrequencyTableTest extends TestCase
         'CumulativeRelativeFrequency',
         'ClassValue',
         'ClassValue * Frequency',
+        'Subtotal',
+        'RelativeSubtotal',
+        'CumulativeRelativeSubtotal',
     ];
     private $defaultColumns2Show = [
         'Class',
@@ -907,6 +910,28 @@ final class FrequencyTableTest extends TestCase
         $this->assertSame($expect, $ft->getMedianClass());
     }
 
+    public static function provide_getSubtotals_can_return_subtotals_correctly(): array
+    {
+        return [
+            [ 'data' => [], 'classRange' => 10, 'expect' => [], ],
+            [ 'data' => [10], 'classRange' => 10, 'expect' => [10], ],
+            [ 'data' => [5, 6, ], 'classRange' => 10, 'expect' => [11], ],
+            [ 'data' => [5, 10, ], 'classRange' => 10, 'expect' => [5, 10, ], ],
+            [ 'data' => [5, 6, 10, 15, ], 'classRange' => 10, 'expect' => [11, 25, ], ],
+            [ 'data' => [5, 9, 13, 15, 17, 23, 29, ], 'classRange' => 10, 'expect' => [14, 45, 52, ], ],
+            [ 'data' => [null], 'classRange' => 10, 'expect' => [], ],
+            [ 'data' => [0], 'classRange' => 10, 'expect' => [0], ],
+            [ 'data' => [1, null, true, false, '0', []], 'classRange' => 10, 'expect' => [], ],
+        ];
+    }
+
+    #[DataProvider('provide_getSubtotals_can_return_subtotals_correctly')]
+    public function test_getSubtotals_can_return_subtotals_correctly(array $data, int|float $classRange, array $expect): void
+    {
+        $ft = new FrequencyTable(['data' => $data, 'classRange' => $classRange]);
+        $this->assertSame($expect, $ft->getSubtotals());
+    }
+
     public static function provide_getFirstQuartile_can_get_first_quartile_correctly(): array
     {
         return [
@@ -1118,23 +1143,23 @@ final class FrequencyTableTest extends TestCase
     public static function provide_setColumns2Show_can_set_columns_2_show_correctly(): array
     {
         return [
-            [ 'columns' => null, 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => true, 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => false, 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => '', 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => 'hoge', 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => 0, 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => 1.2, 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => [], 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => [0], 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => ['hoge'], 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => [ ...self::$validColumns2Show, 'hoge', ], 'expect' => [ 'return' => false, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => self::$validColumns2Show, 'expect' => [ 'return' => true, 'columns' => self::$validColumns2Show, ], ],
-            [ 'columns' => ['Class'], 'expect' => [ 'return' => true, 'columns' => ['Class'], ], ],
-            [ 'columns' => ['Frequency'], 'expect' => [ 'return' => true, 'columns' => ['Frequency'], ], ],
-            [ 'columns' => ['RelativeFrequency'], 'expect' => [ 'return' => true, 'columns' => ['RelativeFrequency'], ], ],
-            [ 'columns' => ['ClassValue'], 'expect' => [ 'return' => true, 'columns' => ['ClassValue'], ], ],
-            [ 'columns' => ['ClassValue * Frequency'], 'expect' => [ 'return' => true, 'columns' => ['ClassValue * Frequency'], ], ],
+            [ 'columns' => null, 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => true, 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => false, 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => '', 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => 'hoge', 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => 0, 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => 1.2, 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => [], 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => [0], 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => ['hoge'], 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => [ ...self::$validColumns2Show, 'hoge', ], 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => self::$validColumns2Show, 'expect' => [ 'columns' => self::$validColumns2Show, ], ],
+            [ 'columns' => ['Class'], 'expect' => [ 'columns' => ['Class'], ], ],
+            [ 'columns' => ['Frequency'], 'expect' => [ 'columns' => ['Frequency'], ], ],
+            [ 'columns' => ['RelativeFrequency'], 'expect' => [ 'columns' => ['RelativeFrequency'], ], ],
+            [ 'columns' => ['ClassValue'], 'expect' => [ 'columns' => ['ClassValue'], ], ],
+            [ 'columns' => ['ClassValue * Frequency'], 'expect' => [ 'columns' => ['ClassValue * Frequency'], ], ],
         ];
     }
 
@@ -1162,6 +1187,9 @@ final class FrequencyTableTest extends TestCase
                         'CumulativeRelativeFrequency' => 1,
                         'ClassValue' => 5,
                         'ClassValue * Frequency' => 5,
+                        'Subtotal' => 0,
+                        'RelativeSubtotal' => 0,
+                        'CumulativeRelativeSubtotal' => 0,
                     ],
                 ],
             ],
@@ -1174,6 +1202,9 @@ final class FrequencyTableTest extends TestCase
                         'CumulativeRelativeFrequency' => 0.4,
                         'ClassValue' => 5,
                         'ClassValue * Frequency' => 10,
+                        'Subtotal' => 5,
+                        'RelativeSubtotal' => 0.1,
+                        'CumulativeRelativeSubtotal' => 0.1,
                     ],
                     [
                         'Class' => '10 ~ 20',
@@ -1183,6 +1214,9 @@ final class FrequencyTableTest extends TestCase
                         'CumulativeRelativeFrequency' => 0.8,
                         'ClassValue' => 15,
                         'ClassValue * Frequency' => 30,
+                        'Subtotal' => 25,
+                        'RelativeSubtotal' => 0.5,
+                        'CumulativeRelativeSubtotal' => 0.6,
                     ],
                     [
                         'Class' => '20 ~ 30',
@@ -1192,6 +1226,9 @@ final class FrequencyTableTest extends TestCase
                         'CumulativeRelativeFrequency' => 1.0,
                         'ClassValue' => 25,
                         'ClassValue * Frequency' => 25,
+                        'Subtotal' => 20,
+                        'RelativeSubtotal' => 0.4,
+                        'CumulativeRelativeSubtotal' => 1.0,
                     ],
                 ],
             ],
@@ -1441,6 +1478,7 @@ final class FrequencyTableTest extends TestCase
                 [ 'bottom' => 20, 'top' => 30, ],
             ],
             'Frequencies' => [ 2, 2, 1, ],
+            'Subtotals' => [5, 25, 20, ],
             'FrequencyTable' => [
                 'tableHead' => [
                     'Class',
