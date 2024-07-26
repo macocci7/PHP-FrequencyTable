@@ -29,6 +29,7 @@ You can also get parsed data as hash array of PHP.
     - [5.7. Saving data into HTML](#57-saving-data-into-html)
     - [5.8. Saving data into Markdown](#58-saving-data-into-markdown)
     - [5.9. Retrieving Parsed Data](#59-retrieving-parsed-data)
+    - [5.10. Reverse Classes](#510-reverse-classes)
 - [6. Examples](#6-examples)
 - [7. LICENSE](#7-license)
 
@@ -899,6 +900,46 @@ You can use the parsed data like this:
     QD:7.5
     ```
 
+### 5.10. Reverse Classes
+
+You can set the list of classes in reverse order by using `reverseClasses()` method.
+
+- PHP:
+    ```php
+    <?php
+
+    require_once __DIR__ . '/../vendor/autoload.php';
+
+    use Macocci7\PhpFrequencyTable\FrequencyTable;
+
+    $ft = new FrequencyTable([
+        'data' => [0, 5, 10, 15, 20, ],
+        'classRange' => 10,
+    ]);
+    echo $ft
+        ->reverseClasses()
+        ->markdown();
+    ```
+
+- Output:
+    ```bash
+    |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|---:|
+    |20 ~ 30|1|0.20|25.0|25.0|
+    |10 ~ 20|2|0.40|15.0|30.0|
+    |0 ~ 10|2|0.40|5.0|10.0|
+    |Total|5|1.00|---|65.0|
+    ```
+
+- View:
+
+    |Class|Frequency|RelativeFrequency|ClassValue|ClassValue * Frequency|
+    |:---:|:---:|:---:|:---:|---:|
+    |20 ~ 30|1|0.20|25.0|25.0|
+    |10 ~ 20|2|0.40|15.0|30.0|
+    |0 ~ 10|2|0.40|5.0|10.0|
+    |Total|5|1.00|---|65.0|
+
 ## 6. Examples
 
 - [Example.php](examples/Example.php) >> results in [Example.md](examples/Example.md)
@@ -910,6 +951,7 @@ You can use the parsed data like this:
 - [OhtaniShohei2023.php](examples/OhtaniShohei2023.php) >> results in [OhtaniShohei2023.md](examples/OhtaniShohei2023.md)
 - [OutlierDetection.php](examples/OutlierDetection.php) >> results in [OutlierDetection.md](examples/OutlierDetection.md)
 - [RetrieveParsedData.php](examples/RetrieveParsedData.php) >> results in [RetrieveParsedData.txt](examples/RetrieveParsedData.txt)
+- [ReverseClasses.php](examples/ReverseClasses.php) >> results in [ReverseClasses.md](examples/ReverseClasses.md)
 - [FrequencyTableTest.php](tests/FrequencyTableTest.php) : all usage is written in this code.
 
 ## 7. LICENSE
@@ -920,6 +962,6 @@ You can use the parsed data like this:
 
 *Document Written: 2023/05/18*
 
-*Last Updated: 2024/06/26*
+*Last Updated: 2024/07/26*
 
 Copyright (c) 2023-2024 macocci7
