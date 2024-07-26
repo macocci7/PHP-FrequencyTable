@@ -9,6 +9,8 @@ trait ClassTrait
      */
     protected mixed $classRange = null;
 
+    protected bool $isReverseClasses = false;
+
     /**
      * sets class range
      * @param   mixed   $classRange
@@ -21,6 +23,17 @@ trait ClassTrait
         } else {
             $this->classRange = null;
         }
+        return $this;
+    }
+
+    /**
+     * sets list of classes in reverse order
+     *
+     * @return  self
+     */
+    public function reverseClasses()
+    {
+        $this->isReverseClasses = !$this->isReverseClasses;
         return $this;
     }
 
@@ -55,6 +68,9 @@ trait ClassTrait
                 'bottom' => $bottom,
                 'top' => $bottom + $this->classRange,
             ];
+        }
+        if ($this->isReverseClasses) {
+            rsort($class);
         }
         return $class;
     }

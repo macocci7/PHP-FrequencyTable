@@ -403,6 +403,66 @@ final class FrequencyTableTest extends TestCase
         $this->assertSame($expect, $ft->getFrequencies());
     }
 
+    public static function provide_reverseClasses_can_work_correctly(): array
+    {
+        return [
+            [
+                'data' => [0],
+                'classRange' => 5,
+                'reverse' => false,
+                'expected' => [['bottom' => 0, 'top' => 5, ]],
+            ],
+            [
+                'data' => [0],
+                'classRange' => 5,
+                'reverse' => true,
+                'expected' => [['bottom' => 0, 'top' => 5, ]],
+            ],
+            [
+                'data' => [0, 5],
+                'classRange' => 5,
+                'reverse' => false,
+                'expected' => [['bottom' => 0, 'top' => 5, ], ['bottom' => 5, 'top' => 10, ]],
+            ],
+            [
+                'data' => [0, 5],
+                'classRange' => 5,
+                'reverse' => true,
+                'expected' => [['bottom' => 5, 'top' => 10, ], ['bottom' => 0, 'top' => 5, ]],
+            ],
+            [
+                'data' => [0, 5, 10],
+                'classRange' => 5,
+                'reverse' => false,
+                'expected' => [
+                    ['bottom' => 0, 'top' => 5, ],
+                    ['bottom' => 5, 'top' => 10, ],
+                    ['bottom' => 10, 'top' => 15, ],
+                ],
+            ],
+            [
+                'data' => [0, 5, 10],
+                'classRange' => 5,
+                'reverse' => true,
+                'expected' => [
+                    ['bottom' => 10, 'top' => 15, ],
+                    ['bottom' => 5, 'top' => 10, ],
+                    ['bottom' => 0, 'top' => 5, ],
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('provide_reverseClasses_can_work_correctly')]
+    public function test_reverseClasses_can_work_correctly(array $data, int|float $classRange, bool $reverse, array $expected): void
+    {
+        $ft = new FrequencyTable(['data' => $data, 'classRange' => $classRange]);
+        if ($reverse) {
+            $ft->reverseClasses();
+        }
+        $this->assertSame($expected, $ft->getClasses());
+    }
+
     public static function provide_getClasses_can_get_classes_correctly(): array
     {
         return [
