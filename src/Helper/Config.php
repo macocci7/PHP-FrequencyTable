@@ -34,7 +34,7 @@ class Config
      */
     public static function class()
     {
-        return debug_backtrace()[2]['class']; // @phpstan-ignore-line
+        return debug_backtrace()[2]['class'];
     }
 
     /**
@@ -69,7 +69,7 @@ class Config
         $keys = explode('.', $key);
         $conf = self::$conf[$class];
         foreach ($keys as $k) {
-            if (!isset($conf[$k])) { // @phpstan-ignore-line
+            if (!isset($conf[$k])) {
                 return null;
             }
             $conf = $conf[$k];

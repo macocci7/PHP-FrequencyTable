@@ -30,10 +30,10 @@ trait AttributesTrait
 
     /**
      * sets lang or returns current lang
-     * @param   string  $lang = null
+     * @param   string|null $lang = null
      * @return  self|string
      */
-    public function lang(string $lang = null)
+    public function lang(string|null $lang = null)
     {
         if (is_null($lang)) {
             return $this->lang;

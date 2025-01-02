@@ -33,14 +33,14 @@ class FrequencyTable
     public function __construct(mixed $param = [])
     {
         $this->loadConf();
-        if (array_key_exists('classRange', $param)) { // @phpstan-ignore-line
+        if (array_key_exists('classRange', $param)) {
             $this->setClassRange($param['classRange']);
         }
-        if (array_key_exists('data', $param)) { // @phpstan-ignore-line
+        if (array_key_exists('data', $param)) {
             $this->setData($param['data']);
         }
         $this->setColumns2Show($this->defaultColumns2Show);
-        if (array_key_exists('columns2Show', $param)) { // @phpstan-ignore-line
+        if (array_key_exists('columns2Show', $param)) {
             $this->setColumns2Show($param['columns2Show']);
         }
         $this->setDefaultTableSeparator();
@@ -62,7 +62,7 @@ class FrequencyTable
             'supportedFormats',
         ];
         foreach ($props as $prop) {
-            $this->{$prop} = Config::get($prop); // @phpstan-ignore-line
+            $this->{$prop} = Config::get($prop);
         }
     }
 
@@ -111,7 +111,6 @@ class FrequencyTable
             return false;
         }
         $pathParts = pathinfo($path);
-        // @phpstan-ignore-next-line
         $extension = strtolower($pathParts['extension']);
         if (!array_key_exists($extension, $this->supportedFormats)) {
             return false;

@@ -1626,7 +1626,10 @@ final class FrequencyTableTest extends TestCase
         $this->clearStorage();
         $this->assertIsInt($ft->csv($path));
         $this->assertTrue(file_exists($path));
-        $csv = array_map(fn($value): array => str_getcsv($value, $splitter), file($path, FILE_IGNORE_NEW_LINES));
+        $csv = array_map(
+            fn($value): array => str_getcsv($value, $splitter, "\"", "\\"),
+            file($path, FILE_IGNORE_NEW_LINES)
+        );
         $this->assertSame($expect, $csv);
         $this->clearStorage();
     }
@@ -1657,7 +1660,10 @@ final class FrequencyTableTest extends TestCase
         foreach ($cases as $case) {
             $return = $ft->csv($case['path']);
             $this->assertIsString($return);
-            $csv = array_map(fn($value): array => str_getcsv($value, $splitter), explode($eol, $return));
+            $csv = array_map(
+                fn($value): array => str_getcsv($value, $splitter, "\"", "\\"),
+                explode($eol, $return)
+            );
             array_pop($csv);
             $this->assertSame($expect, $csv);
         }
@@ -1683,7 +1689,10 @@ final class FrequencyTableTest extends TestCase
         $this->clearStorage();
         $this->assertIsInt($ft->tsv($path));
         $this->assertTrue(file_exists($path));
-        $csv = array_map(fn($value): array => str_getcsv($value, $splitter), file($path, FILE_IGNORE_NEW_LINES));
+        $csv = array_map(
+            fn($value): array => str_getcsv($value, $splitter, "\"", "\\"),
+            file($path, FILE_IGNORE_NEW_LINES)
+        );
         $this->assertSame($expect, $csv);
         $this->clearStorage();
     }
@@ -1713,7 +1722,10 @@ final class FrequencyTableTest extends TestCase
         foreach ($cases as $case) {
             $return = $ft->tsv($case['path']);
             $this->assertIsString($return);
-            $csv = array_map(fn($value): array => str_getcsv($value, $splitter), explode($eol, $return));
+            $csv = array_map(
+                fn($value): array => str_getcsv($value, $splitter, "\"", "\\"),
+                explode($eol, $return)
+            );
             array_pop($csv);
             $this->assertSame($expect, $csv);
         }

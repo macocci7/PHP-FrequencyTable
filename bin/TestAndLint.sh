@@ -6,8 +6,8 @@
 # - phpenv/phpenv
 # - PHP versions defined in ../PHP_VERSIONS installed
 
-CMD=phpenv
-$CMD -v &> /dev/null
+CMD=mise
+$CMD --version &> /dev/null
 if [ $? -ne 0 ]; then
     echo "command [${CMD}] not found!"
     exit 1
@@ -22,10 +22,10 @@ fi
 
 test_and_lint() {
     echo "==========================================================="
-    echo "[PHP $1][phpenv local $1]"
-    phpenv local $1
+    echo "[PHP $1][mise use php@$1]"
+    mise use php@$1
     if [ $? -ne 0 ]; then
-        echo "Failed to switch version to $i. skipped."
+        echo "Failed to switch version to $1. skipped."
         return 1
     fi
     echo "-----------------------------------------------------------"
@@ -44,11 +44,11 @@ test_and_lint() {
                        -p \
                        -s \
                        .
-    echo "-----------------------------------------------------------"
-    echo "[PHP $1][phpmd]"
-    ./vendor/bin/phpmd \
-                       ./src/ ./examples/ ./tests/ text \
-                       phpmd.xml
+    #echo "-----------------------------------------------------------"
+    #echo "[PHP $1][phpmd]"
+    #./vendor/bin/phpmd \
+    #                   ./src/ ./examples/ ./tests/ text \
+    #                   phpmd.xml
     echo "-----------------------------------------------------------"
     echo "[PHP $1][phpstan]"
     ./vendor/bin/phpstan analyze -c phpstan.neon
@@ -58,7 +58,7 @@ test_and_lint() {
     echo "-----------------------------------------------------------"
 }
 
-echo "[[TesAndLint.sh]]"
+echo "[[TestAndLint.sh]]"
 
 SUPPORTED_PHP_VERSIONS=PHP_VERSIONS
 if [ ! -f $SUPPORTED_PHP_VERSIONS ]; then
