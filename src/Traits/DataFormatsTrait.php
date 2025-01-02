@@ -11,7 +11,6 @@ trait DataFormatsTrait
      * @param   string      $quotation = '"'
      * @param   string      $eol = "\n"
      * @return  null|string|int|bool
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function xsv(
         string|null $path,
@@ -51,7 +50,6 @@ trait DataFormatsTrait
      * @param   string          $quotation = '"'
      * @param   string          $eol = "\n"
      * @return  null|string|int|bool
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function csv(
         string|null $path = null,
@@ -67,7 +65,6 @@ trait DataFormatsTrait
      * @param   string          $quotation = '"'
      * @param   string          $eol = "\n"
      * @return  null|string|int|bool
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function tsv(
         string|null $path = null,

@@ -33,10 +33,10 @@ trait DataTrait
 
     /**
      * returns data
-     * @param   int|string  $key = null
+     * @param   int|string|null $key = null
      * @return  array<int|string, int|float>
      */
-    public function getData(int|string $key = null)
+    public function getData(int|string|null $key = null)
     {
         // @phpstan-ignore-next-line
         return is_null($key) ? $this->data : ($this->data[$key] ?? null);
