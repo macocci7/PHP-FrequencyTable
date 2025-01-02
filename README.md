@@ -962,6 +962,6 @@ You can set the list of classes in reverse order by using `reverseClasses()` met
 
 *Document Written: 2023/05/18*
 
-*Last Updated: 2024/07/26*
+*Last Updated: 2025/01/02*
 
-Copyright (c) 2023-2024 macocci7
+Copyright (c) 2023-2025 macocci7

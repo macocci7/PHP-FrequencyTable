@@ -1,13 +1,12 @@
 #!/usr/bin/bash
 
 # Script to Test and Lint
-# - for the repository: macocci7/php-frequency-table
 # requirement:
-# - phpenv/phpenv
+# - https://github.com/jdx/mise installed
 # - PHP versions defined in ../PHP_VERSIONS installed
 
 CMD=mise
-$CMD --version &> /dev/null
+$CMD -v &> /dev/null
 if [ $? -ne 0 ]; then
     echo "command [${CMD}] not found!"
     exit 1
@@ -20,42 +19,10 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-test_and_lint() {
+switch_version() {
     echo "==========================================================="
-    echo "[PHP $1][mise use php@$1]"
-    mise use php@$1
-    if [ $? -ne 0 ]; then
-        echo "Failed to switch version to $1. skipped."
-        return 1
-    fi
-    echo "-----------------------------------------------------------"
-    echo "[PHP $1][php -v]"
-    php -v
-    echo "-----------------------------------------------------------"
-    echo "[PHP $1][parallel-lint]"
-    ./vendor/bin/parallel-lint src tests examples
-    echo "-----------------------------------------------------------"
-    echo "[PHP $1][neon-lint]"
-    ./vendor/nette/neon/bin/neon-lint conf
-    echo "-----------------------------------------------------------"
-    echo "[PHP $1][phpcs]"
-    ./vendor/bin/phpcs --ignore=vendor \
-                       --standard=phpcs.xml \
-                       -p \
-                       -s \
-                       .
-    #echo "-----------------------------------------------------------"
-    #echo "[PHP $1][phpmd]"
-    #./vendor/bin/phpmd \
-    #                   ./src/ ./examples/ ./tests/ text \
-    #                   phpmd.xml
-    echo "-----------------------------------------------------------"
-    echo "[PHP $1][phpstan]"
-    ./vendor/bin/phpstan analyze -c phpstan.neon
-    echo "-----------------------------------------------------------"
-    echo "[PHP $1][phpunit]"
-    ./vendor/bin/phpunit ./tests/
-    echo "-----------------------------------------------------------"
+    echo "[PHP $1][Switching PHP version to $1]"
+    mise x php@$1 -- bash bin/TestAndLintSub.sh $1;
 }
 
 echo "[[TestAndLint.sh]]"
@@ -73,6 +40,6 @@ if [ ! -r $SUPPORTED_PHP_VERSIONS ]; then
 fi
 STR_CMD=''
 while read version ; do
-    STR_CMD="$STR_CMD test_and_lint $version;"
+    STR_CMD="$STR_CMD switch_version $version;"
 done < $SUPPORTED_PHP_VERSIONS
 eval $STR_CMD
