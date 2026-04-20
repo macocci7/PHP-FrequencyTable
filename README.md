@@ -35,8 +35,8 @@ You can also get parsed data as hash array of PHP.
 
 ## 3. Requirements
 
-- PHP 8.1 or later
-- Composer
+- PHP 8.3 or later
+- [Composer](https://getcomposer.org/)
 
 ## 4. Installation
 
@@ -947,8 +947,7 @@ You can set the list of classes in reverse order by using `reverseClasses()` met
 - [ChangeColumns.php](examples/ChangeColumns.php) >> results in [ChangeColumns.md](examples/ChangeColumns.md)
 - [ChangeLang.php](examples/ChangeLang.php) >> results in [ChangeLang.md](examples/ChangeLang.md)
 - [ExampleCases.php](examples/ExampleCases.php) >> results in [ExampleCases.md](examples/ExampleCases.md)
-- [PopulationInJapan2022.php](examples/PopulationInJapan2022.php) >> results in [PopulationInJapan2022.md](examples/PopulationInJapan2022.md)
-- [OhtaniShohei2023.php](examples/OhtaniShohei2023.php) >> results in [OhtaniShohei2023.md](examples/OhtaniShohei2023.md)
+- [OhtaniShohei2025-2026.php](examples/OhtaniShohei2025-2026.php) >> results in [OhtaniShohei2025-2026.md](examples/OhtaniShohei2025-2026.md)
 - [OutlierDetection.php](examples/OutlierDetection.php) >> results in [OutlierDetection.md](examples/OutlierDetection.md)
 - [RetrieveParsedData.php](examples/RetrieveParsedData.php) >> results in [RetrieveParsedData.txt](examples/RetrieveParsedData.txt)
 - [ReverseClasses.php](examples/ReverseClasses.php) >> results in [ReverseClasses.md](examples/ReverseClasses.md)
@@ -957,7 +956,3 @@ You can set the list of classes in reverse order by using `reverseClasses()` met
 ## 7. LICENSE
 
 [MIT](LICENSE)
-
-***
-
-Copyright (c) 2023-2025 macocci7

@@ -10,15 +10,6 @@ use Macocci7\PhpCombination\Combination;
 use Macocci7\PhpFrequencyTable\FrequencyTable;
 use Nette\Neon\Neon;
 
-/**
- * @SuppressWarnings(PHPMD.TooManyMethods)
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
- * @SuppressWarnings(PHPMD.CamelCaseMethodName)
- * @SuppressWarnings(PHPMD.ExcessivePublicCount)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @SuppressWarnings(PHPMD.ExcessiveClassLength)
- * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
- */
 final class FrequencyTableTest extends TestCase
 {
     private static $validColumns2Show = [

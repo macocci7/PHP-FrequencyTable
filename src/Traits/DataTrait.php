@@ -4,22 +4,14 @@ namespace Macocci7\PhpFrequencyTable\Traits;
 
 trait DataTrait
 {
-    /**
-     * @var mixed   $data
-     */
     protected mixed $data = null;
 
-    /**
-     * @var int|float|null  $total
-     */
     protected mixed $total = null;
 
     /**
      * sets data
-     * @param   mixed   $data   default = null
-     * @return  self
      */
-    public function setData(mixed $data)
+    public function setData(mixed $data): self
     {
         if ($this->isSettableData($data)) {
             $this->data = $data;
@@ -33,10 +25,9 @@ trait DataTrait
 
     /**
      * returns data
-     * @param   int|string|null $key = null
-     * @return  array<int|string, int|float>
+     * @return  array<int|string, int|float>|int|float|null
      */
-    public function getData(int|string|null $key = null)
+    public function getData(int|string|null $key = null): array|int|float|null
     {
         // @phpstan-ignore-next-line
         return is_null($key) ? $this->data : ($this->data[$key] ?? null);
@@ -44,10 +35,8 @@ trait DataTrait
 
     /**
      * returns data range
-     * @param   mixed   $data
-     * @return  int|float|null
      */
-    public function getDataRange(mixed $data)
+    public function getDataRange(mixed $data): int|float|null
     {
         if (!$this->isSettableData($data)) {
             return null;
@@ -57,30 +46,24 @@ trait DataTrait
 
     /**
      * returns min value of the specified array
-     * @param   mixed   $data
-     * @return  int|float|null
      */
-    public function getMin(mixed $data)
+    public function getMin(mixed $data): int|float|null
     {
         return $this->isSettableData($data) ? min($data) : null; // @phpstan-ignore-line
     }
 
     /**
      * returns max value of the specified array
-     * @param   mixed   $data
-     * @return  int|float|null
      */
-    public function getMax(mixed $data)
+    public function getMax(mixed $data): int|float|null
     {
         return $this->isSettableData($data) ? max($data) : null; // @phpstan-ignore-line
     }
 
     /**
      * sets total of the specified data
-     * @param   mixed   $data
-     * @return  self
      */
-    public function setTotal(mixed $data)
+    public function setTotal(mixed $data): self
     {
         if ($this->isSettableData($data)) {
             $this->total = array_sum($data); // @phpstan-ignore-line
@@ -92,9 +75,8 @@ trait DataTrait
 
     /**
      * returns total
-     * @return  int|float|null
      */
-    public function getTotal()
+    public function getTotal(): int|float|null
     {
         if (is_null($this->total) && $this->isSettableData($this->getData())) {
             $this->setTotal($this->getFrequencies());
@@ -104,9 +86,8 @@ trait DataTrait
 
     /**
      * returns mean value
-     * @return  int|float|null
      */
-    public function getMean()
+    public function getMean(): int|float|null
     {
         if (!$this->isSettableData($this->getData()) || !$this->getTotal()) {
             return null;
@@ -121,9 +102,8 @@ trait DataTrait
 
     /**
      * returns mode
-     * @return  int|float|null
      */
-    public function getMode()
+    public function getMode(): int|float|null
     {
         $frequencies = $this->getFrequencies();
         if (0 === count($frequencies)) {
@@ -136,10 +116,8 @@ trait DataTrait
 
     /**
      * returns median
-     * @param   mixed   $param
-     * @return  int|float|null
      */
-    public function getMedian(mixed $param)
+    public function getMedian(mixed $param): int|float|null
     {
         if (!$this->isSettableData($param)) {
             return null;

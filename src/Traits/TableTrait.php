@@ -6,19 +6,10 @@ use Macocci7\PhpFrequencyTable\Helper\Config;
 
 trait TableTrait
 {
-    /**
-     * @var string  $defaultTableSeparator
-     */
     protected string $defaultTableSeparator = '|';
 
-    /**
-     * @var string  $classSeparator
-     */
     protected string $classSeparator = ' ~ ';
 
-    /**
-     * @var mixed   $tableSeparator
-     */
     protected mixed $tableSeparator = null;
 
     /**
@@ -45,7 +36,7 @@ trait TableTrait
      * returns table head
      * @return  string[]
      */
-    public function getTableHead()
+    public function getTableHead(): array
     {
         $conf = $this->supportedLangs[$this->lang()]; // @phpstan-ignore-line
         $heads = [];
@@ -60,7 +51,7 @@ trait TableTrait
      * @param   list<array<string, int|float|string|null>>  $data
      * @return  array<string, float|int|string|null>
      */
-    public function getTableTotal2Show(array $data)
+    public function getTableTotal2Show(array $data): array
     {
         return [
             'Class' => $this->supportedLangs[$this->lang()]['Total'] ?? 'Total', // @phpstan-ignore-line
@@ -82,7 +73,7 @@ trait TableTrait
      * returns mean row in the table to show
      * @return  array<string, string|int|float|null>
      */
-    public function getMean2Show()
+    public function getMean2Show(): array
     {
         return [
             // @phpstan-ignore-next-line
@@ -103,7 +94,7 @@ trait TableTrait
      * returns the data of each class
      * @return  list<array<string, int|float|string|null>>
      */
-    public function getDataOfEachClass()
+    public function getDataOfEachClass(): array
     {
         if (!$this->isSettableData($this->getData())) {
             return [];
@@ -148,7 +139,7 @@ trait TableTrait
      * @param   list<array<string, int|float|string|null>>  $data
      * @return  list<array<string, int|float|string|null>>
      */
-    public function filterData2Show(array $data)
+    public function filterData2Show(array $data): array
     {
         $columns2Show = $this->getColumns2Show();
         $filtered = [];
@@ -166,9 +157,8 @@ trait TableTrait
 
     /**
      * returns table data
-     * @return mixed
      */
-    public function getTableData()
+    public function getTableData(): mixed
     {
         return [
             'tableHead' => $this->getTableHead(),
@@ -191,10 +181,8 @@ trait TableTrait
 
     /**
      * sets the table separator to show frequency table
-     * @param   mixed   $separator
-     * @return  self
      */
-    public function setTableSeparator(mixed $separator)
+    public function setTableSeparator(mixed $separator): self
     {
         if (is_string($separator)) {
             $this->tableSeparator = $separator;
@@ -204,18 +192,16 @@ trait TableTrait
 
     /**
      * returns the current table separator
-     * @return  mixed
      */
-    public function getTableSeparator()
+    public function getTableSeparator(): mixed
     {
         return $this->tableSeparator;
     }
 
     /**
      * sets the default table separator
-     * @return  self
      */
-    public function setDefaultTableSeparator()
+    public function setDefaultTableSeparator(): self
     {
         $this->setTableSeparator($this->defaultTableSeparator);
         return $this;
@@ -225,7 +211,7 @@ trait TableTrait
      * returns table column aligns to show
      * @return  array<int|string, string>
      */
-    public function getTableColumnAligns2Show()
+    public function getTableColumnAligns2Show(): array
     {
         $aligns = [];
         foreach ($this->getColumns2Show() as $column) {
@@ -238,7 +224,7 @@ trait TableTrait
      * returns columns to show
      * @return  string[]
      */
-    public function getColumns2Show()
+    public function getColumns2Show(): array
     {
         return $this->columns2Show;
     }
@@ -247,17 +233,15 @@ trait TableTrait
      * returns valid columns to show
      * @return  string[]
      */
-    public function getValidColumns2Show()
+    public function getValidColumns2Show(): array
     {
         return $this->validColumns2Show;
     }
 
     /**
      * sets columns to show
-     * @param   mixed   $columns
-     * @return  self
      */
-    public function setColumns2Show(mixed $columns)
+    public function setColumns2Show(mixed $columns): self
     {
         if ($this->isSettableColumns2Show($columns)) {
             $this->columns2Show = $columns; // @phpstan-ignore-line

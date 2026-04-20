@@ -10,7 +10,7 @@ $ft = new FrequencyTable();
 $ft->setClassRange(5);
 
 $csvUtil = new CsvUtil();
-$dailyData = $csvUtil->getDailyData('csv/660271_data.csv');
+$dailyData = $csvUtil->getDailyData('csv/ohtani_shohei_2025-2026.csv');
 
 echo "# Pitching speed (MPH)\n\n";
 echo "## Pitcher:\n\n";
