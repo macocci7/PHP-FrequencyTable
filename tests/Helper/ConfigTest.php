@@ -9,9 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Macocci7\PhpFrequencyTable\Helper\Config;
 use Nette\Neon\Neon;
 
-/**
- * @SuppressWarnings(PHPMD.CamelCaseMethodName)
- */
 final class ConfigTest extends TestCase
 {
     // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
@@ -32,7 +29,8 @@ final class ConfigTest extends TestCase
         Config::load();
         $r = new \ReflectionClass(Config::class);
         $p = $r->getProperty('conf');
-        $p->setAccessible(true);
+        $this->assertNotEmpty(Neon::decodeFile($this->testConf));
+        $this->assertNotEmpty($p->getValue());
         $this->assertSame(
             Neon::decodeFile($this->testConf),
             $p->getValue()[$this::class]

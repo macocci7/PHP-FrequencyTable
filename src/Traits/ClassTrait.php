@@ -4,19 +4,14 @@ namespace Macocci7\PhpFrequencyTable\Traits;
 
 trait ClassTrait
 {
-    /**
-     * @var mixed   $classRange
-     */
     protected mixed $classRange = null;
 
     protected bool $isReverseClasses = false;
 
     /**
      * sets class range
-     * @param   mixed   $classRange
-     * @return  self
      */
-    public function setClassRange(mixed $classRange = null)
+    public function setClassRange(mixed $classRange = null): self
     {
         if ($this->isSettableClassRange($classRange)) {
             $this->classRange = $classRange;
@@ -28,10 +23,8 @@ trait ClassTrait
 
     /**
      * sets list of classes in reverse order
-     *
-     * @return  self
      */
-    public function reverseClasses()
+    public function reverseClasses(): self
     {
         $this->isReverseClasses = !$this->isReverseClasses;
         return $this;
@@ -39,9 +32,8 @@ trait ClassTrait
 
     /**
      * returns class range
-     * @return  mixed
      */
-    public function getClassRange()
+    public function getClassRange(): mixed
     {
         return $this->classRange;
     }
@@ -50,7 +42,7 @@ trait ClassTrait
      * returns classes
      * @return  list<array<string, int|float>>
      */
-    public function getClasses()
+    public function getClasses(): array
     {
         if (
             !$this->isSettableData($this->data)
@@ -77,10 +69,8 @@ trait ClassTrait
 
     /**
      * returns class value
-     * @param   mixed   $class
-     * @return  int|float|null
      */
-    public function getClassValue(mixed $class)
+    public function getClassValue(mixed $class): int|float|null
     {
         if (!$this->isSettableClass($class)) {
             return null;
@@ -92,7 +82,7 @@ trait ClassTrait
      * returns the class the median belongs
      * @return  array<string, int|float>|null
      */
-    public function getMedianClass()
+    public function getMedianClass(): ?array
     {
         if (!$this->isSettableData($this->getData())) {
             return null;

@@ -18,12 +18,12 @@
     "require-dev": {
         "squizlabs/php_codesniffer": "^4.0",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^10.5",
+        "phpunit/phpunit": "^12.5",
         "php-parallel-lint/php-parallel-lint": "1.4",
-        "macocci7/php-combination": "^1.1"
+        "macocci7/php-combination": "^2.0"
     },
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "nette/neon": "^3.4"
     }
 }

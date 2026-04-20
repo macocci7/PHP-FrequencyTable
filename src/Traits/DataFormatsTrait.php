@@ -6,18 +6,13 @@ trait DataFormatsTrait
 {
     /**
      * saves or returns the frequency table in xsv format
-     * @param   string|null $path
-     * @param   string      $separator
-     * @param   string      $quotation = '"'
-     * @param   string      $eol = "\n"
-     * @return  null|string|int|bool
      */
     public function xsv(
         string|null $path,
         string $separator,
         string $quotation = '"',
         string $eol = "\n"
-    ) {
+    ): null|string|int|bool {
         if (empty($separator)) {
             return null;
         }
@@ -46,40 +41,30 @@ trait DataFormatsTrait
 
     /**
      * saves or returns the frequency table in csv format
-     * @param   string|null     $path = null
-     * @param   string          $quotation = '"'
-     * @param   string          $eol = "\n"
-     * @return  null|string|int|bool
      */
     public function csv(
         string|null $path = null,
         string $quotation = '"',
         string $eol = "\n"
-    ) {
+    ): null|string|int|bool {
         return $this->xsv($path, ',', $quotation, $eol);
     }
 
     /**
      * saves or returns the frequency table in tsv format
-     * @param   string|null     $path = null
-     * @param   string          $quotation = '"'
-     * @param   string          $eol = "\n"
-     * @return  null|string|int|bool
      */
     public function tsv(
         string|null $path = null,
         string $quotation = '"',
         string $eol = "\n"
-    ) {
+    ): null|string|int|bool {
         return $this->xsv($path, "\t", $quotation, $eol);
     }
 
     /**
      * saves or returns the frequency table in html format
-     * @param   string|null   $path = null
-     * @return  null|string|int|bool
      */
-    public function html(string|null $path = null)
+    public function html(string|null $path = null): null|string|int|bool
     {
         $eol = "\n";
         $data4EachClass = $this->filterData2Show($this->getDataOfEachClass());
@@ -115,10 +100,8 @@ trait DataFormatsTrait
 
     /**
      * saves or returns the frequency table in markdown format
-     * @param   string|null   $path = null
-     * @return  null|string|int|bool
      */
-    public function markdown(string|null $path = null)
+    public function markdown(string|null $path = null): null|string|int|bool
     {
         $separator = $this->getTableSeparator();
         $eol = "\n";

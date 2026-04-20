@@ -48,9 +48,8 @@ class FrequencyTable
 
     /**
      * loads config.
-     * @return  void
      */
-    private function loadConf()
+    private function loadConf(): void
     {
         Config::load();
         $props = [
@@ -70,7 +69,7 @@ class FrequencyTable
      * returns parsed data
      * @return  null|array<string, mixed>
      */
-    public function parse()
+    public function parse(): ?array
     {
         if (!$this->isSettableClassRange($this->getClassRange())) {
             return null;
@@ -102,10 +101,8 @@ class FrequencyTable
 
     /**
      * saves the frequency table into a file
-     * @param   string  $path
-     * @return  int|bool
      */
-    public function save(string $path)
+    public function save(string $path): int|bool
     {
         if (strlen($path) === 0) {
             return false;

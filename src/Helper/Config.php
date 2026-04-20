@@ -18,9 +18,8 @@ class Config
 
     /**
      * loads config from a file
-     * @return  void
      */
-    public static function load()
+    public static function load(): void
     {
         $class = self::class();
         $cl = self::className($class);
@@ -30,19 +29,16 @@ class Config
 
     /**
      * returns the fully qualified class name of the caller
-     * @return  string
      */
-    public static function class()
+    public static function class(): string
     {
         return debug_backtrace()[2]['class'];
     }
 
     /**
      * returns just the class name splitted parent namespace
-     * @param   string  $class
-     * @return  string
      */
-    public static function className(string $class)
+    public static function className(string $class): string
     {
         $pos = strrpos($class, '\\');
         if ($pos) {
@@ -53,10 +49,8 @@ class Config
 
     /**
      * returns config data
-     * @param   string  $key = null
-     * @return  mixed
      */
-    public static function get(?string $key = null)
+    public static function get(?string $key = null): mixed
     {
         // get fully qualified class name of the caller
         $class = self::class();

@@ -6,10 +6,9 @@ trait SubtotalTrait
 {
     /**
      * returns all subtotals of each class
-     *
      * @return  array<int, int|float|null>
      */
-    public function getSubtotals()
+    public function getSubtotals(): array
     {
         $subtotals = [];
         foreach ($this->getClasses() as $class) {
@@ -20,11 +19,9 @@ trait SubtotalTrait
 
     /**
      * returns subtotal of the class
-     *
      * @param   array<string, int|float>    $class
-     * @return  int|float|null
      */
-    protected function getSubtotal(array $class)
+    protected function getSubtotal(array $class): int|float|null
     {
         if (!$this->isSettableClass($class)) {
             return null;
@@ -40,10 +37,9 @@ trait SubtotalTrait
 
     /**
      * returns relative subtotals
-     *
      * @return  array<int, int|float|null>
      */
-    public function getRelativeSubtotals()
+    public function getRelativeSubtotals(): array
     {
         $relativeSubtotals = [];
         $total = array_sum($this->getData());
@@ -57,10 +53,9 @@ trait SubtotalTrait
 
     /**
      * returns relative cululative subtotals
-     *
      * @return  array<int, int|float|null>
      */
-    public function getCumulativeRelativeSubtotals()
+    public function getCumulativeRelativeSubtotals(): array
     {
         $relativeCumulativeSubtotals = [];
         $sum = 0;

@@ -6,20 +6,16 @@ trait JudgeTrait
 {
     /**
      * judges if the param is number or not
-     * @param   mixed   $value
-     * @return  bool
      */
-    public function isNumber(mixed $value)
+    public function isNumber(mixed $value): bool
     {
         return is_int($value) || is_float($value);
     }
 
     /**
      * judges if the param is valid or not
-     * @param   mixed  $data
-     * @return  bool
      */
-    public function isSettableData(mixed $data)
+    public function isSettableData(mixed $data): bool
     {
         if (!is_array($data)) {
             return false;
@@ -37,10 +33,8 @@ trait JudgeTrait
 
     /**
      * judges if the param is valid class range or not
-     * @param   mixed   $classRange
-     * @return  bool
      */
-    public function isSettableClassRange(mixed $classRange)
+    public function isSettableClassRange(mixed $classRange): bool
     {
         if (!$this->isNumber($classRange)) {
             return false;
@@ -50,10 +44,8 @@ trait JudgeTrait
 
     /**
      * judges if the param is valid class or not
-     * @param   mixed   $class
-     * @return  bool
      */
-    public function isSettableClass(mixed $class)
+    public function isSettableClass(mixed $class): bool
     {
         if (!is_array($class)) {
             return false;
@@ -81,10 +73,8 @@ trait JudgeTrait
 
     /**
      * judges if the param is valid for columns to show or not
-     * @param   mixed   $columns
-     * @return  bool
      */
-    public function isSettableColumns2Show(mixed $columns)
+    public function isSettableColumns2Show(mixed $columns): bool
     {
         if (!is_array($columns)) {
             return false;

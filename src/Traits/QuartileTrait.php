@@ -6,10 +6,8 @@ trait QuartileTrait
 {
     /**
      * returns the first quartile
-     * @param   mixed   $data
-     * @return  int|float|null
      */
-    public function getFirstQuartile(mixed $data)
+    public function getFirstQuartile(mixed $data): int|float|null
     {
         if (!$this->isSettableData($data)) {
             return null;
@@ -30,10 +28,8 @@ trait QuartileTrait
 
     /**
      * returns the third quartile
-     * @param   mixed   $data
-     * @return  int|float|null
      */
-    public function getThirdQuartile(mixed $data)
+    public function getThirdQuartile(mixed $data): int|float|null
     {
         if (!$this->isSettableData($data)) {
             return null;
@@ -54,10 +50,8 @@ trait QuartileTrait
 
     /**
      * returns the inter quartile range
-     * @param   mixed   $data
-     * @return  int|float|null
      */
-    public function getInterQuartileRange(mixed $data)
+    public function getInterQuartileRange(mixed $data): int|float|null
     {
         if (!$this->isSettableData($data)) {
             return null;
@@ -67,10 +61,8 @@ trait QuartileTrait
 
     /**
      * returns the quartile deviation
-     * @param   mixed   $data
-     * @return  int|float|null
      */
-    public function getQuartileDeviation(mixed $data)
+    public function getQuartileDeviation(mixed $data): int|float|null
     {
         if (!$this->isSettableData($data)) {
             return null;

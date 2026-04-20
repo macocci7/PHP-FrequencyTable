@@ -4,9 +4,6 @@ namespace Macocci7\PhpFrequencyTable\Traits;
 
 trait AttributesTrait
 {
-    /**
-     * @var string  $lang
-     */
     private string $lang;
 
     /**
@@ -14,26 +11,21 @@ trait AttributesTrait
      */
     private array $supportedLangs;
 
-    /**
-     * @var bool    $showMean
-     */
     private bool $showMean = false;
 
     /**
      * returns supported langs
      * @return  string[]
      */
-    public function langs()
+    public function langs(): array
     {
         return array_keys($this->supportedLangs);
     }
 
     /**
      * sets lang or returns current lang
-     * @param   string|null $lang = null
-     * @return  self|string
      */
-    public function lang(string|null $lang = null)
+    public function lang(string|null $lang = null): self|string
     {
         if (is_null($lang)) {
             return $this->lang;
@@ -46,9 +38,8 @@ trait AttributesTrait
 
     /**
      * sets visibility of mean on
-     * @return  self
      */
-    public function meanOn()
+    public function meanOn(): self
     {
         $this->showMean = true;
         return $this;
@@ -56,9 +47,8 @@ trait AttributesTrait
 
     /**
      * sets visibility of mean off
-     * @return  self
      */
-    public function meanOff()
+    public function meanOff(): self
     {
         $this->showMean = false;
         return $this;
