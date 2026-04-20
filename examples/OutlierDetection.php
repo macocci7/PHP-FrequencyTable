@@ -9,7 +9,7 @@ use Macocci7\CsvUtil;
 use Macocci7\Outlier;
 
 $csvUtil = new CsvUtil();
-$csvFileName = 'csv/672282_data.csv';
+$csvFileName = 'csv/reid_detmers_2026.csv';
 
 $ft = new FrequencyTable();
 $ft->setClassRange(10);
@@ -34,7 +34,7 @@ echo "# Pitching speed (MPH)\n\n";
 echo "## Data Source\n\n[savant](https://baseballsavant.mlb.com/)\n\n";
 echo "## Pitcher:\n\n";
 
-echo " Detmers, Reid (672282)\n\n";
+echo " [Reid, Detmers (672282)](https://www.mlb.com/player/reid-detmers-672282)\n\n";
 
 $dailyData = $csvUtil->getDailyData($csvFileName);
 if (!$dailyData) {
